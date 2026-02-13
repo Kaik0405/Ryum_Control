@@ -1,0 +1,75 @@
+﻿<Application x:Class="GestionApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GestionApp"
+             xmlns:vm="clr-namespace:GestionApp.ViewModels"
+             xmlns:views="clr-namespace:GestionApp.Views">
+    
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- DataTemplates para navegación ViewModel -> View -->
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                <views:DashboardView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:InventarioViewModel}">
+                <views:InventarioView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CombosViewModel}">
+                <views:CombosView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:FichasCostoViewModel}">
+                <views:FichasCostoView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MovimientosViewModel}">
+                <views:MovimientosView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ReportesViewModel}">
+                <views:ReportesView/>
+            </DataTemplate>
+            
+            <!-- Estilos globales -->
+            <Style x:Key="MenuButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#E0E0E0"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="15,12"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" 
+                                    Background="{TemplateBinding Background}" 
+                                    Padding="{TemplateBinding Padding}"
+                                    BorderThickness="3,0,0,0"
+                                    BorderBrush="Transparent">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#3D5A80"/>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#4FC3F7"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2D4A70"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <Style x:Key="CardStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.1"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

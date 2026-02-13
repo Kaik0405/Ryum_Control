@@ -1,0 +1,156 @@
+<UserControl x:Class="GestionApp.Views.MovimientosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:GestionApp.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:MovimientosViewModel}"
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="#F5F5F5">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Encabezado -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel>
+                <TextBlock Text="Movimientos" 
+                           FontSize="28" 
+                           FontWeight="Bold" 
+                           Foreground="#1A237E"/>
+                <TextBlock Text="Control de ingresos y egresos" 
+                           FontSize="14" 
+                           Foreground="#666"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="📥 Ingreso" 
+                        Command="{Binding RegistrarIngresoCommand}"
+                        Background="#2E7D32" 
+                        Foreground="White"
+                        Padding="20,10"
+                        Margin="0,0,10,0"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+                <Button Content="📤 Egreso" 
+                        Command="{Binding RegistrarEgresoCommand}"
+                        Background="#C62828" 
+                        Foreground="White"
+                        Padding="20,10"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- Filtros -->
+        <Border Grid.Row="1" 
+                Style="{StaticResource CardStyle}" 
+                Margin="0,0,0,15"
+                Padding="15">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Desde:" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,10,0"/>
+                <DatePicker SelectedDate="{Binding FechaDesde}" 
+                            Width="130"/>
+                
+                <TextBlock Text="Hasta:" 
+                           VerticalAlignment="Center" 
+                           Margin="15,0,10,0"/>
+                <DatePicker SelectedDate="{Binding FechaHasta}" 
+                            Width="130"/>
+                
+                <ComboBox ItemsSource="{Binding TiposMovimiento}"
+                          SelectedItem="{Binding FiltroTipo}"
+                          Margin="15,0,0,0"
+                          Width="120"
+                          Padding="8"/>
+                
+                <ComboBox ItemsSource="{Binding Categorias}"
+                          SelectedItem="{Binding FiltroCategoria}"
+                          Margin="10,0,0,0"
+                          Width="130"
+                          Padding="8"/>
+                
+                <Button Content="🗑️ Limpiar" 
+                        Command="{Binding LimpiarFiltrosCommand}"
+                        Margin="15,0,0,0"
+                        Padding="10,5"
+                        Background="Transparent"
+                        BorderThickness="1"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Resumen -->
+        <UniformGrid Grid.Row="2" Columns="3" Margin="0,0,0,15">
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,10,0" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Ingresos" FontSize="12" Foreground="#666"/>
+                    <TextBlock Text="{Binding TotalIngresos, StringFormat=C2}" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="#2E7D32"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardStyle}" Margin="5,0,5,0" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Egresos" FontSize="12" Foreground="#666"/>
+                    <TextBlock Text="{Binding TotalEgresos, StringFormat=C2}" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="#C62828"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardStyle}" Margin="10,0,0,0" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Balance" FontSize="12" Foreground="#666"/>
+                    <TextBlock Text="{Binding Balance, StringFormat=C2}" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="#1565C0"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+        
+        <!-- Lista de movimientos -->
+        <Border Grid.Row="3" Style="{StaticResource CardStyle}" Padding="0">
+            <DataGrid ItemsSource="{Binding Movimientos}" 
+                      SelectedItem="{Binding MovimientoSeleccionado}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      BorderThickness="0"
+                      Background="Transparent">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Fecha" 
+                                        Binding="{Binding Fecha, StringFormat=d}" 
+                                        Width="90"/>
+                    <DataGridTextColumn Header="Concepto" 
+                                        Binding="{Binding Concepto}" 
+                                        Width="*"/>
+                    <DataGridTextColumn Header="Tipo" 
+                                        Binding="{Binding Tipo}" 
+                                        Width="80"/>
+                    <DataGridTextColumn Header="Categoría" 
+                                        Binding="{Binding Categoria}" 
+                                        Width="110"/>
+                    <DataGridTextColumn Header="Monto" 
+                                        Binding="{Binding Monto, StringFormat=C2}" 
+                                        Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

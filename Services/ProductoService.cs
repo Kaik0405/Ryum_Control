@@ -1,0 +1,102 @@
+using GestionApp.Data;
+using GestionApp.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace GestionApp.Services
+{
+    /// <summary>
+    /// Servicio para operaciones con productos.
+    /// </summary>
+    public class ProductoService : IProductoService
+    {
+        private readonly AppDbContext _context;
+
+        public ProductoService(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<Producto>> ObtenerTodosAsync()
+        {
+            return await _context.Productos
+                .Include(p => p.Categoria)
+                .Include(p => p.Variantes)
+                .Where(p => p.Activo)
+                .OrderBy(p => p.Nombre)
+                .ToListAsync();
+        }
+
+        public async Task<Producto?> ObtenerPorIdAsync(int id)
+        {
+            return await _context.Productos
+                .Include(p => p.Categoria)
+                .Include(p => p.Variantes)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<List<Producto>> ObtenerEnStockAsync()
+        {
+            return await _context.Productos
+                .Include(p => p.Categoria)
+                .Where(p => p.Activo && p.EnStock)
+                .OrderBy(p => p.Nombre)
+                .ToListAsync();
+        }
+
+        public async Task<List<Producto>> BuscarPorNombreAsync(string nombre)
+        {
+            return await _context.Productos
+                .Include(p => p.Categoria)
+                .Where(p => p.Activo && p.Nombre.Contains(nombre))
+                .OrderBy(p => p.Nombre)
+                .ToListAsync();
+        }
+
+        public async Task<List<Producto>> ObtenerPorCategoriaAsync(int categoriaId)
+        {
+            return await _context.Productos
+                .Include(p => p.Categoria)
+                .Where(p => p.Activo && p.CategoriaId == categoriaId)
+                .OrderBy(p => p.Nombre)
+                .ToListAsync();
+        }
+
+        public async Task<Producto> CrearAsync(Producto producto)
+        {
+            producto.FechaCreacion = DateTime.Now;
+            _context.Productos.Add(producto);
+            await _context.SaveChangesAsync();
+            return producto;
+        }
+
+        public async Task ActualizarAsync(Producto producto)
+        {
+            producto.FechaModificacion = DateTime.Now;
+            _context.Productos.Update(producto);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ActualizarStockAsync(int productoId, decimal cantidad)
+        {
+            var producto = await _context.Productos.FindAsync(productoId);
+            if (producto != null)
+            {
+                producto.CantidadStock += cantidad;
+                producto.EnStock = producto.CantidadStock > 0;
+                producto.FechaModificacion = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task EliminarAsync(int id)
+        {
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto != null)
+            {
+                producto.Activo = false; // Soft delete
+                producto.FechaModificacion = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
+}
