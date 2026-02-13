@@ -10,7 +10,6 @@ namespace GestionApp.Models
         Unidad,     // Cantidad entera
         Libra,      // Peso en libras
         Kilogramo,  // Peso en kg
-        Litro,      // Volumen
         Paquete     // Paquete/Bulto
     }
 
@@ -49,6 +48,17 @@ namespace GestionApp.Models
         /// Indica si el producto está disponible para usar en combos.
         /// </summary>
         public bool EnStock { get; set; } = true;
+
+        /// <summary>
+        /// Costo total = CostoCompra * CantidadStock
+        /// Propiedad calculada, no se guarda en BD.
+        /// </summary>
+        public decimal CostoTotal => CostoCompra * CantidadStock;
+
+        /// <summary>
+        /// Muestra el stock con su unidad: "5 Unidad", "2.5 Libra", etc.
+        /// </summary>
+        public string StockConUnidad => $"{CantidadStock:G} {Unidad}";
 
         /// <summary>
         /// Fecha en que el producto fue ingresado al inventario.

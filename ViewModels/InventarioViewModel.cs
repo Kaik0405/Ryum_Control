@@ -52,6 +52,12 @@ namespace GestionApp.ViewModels
         private string _formCantidadStock = string.Empty;
         private UnidadMedida _formUnidad = UnidadMedida.Unidad;
 
+        // Campos para ajuste de stock
+        private bool _modoAjusteStock;
+        private string _ajusteCantidad = string.Empty;
+        private string _ajusteMotivo = string.Empty;
+        private bool _ajusteEsIngreso;
+
         #region Propiedades de Datos
         // ═══════════════════════════════════════════════════
         // PROPIEDADES - La UI se conecta aquí con {Binding NombrePropiedad}
@@ -75,8 +81,19 @@ namespace GestionApp.ViewModels
         public ObservableCollection<Producto> ProductosFiltrados
         {
             get => _productosFiltrados;
-            set => SetProperty(ref _productosFiltrados, value);
+            set
+            {
+                SetProperty(ref _productosFiltrados, value);
+                // Recalcular el total cada vez que cambia la lista filtrada
+                OnPropertyChanged(nameof(CostoTotalInventario));
+            }
         }
+
+        /// <summary>
+        /// Suma del CostoTotal (Costo × Stock) de todos los productos filtrados.
+        /// Se muestra en el pie de página.
+        /// </summary>
+        public decimal CostoTotalInventario => ProductosFiltrados?.Sum(p => p.CostoTotal) ?? 0;
 
         /// <summary>
         /// El producto que el usuario seleccionó en el DataGrid.
@@ -185,6 +202,44 @@ namespace GestionApp.ViewModels
 
         #endregion
 
+        #region Propiedades de Ajuste de Stock
+
+        public bool ModoAjusteStock
+        {
+            get => _modoAjusteStock;
+            set
+            {
+                SetProperty(ref _modoAjusteStock, value);
+                OnPropertyChanged(nameof(TituloAjuste));
+            }
+        }
+
+        public string AjusteCantidad
+        {
+            get => _ajusteCantidad;
+            set => SetProperty(ref _ajusteCantidad, value);
+        }
+
+        public string AjusteMotivo
+        {
+            get => _ajusteMotivo;
+            set => SetProperty(ref _ajusteMotivo, value);
+        }
+
+        public bool AjusteEsIngreso
+        {
+            get => _ajusteEsIngreso;
+            set
+            {
+                SetProperty(ref _ajusteEsIngreso, value);
+                OnPropertyChanged(nameof(TituloAjuste));
+            }
+        }
+
+        public string TituloAjuste => AjusteEsIngreso ? "📥 Ingresar Stock" : "📤 Dar Salida";
+
+        #endregion
+
         #region Comandos
         // ═══════════════════════════════════════════════════
         // COMANDOS - Acciones que se disparan desde botones en la UI.
@@ -210,6 +265,18 @@ namespace GestionApp.ViewModels
         /// <summary>Recarga la lista de productos desde la BD.</summary>
         public ICommand RefrescarCommand { get; }
 
+        /// <summary>Abre panel de ingreso de stock para un producto.</summary>
+        public ICommand IngresarStockCommand { get; }
+
+        /// <summary>Abre panel de salida de stock para un producto.</summary>
+        public ICommand SacarStockCommand { get; }
+
+        /// <summary>Confirma el ajuste de stock.</summary>
+        public ICommand ConfirmarAjusteCommand { get; }
+
+        /// <summary>Cancela el ajuste de stock.</summary>
+        public ICommand CancelarAjusteCommand { get; }
+
         #endregion
 
         // ═══════════════════════════════════════════════════
@@ -233,6 +300,12 @@ namespace GestionApp.ViewModels
             GuardarProductoCommand = new RelayCommand(async _ => await GuardarProductoAsync(), _ => PuedeGuardar());
             CancelarCommand = new RelayCommand(_ => CerrarFormulario());
             RefrescarCommand = new RelayCommand(async _ => await CargarDatosAsync());
+
+            // Comandos de ajuste de stock
+            IngresarStockCommand = new RelayCommand(param => PrepararAjusteStock(param as Producto, true));
+            SacarStockCommand = new RelayCommand(param => PrepararAjusteStock(param as Producto, false));
+            ConfirmarAjusteCommand = new RelayCommand(async _ => await ConfirmarAjusteStockAsync(), _ => !string.IsNullOrWhiteSpace(AjusteCantidad));
+            CancelarAjusteCommand = new RelayCommand(_ => CerrarAjusteStock());
         }
 
         // ═══════════════════════════════════════════════════
@@ -316,6 +389,7 @@ namespace GestionApp.ViewModels
         /// </summary>
         private void PrepararNuevoProducto()
         {
+            ModoAjusteStock = false;
             EsEdicion = false;
             LimpiarFormulario();
             MostrarFormulario = true;
@@ -331,6 +405,7 @@ namespace GestionApp.ViewModels
         {
             if (ProductoSeleccionado == null) return;
 
+            ModoAjusteStock = false;
             EsEdicion = true;
 
             // Copiar datos del producto seleccionado al formulario
@@ -487,6 +562,106 @@ namespace GestionApp.ViewModels
             FormCantidadStock = string.Empty;
             FormUnidad = UnidadMedida.Unidad;
             ProductoSeleccionado = null;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // MÉTODOS DE AJUSTE DE STOCK
+        // ═══════════════════════════════════════════════════
+
+        /// <summary>
+        /// Prepara el panel lateral para ajustar stock de un producto.
+        /// </summary>
+        private void PrepararAjusteStock(Producto? producto, bool esIngreso)
+        {
+            if (producto == null) return;
+            ProductoSeleccionado = producto;
+            AjusteEsIngreso = esIngreso;
+            AjusteCantidad = string.Empty;
+            AjusteMotivo = string.Empty;
+            MostrarFormulario = false;
+            ModoAjusteStock = true;
+        }
+
+        /// <summary>
+        /// Cierra el panel de ajuste de stock.
+        /// </summary>
+        private void CerrarAjusteStock()
+        {
+            ModoAjusteStock = false;
+            AjusteCantidad = string.Empty;
+            AjusteMotivo = string.Empty;
+        }
+
+        /// <summary>
+        /// Confirma el ajuste: suma o resta stock, actualiza BD y registra movimiento.
+        /// </summary>
+        private async Task ConfirmarAjusteStockAsync()
+        {
+            if (ProductoSeleccionado == null) return;
+
+            if (!decimal.TryParse(AjusteCantidad.Replace('.', ','), out var cantidad) &&
+                !decimal.TryParse(AjusteCantidad, out cantidad))
+            {
+                MensajeEstado = "❌ La cantidad no es un número válido";
+                return;
+            }
+
+            if (cantidad <= 0)
+            {
+                MensajeEstado = "❌ La cantidad debe ser mayor a 0";
+                return;
+            }
+
+            try
+            {
+                var nombreProducto = ProductoSeleccionado.Nombre;
+
+                if (AjusteEsIngreso)
+                {
+                    ProductoSeleccionado.CantidadStock += cantidad;
+                }
+                else
+                {
+                    if (cantidad > ProductoSeleccionado.CantidadStock)
+                    {
+                        MensajeEstado = $"❌ Stock insuficiente (disponible: {ProductoSeleccionado.CantidadStock} {ProductoSeleccionado.Unidad})";
+                        return;
+                    }
+                    ProductoSeleccionado.CantidadStock -= cantidad;
+                }
+
+                ProductoSeleccionado.EnStock = ProductoSeleccionado.CantidadStock > 0;
+                await _productoService.ActualizarAsync(ProductoSeleccionado);
+
+                // Registrar movimiento financiero
+                var periodo = await _periodoService.ObtenerPeriodoActualAsync();
+                var motivo = string.IsNullOrWhiteSpace(AjusteMotivo) ? "" : $" — {AjusteMotivo.Trim()}";
+
+                var movimiento = new Movimiento
+                {
+                    Concepto = AjusteEsIngreso
+                        ? $"Ingreso inventario — {nombreProducto}"
+                        : $"Salida inventario — {nombreProducto}",
+                    Descripcion = $"{(AjusteEsIngreso ? "Ingreso" : "Salida")} de {cantidad} {ProductoSeleccionado.Unidad}{motivo}",
+                    Monto = ProductoSeleccionado.CostoCompra * cantidad,
+                    Tipo = TipoMovimiento.Egreso,
+                    Categoria = AjusteEsIngreso ? CategoriaMovimiento.CompraProducto : CategoriaMovimiento.Otro,
+                    ProductoId = ProductoSeleccionado.Id,
+                    PeriodoInventarioId = periodo?.Id,
+                    Fecha = DateTime.Now
+                };
+                await _movimientoService.CrearAsync(movimiento);
+
+                var accion = AjusteEsIngreso ? "ingresadas" : "retiradas";
+                MensajeEstado = $"✅ {cantidad} {ProductoSeleccionado.Unidad} {accion} — \"{nombreProducto}\"";
+
+                CerrarAjusteStock();
+                await CargarDatosAsync();
+            }
+            catch (Exception ex)
+            {
+                MensajeEstado = $"❌ Error: {ex.Message}";
+            }
         }
     }
 }

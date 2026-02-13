@@ -166,7 +166,7 @@
                           GridLinesVisibility="Horizontal"
                           BorderThickness="0"
                           Background="Transparent"
-                          RowHeight="40"
+                          RowHeight="46"
                           FontSize="13"
                           SelectionMode="Single">
                     
@@ -176,7 +176,7 @@
                             <Setter Property="Background" Value="#F8F9FA"/>
                             <Setter Property="Foreground" Value="#333"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="Padding" Value="12,10"/>
+                            <Setter Property="Padding" Value="14,10"/>
                             <Setter Property="BorderBrush" Value="#E0E0E0"/>
                             <Setter Property="BorderThickness" Value="0,0,0,2"/>
                         </Style>
@@ -185,6 +185,7 @@
                     <!-- Estilo de filas -->
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
+                            <Setter Property="MinHeight" Value="46"/>
                             <Setter Property="Padding" Value="0,4"/>
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
@@ -222,50 +223,122 @@
                     
                     <!-- COLUMNAS: cada una conectada a una propiedad del modelo Producto -->
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Nombre" 
-                                            Binding="{Binding Nombre}" 
-                                            Width="*"
-                                            MinWidth="150"/>
+                        <DataGridTemplateColumn Header="Nombre" Width="*" MinWidth="150" SortMemberPath="Nombre">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nombre}" 
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip MaxWidth="320">
+                                                <StackPanel Margin="4">
+                                                    <TextBlock Text="{Binding Nombre}" FontWeight="Bold" FontSize="14"/>
+                                                    <TextBlock Text="{Binding Descripcion, TargetNullValue='Sin descripción'}" 
+                                                               TextWrapping="Wrap" FontSize="12"
+                                                               Foreground="#666" Margin="0,6,0,0"/>
+                                                    <Border BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="0,8,0,4" Padding="0,4,0,0">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="Stock: " FontSize="11" Foreground="#999"/>
+                                                            <TextBlock Text="{Binding StockConUnidad}" FontSize="11" Foreground="#333" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="  ·  Costo: " FontSize="11" Foreground="#999" Margin="8,0,0,0"/>
+                                                            <TextBlock Text="{Binding CostoCompra, StringFormat=$ {0:N2}}" FontSize="11" Foreground="#333" FontWeight="SemiBold"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         
                         <DataGridTextColumn Header="Unidad" 
                                             Binding="{Binding Unidad}" 
-                                            Width="80"/>
-                        
-                        <DataGridTextColumn Header="Costo" 
-                                            Binding="{Binding CostoCompra, StringFormat={}{0:N2}}" 
                                             Width="90"/>
                         
+                        <DataGridTextColumn Header="Costo (CUP)" 
+                                            Binding="{Binding CostoCompra, StringFormat=$ {0:N2}}" 
+                                            Width="110"/>
+                        
                         <DataGridTextColumn Header="Stock" 
-                                            Binding="{Binding CantidadStock, StringFormat={}{0:N1}}" 
-                                            Width="70"/>
+                                            Binding="{Binding StockConUnidad}" 
+                                            Width="120"/>
+                        
+                        <DataGridTextColumn Header="Costo Total (CUP)" 
+                                            Binding="{Binding CostoTotal, StringFormat=$ {0:N2}}" 
+                                            Width="130"/>
                         
                         <DataGridTextColumn Header="Ingreso" 
                                             Binding="{Binding FechaIngreso, StringFormat={}{0:dd/MM/yyyy}}" 
-                                            Width="90"/>
+                                            Width="100"/>
                         
-                        <!-- Columna de acciones con botones Editar / Eliminar -->
-                        <DataGridTemplateColumn Header="Acciones" Width="140">
+                        <!-- Columna de acciones: Stock +/− y Editar/Eliminar -->
+                        <DataGridTemplateColumn Header="Acciones" Width="170">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <!-- Botón Ingresar stock (+) -->
+                                        <Button ToolTip="Ingresar stock" Cursor="Hand"
+                                                Command="{Binding DataContext.IngresarStockCommand, 
+                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bd" Background="#E8F5E9" CornerRadius="4" 
+                                                            Padding="7,3" Margin="0,0,2,0">
+                                                        <TextBlock Text="+" FontSize="14" FontWeight="Bold" 
+                                                                   Foreground="#2E7D32" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                        <!-- Botón Dar salida (−) -->
+                                        <Button ToolTip="Dar salida" Cursor="Hand"
+                                                Command="{Binding DataContext.SacarStockCommand, 
+                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bd" Background="#FFF3E0" CornerRadius="4" 
+                                                            Padding="7,3" Margin="0,0,2,0">
+                                                        <TextBlock Text="−" FontSize="14" FontWeight="Bold" 
+                                                                   Foreground="#E65100" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bd" Property="Background" Value="#FFE0B2"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                        <!-- Separador -->
+                                        <Border Width="1" Background="#E0E0E0" Margin="4,4" VerticalAlignment="Stretch"/>
+                                        <!-- Botón Editar -->
                                         <Button Content="✏️" 
                                                 Command="{Binding DataContext.EditarProductoCommand, 
                                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 Background="Transparent" 
                                                 BorderThickness="0" 
                                                 Cursor="Hand"
-                                                Padding="6,2"
-                                                FontSize="14"
+                                                Padding="5,2"
+                                                FontSize="13"
                                                 ToolTip="Editar producto"/>
+                                        <!-- Botón Eliminar -->
                                         <Button Content="🗑️" 
                                                 Command="{Binding DataContext.EliminarProductoCommand, 
                                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 Background="Transparent" 
                                                 BorderThickness="0" 
                                                 Cursor="Hand"
-                                                Padding="6,2"
-                                                FontSize="14"
-                                                Margin="4,0,0,0"
+                                                Padding="5,2"
+                                                FontSize="13"
+                                                Margin="2,0,0,0"
                                                 ToolTip="Eliminar producto"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -418,6 +491,116 @@
                     </StackPanel>
                 </ScrollViewer>
             </Border>
+            
+            <!-- ═══ PANEL DE AJUSTE DE STOCK (ingreso/salida) ═══ -->
+            <Border Grid.Column="1" 
+                    Style="{StaticResource CardStyle}" 
+                    Margin="15,0,0,0"
+                    Width="300"
+                    Visibility="{Binding ModoAjusteStock, Converter={StaticResource BoolToVis}}"
+                    VerticalAlignment="Top">
+                <StackPanel>
+                    
+                    <!-- Título dinámico -->
+                    <TextBlock Text="{Binding TituloAjuste}" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="#1A237E"
+                               Margin="0,0,0,15"/>
+                    
+                    <!-- Info del producto seleccionado -->
+                    <Border Background="#F5F5F5" CornerRadius="6" Padding="12,10" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ProductoSeleccionado.Nombre}" 
+                                       FontSize="15" FontWeight="SemiBold" Foreground="#333"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="Stock actual: " FontSize="12" Foreground="#666"/>
+                                <TextBlock Text="{Binding ProductoSeleccionado.StockConUnidad, Mode=OneWay}" 
+                                           FontSize="12" Foreground="#333" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Campo: Cantidad -->
+                    <TextBlock Text="Cantidad *" 
+                               FontSize="12" 
+                               Foreground="#666" 
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding AjusteCantidad, UpdateSourceTrigger=PropertyChanged}" 
+                             Padding="10,8" 
+                             FontSize="13"
+                             BorderBrush="#DDD"/>
+                    
+                    <!-- Campo: Motivo -->
+                    <TextBlock Text="Motivo (opcional)" 
+                               FontSize="12" 
+                               Foreground="#666" 
+                               FontWeight="SemiBold"
+                               Margin="0,12,0,5"/>
+                    <TextBox Text="{Binding AjusteMotivo, UpdateSourceTrigger=PropertyChanged}" 
+                             Padding="10,8" 
+                             FontSize="13"
+                             TextWrapping="Wrap"
+                             Height="50"
+                             BorderBrush="#DDD"/>
+                    
+                    <!-- Botones: Confirmar / Cancelar -->
+                    <Grid Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Button Grid.Column="0"
+                                Command="{Binding ConfirmarAjusteCommand}"
+                                Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bd" Background="#4CAF50" CornerRadius="6" Padding="12,10">
+                                        <TextBlock Text="✅ Confirmar" 
+                                                   HorizontalAlignment="Center" 
+                                                   Foreground="White" 
+                                                   FontWeight="SemiBold"
+                                                   FontSize="13"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="#43A047"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="bd" Property="Background" Value="#CCC"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        
+                        <Button Grid.Column="2"
+                                Command="{Binding CancelarAjusteCommand}"
+                                Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bd" Background="#9E9E9E" CornerRadius="6" Padding="12,10">
+                                        <TextBlock Text="✖ Cancelar" 
+                                                   HorizontalAlignment="Center" 
+                                                   Foreground="White" 
+                                                   FontWeight="SemiBold"
+                                                   FontSize="13"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="#757575"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+                    
+                </StackPanel>
+            </Border>
         </Grid>
         
         <!-- ═══════════════════════════════════════════════════ -->
@@ -425,13 +608,31 @@
         <!-- Muestra mensajes del ViewModel (ej: "Producto guardado") -->
         <!-- ═══════════════════════════════════════════════════ -->
         <Border Grid.Row="3" 
-                Background="#ECEFF1" 
+                Background="#1A237E" 
                 CornerRadius="6"
-                Padding="12,8"
+                Padding="16,10"
                 Margin="0,10,0,0">
-            <TextBlock Text="{Binding MensajeEstado}" 
-                       FontSize="12" 
-                       Foreground="#555"/>
+            <Grid>
+                <TextBlock Text="{Binding MensajeEstado}" 
+                           FontSize="12" 
+                           Foreground="#B0BEC5"
+                           VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="VALOR DEL INVENTARIO" 
+                               FontSize="11" 
+                               Foreground="#90CAF9"
+                               FontWeight="Medium"
+                               VerticalAlignment="Center"
+                               Margin="0,0,12,0"/>
+                    <Border Background="#283593" CornerRadius="4" Padding="10,4">
+                        <TextBlock Text="{Binding CostoTotalInventario, StringFormat=$ {0:N2} CUP}" 
+                                   FontSize="15" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
