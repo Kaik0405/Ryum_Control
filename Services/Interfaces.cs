@@ -22,7 +22,6 @@ namespace GestionApp.Services
         Task<List<Producto>> ObtenerEnStockAsync();
         Task<List<Producto>> BuscarPorNombreAsync(string nombre);
         Task ActualizarStockAsync(int productoId, decimal cantidad);
-        Task<List<Producto>> ObtenerPorCategoriaAsync(int categoriaId);
     }
 
     /// <summary>
@@ -78,14 +77,6 @@ namespace GestionApp.Services
     public interface IClienteService : IBaseService<Cliente>
     {
         Task<List<Cliente>> BuscarPorNombreAsync(string nombre);
-    }
-
-    /// <summary>
-    /// Interfaz para operaciones con categorías de productos.
-    /// </summary>
-    public interface ICategoriaService : IBaseService<Categoria>
-    {
-        Task<List<Categoria>> ObtenerActivasAsync();
     }
 
     /// <summary>

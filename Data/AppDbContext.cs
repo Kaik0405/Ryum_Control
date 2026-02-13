@@ -15,7 +15,6 @@ namespace GestionApp.Data
         // Productos e Inventario
         public DbSet<Producto> Productos { get; set; }
         public DbSet<ProductoVariante> ProductoVariantes { get; set; }
-        public DbSet<Categoria> Categorias { get; set; }
         public DbSet<CompraProducto> ComprasProductos { get; set; }
 
         // Combos
@@ -78,12 +77,6 @@ namespace GestionApp.Data
             base.OnModelCreating(modelBuilder);
 
             #region Producto y Variantes
-
-            modelBuilder.Entity<Producto>()
-                .HasOne(p => p.Categoria)
-                .WithMany(c => c.Productos)
-                .HasForeignKey(p => p.CategoriaId)
-                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<ProductoVariante>()
                 .HasOne(v => v.Producto)

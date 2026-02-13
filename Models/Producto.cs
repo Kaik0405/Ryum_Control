@@ -36,11 +36,6 @@ namespace GestionApp.Models
         public UnidadMedida Unidad { get; set; } = UnidadMedida.Unidad;
 
         /// <summary>
-        /// Precio de venta al público.
-        /// </summary>
-        public decimal PrecioVenta { get; set; }
-
-        /// <summary>
         /// Costo de compra/adquisición.
         /// </summary>
         public decimal CostoCompra { get; set; }
@@ -56,10 +51,9 @@ namespace GestionApp.Models
         public bool EnStock { get; set; } = true;
 
         /// <summary>
-        /// Categoría del producto (opcional).
+        /// Fecha en que el producto fue ingresado al inventario.
         /// </summary>
-        public int? CategoriaId { get; set; }
-        public Categoria? Categoria { get; set; }
+        public DateTime FechaIngreso { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Variantes de precio para el mismo producto.
@@ -92,7 +86,6 @@ namespace GestionApp.Models
         [MaxLength(100)]
         public string Descripcion { get; set; } = string.Empty;
 
-        public decimal PrecioVenta { get; set; }
         public decimal CostoCompra { get; set; }
 
         public bool Activo { get; set; } = true;

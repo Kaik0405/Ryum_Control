@@ -28,7 +28,8 @@ namespace GestionApp.ViewModels
         // Se inyectan por el constructor (Dependency Injection)
         // ═══════════════════════════════════════════════════
         private readonly IProductoService _productoService;
-        private readonly ICategoriaService _categoriaService;
+        private readonly IMovimientoService _movimientoService;
+        private readonly IPeriodoInventarioService _periodoService;
 
         // ═══════════════════════════════════════════════════
         // CAMPOS PRIVADOS - Solo accesibles dentro de esta clase
@@ -36,7 +37,6 @@ namespace GestionApp.ViewModels
         // ═══════════════════════════════════════════════════
         private ObservableCollection<Producto> _productos;
         private ObservableCollection<Producto> _productosFiltrados;
-        private ObservableCollection<Categoria> _categorias;
         private Producto? _productoSeleccionado;
         private string _filtro = string.Empty;
         private bool _mostrarSoloEnStock;
@@ -44,14 +44,13 @@ namespace GestionApp.ViewModels
         private bool _esEdicion;
         private string _mensajeEstado = string.Empty;
 
-        // Campos del formulario (lo que el usuario escribe al crear/editar)
+        // Campos del formulario — usamos string para los números
+        // para evitar problemas de formato con el punto decimal
         private string _formNombre = string.Empty;
         private string _formDescripcion = string.Empty;
-        private decimal _formPrecioVenta;
-        private decimal _formCostoCompra;
-        private decimal _formCantidadStock;
+        private string _formCostoCompra = string.Empty;
+        private string _formCantidadStock = string.Empty;
         private UnidadMedida _formUnidad = UnidadMedida.Unidad;
-        private Categoria? _formCategoriaSeleccionada;
 
         #region Propiedades de Datos
         // ═══════════════════════════════════════════════════
@@ -77,15 +76,6 @@ namespace GestionApp.ViewModels
         {
             get => _productosFiltrados;
             set => SetProperty(ref _productosFiltrados, value);
-        }
-
-        /// <summary>
-        /// Lista de categorías para el ComboBox del formulario.
-        /// </summary>
-        public ObservableCollection<Categoria> Categorias
-        {
-            get => _categorias;
-            set => SetProperty(ref _categorias, value);
         }
 
         /// <summary>
@@ -175,19 +165,13 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _formDescripcion, value);
         }
 
-        public decimal FormPrecioVenta
-        {
-            get => _formPrecioVenta;
-            set => SetProperty(ref _formPrecioVenta, value);
-        }
-
-        public decimal FormCostoCompra
+        public string FormCostoCompra
         {
             get => _formCostoCompra;
             set => SetProperty(ref _formCostoCompra, value);
         }
 
-        public decimal FormCantidadStock
+        public string FormCantidadStock
         {
             get => _formCantidadStock;
             set => SetProperty(ref _formCantidadStock, value);
@@ -197,12 +181,6 @@ namespace GestionApp.ViewModels
         {
             get => _formUnidad;
             set => SetProperty(ref _formUnidad, value);
-        }
-
-        public Categoria? FormCategoriaSeleccionada
-        {
-            get => _formCategoriaSeleccionada;
-            set => SetProperty(ref _formCategoriaSeleccionada, value);
         }
 
         #endregion
@@ -239,14 +217,14 @@ namespace GestionApp.ViewModels
         // Aquí se reciben los servicios por inyección de dependencias.
         // También se crean los comandos y se conectan a sus métodos.
         // ═══════════════════════════════════════════════════
-        public InventarioViewModel(IProductoService productoService, ICategoriaService categoriaService)
+        public InventarioViewModel(IProductoService productoService, IMovimientoService movimientoService, IPeriodoInventarioService periodoService)
         {
             _productoService = productoService;
-            _categoriaService = categoriaService;
+            _movimientoService = movimientoService;
+            _periodoService = periodoService;
 
             _productos = new ObservableCollection<Producto>();
             _productosFiltrados = new ObservableCollection<Producto>();
-            _categorias = new ObservableCollection<Categoria>();
 
             // Crear comandos y conectarlos a los métodos de abajo
             NuevoProductoCommand = new RelayCommand(_ => PrepararNuevoProducto());
@@ -283,12 +261,10 @@ namespace GestionApp.ViewModels
             {
                 // 1. Pedir los datos al servicio (que consulta la BD)
                 var productos = await _productoService.ObtenerTodosAsync();
-                var categorias = await _categoriaService.ObtenerActivasAsync();
 
                 // 2. Actualizar las colecciones observables
                 //    ObservableCollection notifica a la UI automáticamente
                 Productos = new ObservableCollection<Producto>(productos);
-                Categorias = new ObservableCollection<Categoria>(categorias);
 
                 // 3. Aplicar el filtro actual
                 FiltrarProductos();
@@ -317,8 +293,7 @@ namespace GestionApp.ViewModels
             {
                 filtrados = filtrados.Where(p =>
                     p.Nombre.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
-                    (p.Descripcion?.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (p.Categoria?.Nombre.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ?? false));
+                    (p.Descripcion?.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ?? false));
             }
 
             // Si el checkbox está marcado, solo mostrar productos con stock
@@ -361,11 +336,9 @@ namespace GestionApp.ViewModels
             // Copiar datos del producto seleccionado al formulario
             FormNombre = ProductoSeleccionado.Nombre;
             FormDescripcion = ProductoSeleccionado.Descripcion ?? string.Empty;
-            FormPrecioVenta = ProductoSeleccionado.PrecioVenta;
-            FormCostoCompra = ProductoSeleccionado.CostoCompra;
-            FormCantidadStock = ProductoSeleccionado.CantidadStock;
+            FormCostoCompra = ProductoSeleccionado.CostoCompra.ToString();
+            FormCantidadStock = ProductoSeleccionado.CantidadStock.ToString();
             FormUnidad = ProductoSeleccionado.Unidad;
-            FormCategoriaSeleccionada = Categorias.FirstOrDefault(c => c.Id == ProductoSeleccionado.CategoriaId);
 
             MostrarFormulario = true;
             OnPropertyChanged(nameof(TituloFormulario));
@@ -379,38 +352,70 @@ namespace GestionApp.ViewModels
         {
             try
             {
+                // Convertir los textos a números
+                if (!decimal.TryParse(FormCostoCompra.Replace('.', ','), out var costoCompra) &&
+                    !decimal.TryParse(FormCostoCompra, out costoCompra))
+                {
+                    MensajeEstado = "❌ El costo de compra no es un número válido";
+                    return;
+                }
+
+                if (!decimal.TryParse(FormCantidadStock.Replace('.', ','), out var cantidadStock) &&
+                    !decimal.TryParse(FormCantidadStock, out cantidadStock))
+                {
+                    MensajeEstado = "❌ La cantidad no es un número válido";
+                    return;
+                }
+
                 if (EsEdicion && ProductoSeleccionado != null)
                 {
                     // EDITAR: actualizar las propiedades del producto existente
                     ProductoSeleccionado.Nombre = FormNombre.Trim();
                     ProductoSeleccionado.Descripcion = string.IsNullOrWhiteSpace(FormDescripcion) ? null : FormDescripcion.Trim();
-                    ProductoSeleccionado.PrecioVenta = FormPrecioVenta;
-                    ProductoSeleccionado.CostoCompra = FormCostoCompra;
-                    ProductoSeleccionado.CantidadStock = FormCantidadStock;
-                    ProductoSeleccionado.EnStock = FormCantidadStock > 0;
+                    ProductoSeleccionado.CostoCompra = costoCompra;
+                    ProductoSeleccionado.CantidadStock = cantidadStock;
+                    ProductoSeleccionado.EnStock = cantidadStock > 0;
                     ProductoSeleccionado.Unidad = FormUnidad;
-                    ProductoSeleccionado.CategoriaId = FormCategoriaSeleccionada?.Id;
 
                     await _productoService.ActualizarAsync(ProductoSeleccionado);
                     MensajeEstado = $"✅ Producto \"{FormNombre}\" actualizado";
                 }
                 else
                 {
-                    // CREAR: construir un nuevo objeto Producto con los datos del formulario
+                    // CREAR: construir un nuevo objeto Producto
                     var nuevoProducto = new Producto
                     {
                         Nombre = FormNombre.Trim(),
                         Descripcion = string.IsNullOrWhiteSpace(FormDescripcion) ? null : FormDescripcion.Trim(),
-                        PrecioVenta = FormPrecioVenta,
-                        CostoCompra = FormCostoCompra,
-                        CantidadStock = FormCantidadStock,
-                        EnStock = FormCantidadStock > 0,
+                        CostoCompra = costoCompra,
+                        CantidadStock = cantidadStock,
+                        EnStock = cantidadStock > 0,
                         Unidad = FormUnidad,
-                        CategoriaId = FormCategoriaSeleccionada?.Id
+                        FechaIngreso = DateTime.Now
                     };
 
                     await _productoService.CrearAsync(nuevoProducto);
-                    MensajeEstado = $"✅ Producto \"{FormNombre}\" creado";
+
+                    // Registrar como egreso (compra de producto) en los movimientos
+                    // Solo si tiene costo > 0
+                    if (costoCompra > 0 && cantidadStock > 0)
+                    {
+                        var periodo = await _periodoService.ObtenerPeriodoActualAsync();
+                        var movimiento = new Movimiento
+                        {
+                            Concepto = $"Compra - {nuevoProducto.Nombre}",
+                            Descripcion = $"Ingreso de {cantidadStock} {FormUnidad} al inventario",
+                            Monto = costoCompra * cantidadStock,
+                            Tipo = TipoMovimiento.Egreso,
+                            Categoria = CategoriaMovimiento.CompraProducto,
+                            ProductoId = nuevoProducto.Id,
+                            PeriodoInventarioId = periodo?.Id,
+                            Fecha = DateTime.Now
+                        };
+                        await _movimientoService.CrearAsync(movimiento);
+                    }
+
+                    MensajeEstado = $"✅ Producto \"{FormNombre}\" creado (egreso registrado: ${costoCompra * cantidadStock:N2})";
                 }
 
                 // Cerrar formulario y recargar la lista
@@ -459,7 +464,7 @@ namespace GestionApp.ViewModels
         /// </summary>
         private bool PuedeGuardar()
         {
-            return !string.IsNullOrWhiteSpace(FormNombre) && FormPrecioVenta >= 0;
+            return !string.IsNullOrWhiteSpace(FormNombre);
         }
 
         /// <summary>
@@ -478,11 +483,9 @@ namespace GestionApp.ViewModels
         {
             FormNombre = string.Empty;
             FormDescripcion = string.Empty;
-            FormPrecioVenta = 0;
-            FormCostoCompra = 0;
-            FormCantidadStock = 0;
+            FormCostoCompra = string.Empty;
+            FormCantidadStock = string.Empty;
             FormUnidad = UnidadMedida.Unidad;
-            FormCategoriaSeleccionada = null;
             ProductoSeleccionado = null;
         }
     }

@@ -19,7 +19,6 @@ namespace GestionApp.Services
         public async Task<List<Producto>> ObtenerTodosAsync()
         {
             return await _context.Productos
-                .Include(p => p.Categoria)
                 .Include(p => p.Variantes)
                 .Where(p => p.Activo)
                 .OrderBy(p => p.Nombre)
@@ -29,7 +28,6 @@ namespace GestionApp.Services
         public async Task<Producto?> ObtenerPorIdAsync(int id)
         {
             return await _context.Productos
-                .Include(p => p.Categoria)
                 .Include(p => p.Variantes)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
@@ -37,7 +35,6 @@ namespace GestionApp.Services
         public async Task<List<Producto>> ObtenerEnStockAsync()
         {
             return await _context.Productos
-                .Include(p => p.Categoria)
                 .Where(p => p.Activo && p.EnStock)
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
@@ -46,17 +43,7 @@ namespace GestionApp.Services
         public async Task<List<Producto>> BuscarPorNombreAsync(string nombre)
         {
             return await _context.Productos
-                .Include(p => p.Categoria)
                 .Where(p => p.Activo && p.Nombre.Contains(nombre))
-                .OrderBy(p => p.Nombre)
-                .ToListAsync();
-        }
-
-        public async Task<List<Producto>> ObtenerPorCategoriaAsync(int categoriaId)
-        {
-            return await _context.Productos
-                .Include(p => p.Categoria)
-                .Where(p => p.Activo && p.CategoriaId == categoriaId)
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
         }

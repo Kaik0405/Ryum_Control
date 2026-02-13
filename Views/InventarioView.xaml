@@ -227,17 +227,9 @@
                                             Width="*"
                                             MinWidth="150"/>
                         
-                        <DataGridTextColumn Header="Categoría" 
-                                            Binding="{Binding Categoria.Nombre}" 
-                                            Width="120"/>
-                        
                         <DataGridTextColumn Header="Unidad" 
                                             Binding="{Binding Unidad}" 
                                             Width="80"/>
-                        
-                        <DataGridTextColumn Header="P. Venta" 
-                                            Binding="{Binding PrecioVenta, StringFormat={}{0:N2}}" 
-                                            Width="90"/>
                         
                         <DataGridTextColumn Header="Costo" 
                                             Binding="{Binding CostoCompra, StringFormat={}{0:N2}}" 
@@ -246,6 +238,10 @@
                         <DataGridTextColumn Header="Stock" 
                                             Binding="{Binding CantidadStock, StringFormat={}{0:N1}}" 
                                             Width="70"/>
+                        
+                        <DataGridTextColumn Header="Ingreso" 
+                                            Binding="{Binding FechaIngreso, StringFormat={}{0:dd/MM/yyyy}}" 
+                                            Width="90"/>
                         
                         <!-- Columna de acciones con botones Editar / Eliminar -->
                         <DataGridTemplateColumn Header="Acciones" Width="140">
@@ -326,18 +322,6 @@
                                  Height="60"
                                  BorderBrush="#DDD"/>
                         
-                        <!-- Campo: Categoría (ComboBox) -->
-                        <TextBlock Text="Categoría" 
-                                   FontSize="12" 
-                                   Foreground="#666" 
-                                   FontWeight="SemiBold"
-                                   Margin="0,12,0,5"/>
-                        <ComboBox ItemsSource="{Binding Categorias}" 
-                                  SelectedItem="{Binding FormCategoriaSeleccionada}"
-                                  DisplayMemberPath="Nombre"
-                                  Padding="10,8" 
-                                  FontSize="13"/>
-                        
                         <!-- Campo: Unidad de medida -->
                         <TextBlock Text="Unidad de medida" 
                                    FontSize="12" 
@@ -349,38 +333,16 @@
                                   Padding="10,8" 
                                   FontSize="13"/>
                         
-                        <!-- Campos de precio lado a lado -->
-                        <Grid Margin="0,12,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="10"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Precio Venta" 
-                                           FontSize="12" 
-                                           Foreground="#666" 
-                                           FontWeight="SemiBold"
-                                           Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding FormPrecioVenta, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N2}}" 
-                                         Padding="10,8" 
-                                         FontSize="13"
-                                         BorderBrush="#DDD"/>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Costo Compra" 
-                                           FontSize="12" 
-                                           Foreground="#666" 
-                                           FontWeight="SemiBold"
-                                           Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding FormCostoCompra, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N2}}" 
-                                         Padding="10,8" 
-                                         FontSize="13"
-                                         BorderBrush="#DDD"/>
-                            </StackPanel>
-                        </Grid>
+                        <!-- Campo: Costo de compra -->
+                        <TextBlock Text="Costo de Compra" 
+                                   FontSize="12" 
+                                   Foreground="#666" 
+                                   FontWeight="SemiBold"
+                                   Margin="0,12,0,5"/>
+                        <TextBox Text="{Binding FormCostoCompra, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="10,8" 
+                                 FontSize="13"
+                                 BorderBrush="#DDD"/>
                         
                         <!-- Campo: Cantidad en stock -->
                         <TextBlock Text="Cantidad en stock" 
@@ -388,7 +350,7 @@
                                    Foreground="#666" 
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
-                        <TextBox Text="{Binding FormCantidadStock, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N1}}" 
+                        <TextBox Text="{Binding FormCantidadStock, UpdateSourceTrigger=PropertyChanged}" 
                                  Padding="10,8" 
                                  FontSize="13"
                                  BorderBrush="#DDD"/>
