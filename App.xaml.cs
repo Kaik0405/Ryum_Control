@@ -74,6 +74,7 @@ public partial class App : Application
         // Registrar servicios de negocio
         services.AddScoped<IConfiguracionService, ConfiguracionService>();
         services.AddScoped<IProductoService, ProductoService>();
+        services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<IComboService, ComboService>();
         services.AddScoped<IMovimientoService, MovimientoService>();
         services.AddScoped<IFichaCostoService, FichaCostoService>();

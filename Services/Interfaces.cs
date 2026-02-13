@@ -81,6 +81,14 @@ namespace GestionApp.Services
     }
 
     /// <summary>
+    /// Interfaz para operaciones con categorías de productos.
+    /// </summary>
+    public interface ICategoriaService : IBaseService<Categoria>
+    {
+        Task<List<Categoria>> ObtenerActivasAsync();
+    }
+
+    /// <summary>
     /// Interfaz para operaciones con agencias.
     /// </summary>
     public interface IAgenciaService : IBaseService<Agencia>
