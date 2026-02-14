@@ -53,6 +53,7 @@ namespace GestionApp.Services
     {
         Task<List<Movimiento>> ObtenerPorPeriodoAsync(int año, int mes);
         Task<List<Movimiento>> ObtenerPorTipoAsync(TipoMovimiento tipo);
+        Task<List<Movimiento>> ObtenerPorProductoAsync(int productoId);
         Task<(decimal Ingresos, decimal Egresos)> ObtenerResumenAsync(int año, int mes);
         Task<decimal> ObtenerBalanceActualAsync();
         Task RegistrarVentaAsync(FichaCosto ficha);

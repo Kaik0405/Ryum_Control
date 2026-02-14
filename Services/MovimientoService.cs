@@ -53,6 +53,14 @@ namespace GestionApp.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Movimiento>> ObtenerPorProductoAsync(int productoId)
+        {
+            return await _context.Movimientos
+                .Where(m => m.ProductoId == productoId)
+                .OrderByDescending(m => m.Fecha)
+                .ToListAsync();
+        }
+
         public async Task<(decimal Ingresos, decimal Egresos)> ObtenerResumenAsync(int año, int mes)
         {
             var movimientos = await ObtenerPorPeriodoAsync(año, mes);

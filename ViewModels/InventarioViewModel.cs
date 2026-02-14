@@ -58,6 +58,11 @@ namespace GestionApp.ViewModels
         private string _ajusteMotivo = string.Empty;
         private bool _ajusteEsIngreso;
 
+        // Campos para historial de producto
+        private bool _modoHistorial;
+        private ObservableCollection<Movimiento> _historialProducto = new();
+        private Producto? _productoHistorial;
+
         #region Propiedades de Datos
         // ═══════════════════════════════════════════════════
         // PROPIEDADES - La UI se conecta aquí con {Binding NombrePropiedad}
@@ -240,6 +245,28 @@ namespace GestionApp.ViewModels
 
         #endregion
 
+        #region Propiedades de Historial
+
+        public bool ModoHistorial
+        {
+            get => _modoHistorial;
+            set => SetProperty(ref _modoHistorial, value);
+        }
+
+        public ObservableCollection<Movimiento> HistorialProducto
+        {
+            get => _historialProducto;
+            set => SetProperty(ref _historialProducto, value);
+        }
+
+        public Producto? ProductoHistorial
+        {
+            get => _productoHistorial;
+            set => SetProperty(ref _productoHistorial, value);
+        }
+
+        #endregion
+
         #region Comandos
         // ═══════════════════════════════════════════════════
         // COMANDOS - Acciones que se disparan desde botones en la UI.
@@ -277,6 +304,12 @@ namespace GestionApp.ViewModels
         /// <summary>Cancela el ajuste de stock.</summary>
         public ICommand CancelarAjusteCommand { get; }
 
+        /// <summary>Abre el historial de movimientos de un producto.</summary>
+        public ICommand VerHistorialCommand { get; }
+
+        /// <summary>Cierra el panel de historial.</summary>
+        public ICommand CerrarHistorialCommand { get; }
+
         #endregion
 
         // ═══════════════════════════════════════════════════
@@ -306,6 +339,10 @@ namespace GestionApp.ViewModels
             SacarStockCommand = new RelayCommand(param => PrepararAjusteStock(param as Producto, false));
             ConfirmarAjusteCommand = new RelayCommand(async _ => await ConfirmarAjusteStockAsync(), _ => !string.IsNullOrWhiteSpace(AjusteCantidad));
             CancelarAjusteCommand = new RelayCommand(_ => CerrarAjusteStock());
+
+            // Comandos de historial
+            VerHistorialCommand = new RelayCommand(async param => await MostrarHistorialAsync(param as Producto));
+            CerrarHistorialCommand = new RelayCommand(_ => CerrarHistorial());
         }
 
         // ═══════════════════════════════════════════════════
@@ -662,6 +699,45 @@ namespace GestionApp.ViewModels
             {
                 MensajeEstado = $"❌ Error: {ex.Message}";
             }
+        }
+
+        // ═══════════════════════════════════════════════════
+        // MÉTODOS DE HISTORIAL
+        // ═══════════════════════════════════════════════════
+
+        /// <summary>
+        /// Carga y muestra el historial de movimientos de un producto.
+        /// </summary>
+        private async Task MostrarHistorialAsync(Producto? producto)
+        {
+            if (producto == null) return;
+
+            try
+            {
+                MostrarFormulario = false;
+                ModoAjusteStock = false;
+                ProductoHistorial = producto;
+
+                var movimientos = await _movimientoService.ObtenerPorProductoAsync(producto.Id);
+                HistorialProducto = new ObservableCollection<Movimiento>(movimientos);
+                ModoHistorial = true;
+
+                MensajeEstado = $"📋 Historial de \"{producto.Nombre}\" — {movimientos.Count} registro(s)";
+            }
+            catch (Exception ex)
+            {
+                MensajeEstado = $"❌ Error al cargar historial: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Cierra el panel de historial.
+        /// </summary>
+        private void CerrarHistorial()
+        {
+            ModoHistorial = false;
+            HistorialProducto.Clear();
+            ProductoHistorial = null;
         }
     }
 }
