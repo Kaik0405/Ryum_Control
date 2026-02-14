@@ -20,7 +20,6 @@ namespace GestionApp.Services
         {
             return await _context.Combos
                 .Include(c => c.Productos)
-                    .ThenInclude(cp => cp.Producto)
                 .Where(c => c.Activo)
                 .OrderBy(c => c.Nombre)
                 .ToListAsync();
@@ -30,7 +29,6 @@ namespace GestionApp.Services
         {
             return await _context.Combos
                 .Include(c => c.Productos)
-                    .ThenInclude(cp => cp.Producto)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -43,7 +41,6 @@ namespace GestionApp.Services
         {
             return await _context.Combos
                 .Include(c => c.Productos)
-                    .ThenInclude(cp => cp.Producto)
                 .Where(c => c.Activo && c.Tipo == tipo)
                 .OrderBy(c => c.Nombre)
                 .ToListAsync();
@@ -91,10 +88,9 @@ namespace GestionApp.Services
             {
                 nuevoCombo.Productos.Add(new ComboProducto
                 {
-                    ProductoId = producto.ProductoId,
+                    NombreProducto = producto.NombreProducto,
                     Cantidad = producto.Cantidad,
-                    Unidad = producto.Unidad,
-                    CostoUnitario = producto.CostoUnitario
+                    Unidad = producto.Unidad
                 });
             }
 

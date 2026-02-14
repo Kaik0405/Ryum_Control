@@ -28,6 +28,20 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // Capturar excepciones globales para diagnóstico
+        DispatcherUnhandledException += (s, args) =>
+        {
+            System.IO.File.WriteAllText(
+                System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "GestionApp", "crash.log"),
+                $"[{DateTime.Now}]\n{args.Exception}\n\nInner: {args.Exception.InnerException}");
+            MessageBox.Show(
+                $"Error: {args.Exception.Message}\n\n{args.Exception.InnerException?.Message}",
+                "Error no controlado", MessageBoxButton.OK, MessageBoxImage.Error);
+            args.Handled = true;
+        };
+
         // Asegurar que la base de datos está creada
         using (var scope = Services.CreateScope())
         {

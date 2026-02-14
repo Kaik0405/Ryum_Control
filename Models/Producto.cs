@@ -10,7 +10,8 @@ namespace GestionApp.Models
         Unidad,     // Cantidad entera
         Libra,      // Peso en libras
         Kilogramo,  // Peso en kg
-        Paquete     // Paquete/Bulto
+        Paquete,    // Paquete/Bulto
+        Pomo        // Botella/Pomo
     }
 
     /// <summary>

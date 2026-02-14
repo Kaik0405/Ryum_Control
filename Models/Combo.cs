@@ -38,14 +38,9 @@ namespace GestionApp.Models
         public decimal PrecioVenta { get; set; }
 
         /// <summary>
-        /// Lista de productos que componen el combo.
+        /// Lista de productos que componen el combo (texto libre, no del inventario).
         /// </summary>
         public ICollection<ComboProducto> Productos { get; set; } = new List<ComboProducto>();
-
-        /// <summary>
-        /// Costo total calculado de todos los productos del combo.
-        /// </summary>
-        public decimal CostoTotal => Productos?.Sum(p => p.Total) ?? 0;
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 

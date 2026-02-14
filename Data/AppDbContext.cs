@@ -100,12 +100,6 @@ namespace GestionApp.Data
                 .HasForeignKey(cp => cp.ComboId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ComboProducto>()
-                .HasOne(cp => cp.Producto)
-                .WithMany()
-                .HasForeignKey(cp => cp.ProductoId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             #endregion
 
             #region Fichas de Costo

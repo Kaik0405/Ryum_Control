@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace GestionApp.Models
 {
     /// <summary>
-    /// Representa un producto dentro de un combo con su cantidad.
+    /// Representa un producto dentro de un combo.
+    /// Los productos del combo son texto libre (no del inventario).
+    /// El costo real se calcula después en la Ficha de Costo,
+    /// cuando se asignan productos del inventario.
     /// </summary>
     public class ComboProducto
     {
@@ -13,8 +16,12 @@ namespace GestionApp.Models
         public int ComboId { get; set; }
         public Combo? Combo { get; set; }
 
-        public int ProductoId { get; set; }
-        public Producto? Producto { get; set; }
+        /// <summary>
+        /// Nombre del producto (texto libre, ej: "Pollo", "Aceite", "Jabón").
+        /// </summary>
+        [Required]
+        [MaxLength(200)]
+        public string NombreProducto { get; set; } = string.Empty;
 
         /// <summary>
         /// Cantidad o peso del producto en el combo.
@@ -27,13 +34,8 @@ namespace GestionApp.Models
         public UnidadMedida Unidad { get; set; } = UnidadMedida.Unidad;
 
         /// <summary>
-        /// Costo unitario del producto al momento de crear el combo.
+        /// Descripción formateada: "2 Libra" o "1 Paquete"
         /// </summary>
-        public decimal CostoUnitario { get; set; }
-
-        /// <summary>
-        /// Total calculado: Cantidad * CostoUnitario
-        /// </summary>
-        public decimal Total => Cantidad * CostoUnitario;
+        public string Descripcion => $"{Cantidad:G} {Unidad}";
     }
 }

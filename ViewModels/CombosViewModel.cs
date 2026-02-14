@@ -9,28 +9,26 @@ namespace GestionApp.ViewModels
 {
     /// <summary>
     /// ViewModel para la gestión de combos.
-    /// Permite crear, editar, duplicar y eliminar combos de productos.
+    /// Los combos son predefinidos con productos de texto libre (no del inventario).
+    /// El costo real se calcula después en la Ficha de Costo.
     /// 
     /// FLUJO:
-    /// 1. Usuario ve la lista de combos (tarjetas).
-    /// 2. Crea un combo → se abre panel lateral con formulario.
-    /// 3. Agrega productos del inventario al combo, asignando cantidad.
-    /// 4. Guarda → combo se guarda en BD con sus ComboProducto.
+    /// 1. Usuario ve la cuadrícula de combos existentes.
+    /// 2. Crea un combo → se abre panel con formulario simple.
+    /// 3. Escribe nombre, precio y agrega productos (texto + cantidad + unidad).
+    /// 4. Guarda → combo se guarda en BD.
     /// </summary>
     public class CombosViewModel : BaseViewModel
     {
         private readonly IComboService _comboService;
-        private readonly IProductoService _productoService;
 
         // Listas principales
         private ObservableCollection<Combo> _combos = new();
         private ObservableCollection<Combo> _combosFiltrados = new();
-        private ObservableCollection<Producto> _productosDisponibles = new();
         private ObservableCollection<ComboProducto> _productosDelCombo = new();
 
         // Selección
         private Combo? _comboSeleccionado;
-        private Producto? _productoParaAgregar;
 
         // Filtros
         private string _filtro = string.Empty;
@@ -43,11 +41,11 @@ namespace GestionApp.ViewModels
         private string _formDescripcion = string.Empty;
         private TipoCombo _formTipo = TipoCombo.Combo;
         private string _formPrecioVenta = string.Empty;
-        private string _formCantidadProducto = string.Empty;
 
-        // Detalle
-        private bool _mostrarDetalle;
-        private Combo? _comboDetalle;
+        // Campos para agregar producto al combo
+        private string _formNombreProducto = string.Empty;
+        private string _formCantidadProducto = string.Empty;
+        private UnidadMedida _formUnidadProducto = UnidadMedida.Unidad;
 
         // Estado
         private string _mensajeEstado = string.Empty;
@@ -66,43 +64,16 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _combosFiltrados, value);
         }
 
-        /// <summary>
-        /// Productos del inventario disponibles para agregar al combo.
-        /// </summary>
-        public ObservableCollection<Producto> ProductosDisponibles
-        {
-            get => _productosDisponibles;
-            set => SetProperty(ref _productosDisponibles, value);
-        }
-
-        /// <summary>
-        /// Productos que componen el combo que se está creando/editando.
-        /// </summary>
         public ObservableCollection<ComboProducto> ProductosDelCombo
         {
             get => _productosDelCombo;
-            set
-            {
-                SetProperty(ref _productosDelCombo, value);
-                OnPropertyChanged(nameof(CostoTotalCombo));
-            }
+            set => SetProperty(ref _productosDelCombo, value);
         }
-
-        /// <summary>
-        /// Costo total calculado de los productos del combo en edición.
-        /// </summary>
-        public decimal CostoTotalCombo => ProductosDelCombo?.Sum(p => p.Total) ?? 0;
 
         public Combo? ComboSeleccionado
         {
             get => _comboSeleccionado;
             set => SetProperty(ref _comboSeleccionado, value);
-        }
-
-        public Producto? ProductoParaAgregar
-        {
-            get => _productoParaAgregar;
-            set => SetProperty(ref _productoParaAgregar, value);
         }
 
         public string Filtro
@@ -118,6 +89,7 @@ namespace GestionApp.ViewModels
         }
 
         public Array TiposCombo => Enum.GetValues(typeof(TipoCombo));
+        public Array UnidadesMedida => Enum.GetValues(typeof(UnidadMedida));
 
         public string MensajeEstado
         {
@@ -167,26 +139,22 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _formPrecioVenta, value);
         }
 
+        public string FormNombreProducto
+        {
+            get => _formNombreProducto;
+            set => SetProperty(ref _formNombreProducto, value);
+        }
+
         public string FormCantidadProducto
         {
             get => _formCantidadProducto;
             set => SetProperty(ref _formCantidadProducto, value);
         }
 
-        #endregion
-
-        #region Propiedades de Detalle
-
-        public bool MostrarDetalle
+        public UnidadMedida FormUnidadProducto
         {
-            get => _mostrarDetalle;
-            set => SetProperty(ref _mostrarDetalle, value);
-        }
-
-        public Combo? ComboDetalle
-        {
-            get => _comboDetalle;
-            set => SetProperty(ref _comboDetalle, value);
+            get => _formUnidadProducto;
+            set => SetProperty(ref _formUnidadProducto, value);
         }
 
         #endregion
@@ -197,33 +165,30 @@ namespace GestionApp.ViewModels
         public ICommand EditarComboCommand { get; }
         public ICommand DuplicarComboCommand { get; }
         public ICommand EliminarComboCommand { get; }
-        public ICommand VerDetalleCommand { get; }
-        public ICommand CerrarDetalleCommand { get; }
         public ICommand GuardarComboCommand { get; }
         public ICommand CancelarCommand { get; }
         public ICommand AgregarProductoCommand { get; }
         public ICommand QuitarProductoCommand { get; }
-        public ICommand LimpiarFiltroTipoCommand { get; }
         public ICommand RefrescarCommand { get; }
 
         #endregion
 
-        public CombosViewModel(IComboService comboService, IProductoService productoService)
+        public CombosViewModel(IComboService comboService)
         {
             _comboService = comboService;
-            _productoService = productoService;
 
             CrearComboCommand = new RelayCommand(_ => PrepararNuevoCombo());
             EditarComboCommand = new RelayCommand(param => PrepararEdicion(param as Combo));
             DuplicarComboCommand = new RelayCommand(async param => await DuplicarComboAsync(param as Combo));
             EliminarComboCommand = new RelayCommand(async param => await EliminarComboAsync(param as Combo));
-            VerDetalleCommand = new RelayCommand(param => MostrarDetalleCombo(param as Combo));
-            CerrarDetalleCommand = new RelayCommand(_ => CerrarDetalle());
-            GuardarComboCommand = new RelayCommand(async _ => await GuardarComboAsync(), _ => PuedeGuardar());
+            GuardarComboCommand = new RelayCommand(
+                async _ => await GuardarComboAsync(),
+                _ => !string.IsNullOrWhiteSpace(FormNombre) &&
+                     !string.IsNullOrWhiteSpace(FormPrecioVenta) &&
+                     string.IsNullOrWhiteSpace(FormNombreProducto));
             CancelarCommand = new RelayCommand(_ => CerrarFormulario());
-            AgregarProductoCommand = new RelayCommand(_ => AgregarProductoAlCombo(), _ => ProductoParaAgregar != null);
+            AgregarProductoCommand = new RelayCommand(_ => AgregarProductoAlCombo(), _ => !string.IsNullOrWhiteSpace(FormNombreProducto));
             QuitarProductoCommand = new RelayCommand(param => QuitarProductoDelCombo(param as ComboProducto));
-            LimpiarFiltroTipoCommand = new RelayCommand(_ => { FiltroTipo = null; });
             RefrescarCommand = new RelayCommand(async _ => await CargarDatosAsync());
         }
 
@@ -244,10 +209,6 @@ namespace GestionApp.ViewModels
                 var combos = await _comboService.ObtenerTodosAsync();
                 Combos = new ObservableCollection<Combo>(combos);
                 FiltrarCombos();
-
-                var productos = await _productoService.ObtenerEnStockAsync();
-                ProductosDisponibles = new ObservableCollection<Producto>(productos);
-
                 MensajeEstado = $"{combos.Count} combo(s) cargados";
             }
             catch (Exception ex)
@@ -281,7 +242,6 @@ namespace GestionApp.ViewModels
 
         private void PrepararNuevoCombo()
         {
-            MostrarDetalle = false;
             EsEdicion = false;
             LimpiarFormulario();
             MostrarFormulario = true;
@@ -291,7 +251,6 @@ namespace GestionApp.ViewModels
         private void PrepararEdicion(Combo? combo)
         {
             if (combo == null) return;
-            MostrarDetalle = false;
             EsEdicion = true;
             ComboSeleccionado = combo;
 
@@ -300,25 +259,22 @@ namespace GestionApp.ViewModels
             FormTipo = combo.Tipo;
             FormPrecioVenta = combo.PrecioVenta.ToString();
 
-            // Cargar productos del combo
+            // Cargar productos del combo (copia)
             ProductosDelCombo = new ObservableCollection<ComboProducto>(
                 combo.Productos.Select(p => new ComboProducto
                 {
-                    ProductoId = p.ProductoId,
-                    Producto = p.Producto,
+                    NombreProducto = p.NombreProducto,
                     Cantidad = p.Cantidad,
-                    Unidad = p.Unidad,
-                    CostoUnitario = p.CostoUnitario
+                    Unidad = p.Unidad
                 }));
 
             MostrarFormulario = true;
             OnPropertyChanged(nameof(TituloFormulario));
-            OnPropertyChanged(nameof(CostoTotalCombo));
         }
 
         private void AgregarProductoAlCombo()
         {
-            if (ProductoParaAgregar == null) return;
+            if (string.IsNullOrWhiteSpace(FormNombreProducto)) return;
 
             // Parsear cantidad
             if (!decimal.TryParse(FormCantidadProducto.Replace('.', ','), out var cantidad) &&
@@ -328,30 +284,17 @@ namespace GestionApp.ViewModels
             }
             if (cantidad <= 0) cantidad = 1;
 
-            // Verificar si ya está en el combo
-            var existente = ProductosDelCombo.FirstOrDefault(p => p.ProductoId == ProductoParaAgregar.Id);
-            if (existente != null)
+            ProductosDelCombo.Add(new ComboProducto
             {
-                existente.Cantidad += cantidad;
-                // Forzar refresh
-                var temp = new ObservableCollection<ComboProducto>(ProductosDelCombo);
-                ProductosDelCombo = temp;
-            }
-            else
-            {
-                ProductosDelCombo.Add(new ComboProducto
-                {
-                    ProductoId = ProductoParaAgregar.Id,
-                    Producto = ProductoParaAgregar,
-                    Cantidad = cantidad,
-                    Unidad = ProductoParaAgregar.Unidad,
-                    CostoUnitario = ProductoParaAgregar.CostoCompra
-                });
-            }
+                NombreProducto = FormNombreProducto.Trim(),
+                Cantidad = cantidad,
+                Unidad = FormUnidadProducto
+            });
 
+            // Limpiar campos del producto
+            FormNombreProducto = string.Empty;
             FormCantidadProducto = string.Empty;
-            ProductoParaAgregar = null;
-            OnPropertyChanged(nameof(CostoTotalCombo));
+            FormUnidadProducto = UnidadMedida.Unidad;
             MensajeEstado = "Producto agregado al combo";
         }
 
@@ -359,13 +302,18 @@ namespace GestionApp.ViewModels
         {
             if (item == null) return;
             ProductosDelCombo.Remove(item);
-            OnPropertyChanged(nameof(CostoTotalCombo));
         }
 
         private async Task GuardarComboAsync()
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(FormNombre))
+                {
+                    MensajeEstado = "❌ El nombre es obligatorio";
+                    return;
+                }
+
                 if (!decimal.TryParse(FormPrecioVenta.Replace('.', ','), out var precioVenta) &&
                     !decimal.TryParse(FormPrecioVenta, out precioVenta))
                 {
@@ -386,10 +334,9 @@ namespace GestionApp.ViewModels
                         ComboSeleccionado.Productos.Add(new ComboProducto
                         {
                             ComboId = ComboSeleccionado.Id,
-                            ProductoId = p.ProductoId,
+                            NombreProducto = p.NombreProducto,
                             Cantidad = p.Cantidad,
-                            Unidad = p.Unidad,
-                            CostoUnitario = p.CostoUnitario
+                            Unidad = p.Unidad
                         });
                     }
 
@@ -410,10 +357,9 @@ namespace GestionApp.ViewModels
                     {
                         nuevoCombo.Productos.Add(new ComboProducto
                         {
-                            ProductoId = p.ProductoId,
+                            NombreProducto = p.NombreProducto,
                             Cantidad = p.Cantidad,
-                            Unidad = p.Unidad,
-                            CostoUnitario = p.CostoUnitario
+                            Unidad = p.Unidad
                         });
                     }
 
@@ -472,25 +418,6 @@ namespace GestionApp.ViewModels
             }
         }
 
-        private void MostrarDetalleCombo(Combo? combo)
-        {
-            if (combo == null) return;
-            MostrarFormulario = false;
-            ComboDetalle = combo;
-            MostrarDetalle = true;
-        }
-
-        private void CerrarDetalle()
-        {
-            MostrarDetalle = false;
-            ComboDetalle = null;
-        }
-
-        private bool PuedeGuardar()
-        {
-            return !string.IsNullOrWhiteSpace(FormNombre) && ProductosDelCombo.Count > 0;
-        }
-
         private void CerrarFormulario()
         {
             MostrarFormulario = false;
@@ -503,8 +430,9 @@ namespace GestionApp.ViewModels
             FormDescripcion = string.Empty;
             FormTipo = TipoCombo.Combo;
             FormPrecioVenta = string.Empty;
+            FormNombreProducto = string.Empty;
             FormCantidadProducto = string.Empty;
-            ProductoParaAgregar = null;
+            FormUnidadProducto = UnidadMedida.Unidad;
             ProductosDelCombo = new ObservableCollection<ComboProducto>();
             ComboSeleccionado = null;
         }
