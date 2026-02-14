@@ -6,96 +6,693 @@
              xmlns:vm="clr-namespace:GestionApp.ViewModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:CombosViewModel}"
-             d:DesignHeight="600" d:DesignWidth="800"
+             d:DesignHeight="700" d:DesignWidth="1000"
              Background="#F5F5F5">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
     
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <!-- Encabezado -->
-        <Grid Grid.Row="0" Margin="0,0,0,20">
+        <!-- ═══ FILA 0: ENCABEZADO ═══ -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
             <StackPanel>
-                <TextBlock Text="Combos" 
+                <TextBlock Text="🎁 Combos" 
                            FontSize="28" 
                            FontWeight="Bold" 
                            Foreground="#1A237E"/>
-                <TextBlock Text="Crea y gestiona paquetes de productos" 
+                <TextBlock Text="Crea y gestiona paquetes de productos para envío" 
                            FontSize="14" 
-                           Foreground="#666"/>
+                           Foreground="#666"
+                           Margin="0,4,0,0"/>
             </StackPanel>
             
             <Button Grid.Column="1" 
-                    Content="➕ Crear Combo" 
                     Command="{Binding CrearComboCommand}"
                     Background="#7B1FA2" 
                     Foreground="White"
                     Padding="20,10"
                     FontSize="13"
+                    FontWeight="SemiBold"
                     BorderThickness="0"
-                    Cursor="Hand"/>
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" 
+                                CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#6A1B9A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <TextBlock Text="➕ Nuevo Combo" Foreground="White" FontWeight="SemiBold"/>
+            </Button>
         </Grid>
         
-        <!-- Filtros -->
+        <!-- ═══ FILA 1: FILTROS ═══ -->
         <Border Grid.Row="1" 
                 Style="{StaticResource CardStyle}" 
                 Margin="0,0,0,15"
                 Padding="15">
-            <StackPanel Orientation="Horizontal">
-                <TextBox Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged}" 
-                         Width="250" 
-                         Padding="10,8"
-                         FontSize="13"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 
-                <ComboBox ItemsSource="{Binding TiposCombo}"
+                <TextBox Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged}" 
+                         Padding="10,8"
+                         FontSize="13"
+                         BorderBrush="#DDD"
+                         BorderThickness="1">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="None" AlignmentX="Left">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="🔍 Buscar combo..." 
+                                                               Foreground="#999" Margin="12,0,0,0"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding TiposCombo}"
                           SelectedItem="{Binding FiltroTipo}"
-                          Margin="15,0,0,0"
-                          Width="150"
-                          Padding="10,8">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
+                          Margin="10,0,0,0"
+                          Width="130"
+                          Padding="10,8"
+                          FontSize="13"/>
+                
+                <Button Grid.Column="2"
+                        Command="{Binding LimpiarFiltroTipoCommand}"
+                        Background="Transparent"
+                        BorderThickness="1"
+                        BorderBrush="#DDD"
+                        Padding="8,6"
+                        Cursor="Hand"
+                        ToolTip="Limpiar filtro de tipo"
+                        Margin="5,0,0,0">
+                    <TextBlock Text="✕" FontSize="12" Foreground="#999"/>
+                </Button>
+                
+                <Button Grid.Column="3"
+                        Command="{Binding RefrescarCommand}"
+                        Background="Transparent"
+                        BorderThickness="1"
+                        BorderBrush="#DDD"
+                        Padding="10,6"
+                        Cursor="Hand"
+                        ToolTip="Recargar lista"
+                        Margin="5,0,0,0">
+                    <TextBlock Text="🔄" FontSize="16"/>
+                </Button>
+            </Grid>
         </Border>
         
-        <!-- Lista de combos -->
-        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0">
-            <DataGrid ItemsSource="{Binding Combos}" 
-                      SelectedItem="{Binding ComboSeleccionado}"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      IsReadOnly="True"
-                      BorderThickness="0"
-                      Background="Transparent">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Nombre" 
-                                        Binding="{Binding Nombre}" 
-                                        Width="*"/>
-                    <DataGridTextColumn Header="Tipo" 
-                                        Binding="{Binding Tipo}" 
-                                        Width="100"/>
-                    <DataGridTextColumn Header="Productos" 
-                                        Binding="{Binding Productos.Count}" 
-                                        Width="80"/>
-                    <DataGridTextColumn Header="Costo" 
-                                        Binding="{Binding CostoTotal, StringFormat=C2}" 
-                                        Width="100"/>
-                    <DataGridTextColumn Header="Precio Venta" 
-                                        Binding="{Binding PrecioVenta, StringFormat=C2}" 
-                                        Width="100"/>
-                </DataGrid.Columns>
-            </DataGrid>
+        <!-- ═══ FILA 2: CONTENIDO PRINCIPAL ═══ -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- ═══ LISTA DE COMBOS (tarjetas) ═══ -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="10">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding CombosFiltrados}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,8" Padding="14,12" CornerRadius="8"
+                                        BorderBrush="#E0E0E0" BorderThickness="1"
+                                        Background="White">
+                                    <Border.InputBindings>
+                                        <MouseBinding Gesture="LeftDoubleClick" 
+                                                      Command="{Binding DataContext.VerDetalleCommand, 
+                                                               RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                      CommandParameter="{Binding}"/>
+                                    </Border.InputBindings>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- Indicador de tipo (color) -->
+                                        <Border Grid.Column="0" Width="6" CornerRadius="3" 
+                                                Margin="0,0,12,0" VerticalAlignment="Stretch">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#7B1FA2"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Tipo}" Value="Agrego">
+                                                            <Setter Property="Background" Value="#1976D2"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Tipo}" Value="Festejo">
+                                                            <Setter Property="Background" Value="#E65100"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                        
+                                        <!-- Info principal -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Nombre}" 
+                                                           FontSize="15" FontWeight="SemiBold" 
+                                                           Foreground="#333"/>
+                                                <Border CornerRadius="4" Padding="6,1" Margin="8,0,0,0"
+                                                        VerticalAlignment="Center">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="#F3E5F5"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Tipo}" Value="Agrego">
+                                                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Tipo}" Value="Festejo">
+                                                                    <Setter Property="Background" Value="#FFF3E0"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding Tipo}" FontSize="10" 
+                                                               FontWeight="SemiBold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Foreground" Value="#7B1FA2"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Tipo}" Value="Agrego">
+                                                                        <Setter Property="Foreground" Value="#1976D2"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Tipo}" Value="Festejo">
+                                                                        <Setter Property="Foreground" Value="#E65100"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                <TextBlock Text="{Binding Productos.Count, StringFormat={}{0} producto(s)}" 
+                                                           FontSize="11" Foreground="#888"/>
+                                                <TextBlock Text="  ·  Costo: " FontSize="11" Foreground="#888" Margin="4,0,0,0"/>
+                                                <TextBlock Text="{Binding CostoTotal, StringFormat=$ {0:N2} CUP}" 
+                                                           FontSize="11" Foreground="#555" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <!-- Precio de venta -->
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" 
+                                                    HorizontalAlignment="Right" Margin="0,0,15,0">
+                                            <TextBlock Text="Venta" FontSize="10" Foreground="#AAA" 
+                                                       HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding PrecioVenta, StringFormat=$ {0:N2}}" 
+                                                       FontSize="15" FontWeight="Bold" Foreground="#1A237E"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        
+                                        <!-- Botones de acción -->
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal" 
+                                                    VerticalAlignment="Center">
+                                            <Button ToolTip="Ver detalle" Cursor="Hand"
+                                                    Command="{Binding DataContext.VerDetalleCommand, 
+                                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd" Background="#E3F2FD" CornerRadius="4" 
+                                                                Padding="7,5" Margin="0,0,2,0">
+                                                            <TextBlock Text="👁" FontSize="12"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#BBDEFB"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                            <Button ToolTip="Editar" Cursor="Hand"
+                                                    Command="{Binding DataContext.EditarComboCommand, 
+                                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd" Background="#F5F5F5" CornerRadius="4" 
+                                                                Padding="7,5" Margin="0,0,2,0">
+                                                            <TextBlock Text="✏️" FontSize="12"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#EEEEEE"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                            <Button ToolTip="Duplicar" Cursor="Hand"
+                                                    Command="{Binding DataContext.DuplicarComboCommand, 
+                                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd" Background="#E8F5E9" CornerRadius="4" 
+                                                                Padding="7,5" Margin="0,0,2,0">
+                                                            <TextBlock Text="📋" FontSize="12"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                            <Button ToolTip="Eliminar" Cursor="Hand"
+                                                    Command="{Binding DataContext.EliminarComboCommand, 
+                                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd" Background="#FFEBEE" CornerRadius="4" 
+                                                                Padding="7,5">
+                                                            <TextBlock Text="🗑" FontSize="12"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+            
+            <!-- ═══ PANEL DETALLE (doble clic o botón 👁) ═══ -->
+            <Border Grid.Column="1" 
+                    Style="{StaticResource CardStyle}" 
+                    Margin="15,0,0,0"
+                    Width="350"
+                    Visibility="{Binding MostrarDetalle, Converter={StaticResource BoolToVis}}"
+                    VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="📦 Detalle del Combo" 
+                               FontSize="17" FontWeight="Bold" Foreground="#1A237E"
+                               Margin="0,0,0,10"/>
+                    
+                    <!-- Info -->
+                    <Border Grid.Row="1" Background="#F5F5F5" CornerRadius="6" 
+                            Padding="12,10" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ComboDetalle.Nombre}" 
+                                       FontSize="16" FontWeight="Bold" Foreground="#333"/>
+                            <TextBlock Text="{Binding ComboDetalle.Descripcion}" 
+                                       FontSize="12" Foreground="#666" TextWrapping="Wrap"
+                                       Margin="0,4,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                <TextBlock Text="Tipo: " FontSize="11" Foreground="#999"/>
+                                <TextBlock Text="{Binding ComboDetalle.Tipo}" 
+                                           FontSize="11" FontWeight="SemiBold" Foreground="#7B1FA2"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Lista de productos -->
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ComboDetalle.Productos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,4" Padding="10,8" CornerRadius="6"
+                                            BorderBrush="#E8E8E8" BorderThickness="1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Producto.Nombre}" 
+                                                           FontSize="13" FontWeight="SemiBold" Foreground="#333"/>
+                                                <TextBlock FontSize="11" Foreground="#888" Margin="0,2,0,0">
+                                                    <Run Text="{Binding Cantidad, StringFormat='{}{0:G}'}"/>
+                                                    <Run Text="{Binding Unidad}"/>
+                                                    <Run Text=" × "/>
+                                                    <Run Text="{Binding CostoUnitario, StringFormat='$ {0:N2}'}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" 
+                                                       Text="{Binding Total, StringFormat=$ {0:N2}}" 
+                                                       FontSize="13" FontWeight="Bold" Foreground="#1A237E"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    
+                    <!-- Resumen de costos -->
+                    <Border Grid.Row="3" Background="#F5F5F5" CornerRadius="6" 
+                            Padding="12,8" Margin="0,8,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Text="Costo total:" FontSize="12" Foreground="#666"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding ComboDetalle.CostoTotal, StringFormat=$ {0:N2} CUP}" 
+                                       FontSize="12" FontWeight="SemiBold" Foreground="#333"/>
+                            <TextBlock Grid.Row="1" Text="Precio de venta:" FontSize="12" Foreground="#666" Margin="0,3,0,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" 
+                                       Text="{Binding ComboDetalle.PrecioVenta, StringFormat=$ {0:N2} USD}" 
+                                       FontSize="13" FontWeight="Bold" Foreground="#1A237E" Margin="0,3,0,0"/>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Botón cerrar -->
+                    <Button Grid.Row="4" Command="{Binding CerrarDetalleCommand}"
+                            Cursor="Hand" Margin="0,10,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bd" Background="#9E9E9E" CornerRadius="6" Padding="12,10">
+                                    <TextBlock Text="✖ Cerrar" HorizontalAlignment="Center" 
+                                               Foreground="White" FontWeight="SemiBold" FontSize="13"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#757575"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+            
+            <!-- ═══ FORMULARIO CREAR/EDITAR COMBO ═══ -->
+            <Border Grid.Column="1" 
+                    Style="{StaticResource CardStyle}" 
+                    Margin="15,0,0,0"
+                    Width="360"
+                    Visibility="{Binding MostrarFormulario, Converter={StaticResource BoolToVis}}"
+                    VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Título -->
+                    <TextBlock Grid.Row="0" 
+                               Text="{Binding TituloFormulario}" 
+                               FontSize="17" FontWeight="Bold" Foreground="#1A237E"
+                               Margin="0,0,0,15"/>
+                    
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <!-- Nombre -->
+                            <TextBlock Text="Nombre *" FontSize="12" Foreground="#666" 
+                                       FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding FormNombre, UpdateSourceTrigger=PropertyChanged}" 
+                                     Padding="10,8" FontSize="13" BorderBrush="#DDD"/>
+                            
+                            <!-- Descripción -->
+                            <TextBlock Text="Descripción" FontSize="12" Foreground="#666" 
+                                       FontWeight="SemiBold" Margin="0,12,0,5"/>
+                            <TextBox Text="{Binding FormDescripcion, UpdateSourceTrigger=PropertyChanged}" 
+                                     Padding="10,8" FontSize="13" TextWrapping="Wrap" 
+                                     AcceptsReturn="True" Height="50" BorderBrush="#DDD"/>
+                            
+                            <!-- Tipo -->
+                            <TextBlock Text="Tipo" FontSize="12" Foreground="#666" 
+                                       FontWeight="SemiBold" Margin="0,12,0,5"/>
+                            <ComboBox ItemsSource="{Binding TiposCombo}" 
+                                      SelectedItem="{Binding FormTipo}"
+                                      Padding="10,8" FontSize="13"/>
+                            
+                            <!-- Precio de venta -->
+                            <TextBlock Text="Precio de Venta (USD)" FontSize="12" Foreground="#666" 
+                                       FontWeight="SemiBold" Margin="0,12,0,5"/>
+                            <TextBox Text="{Binding FormPrecioVenta, UpdateSourceTrigger=PropertyChanged}" 
+                                     Padding="10,8" FontSize="13" BorderBrush="#DDD"/>
+                            
+                            <!-- Separador -->
+                            <Border BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="0,18,0,12"/>
+                            
+                            <!-- Agregar productos al combo -->
+                            <TextBlock Text="📦 Productos del combo" FontSize="13" FontWeight="Bold" 
+                                       Foreground="#333" Margin="0,0,0,8"/>
+                            
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ComboBox ItemsSource="{Binding ProductosDisponibles}" 
+                                          SelectedItem="{Binding ProductoParaAgregar}"
+                                          DisplayMemberPath="Nombre"
+                                          Padding="8,7" FontSize="12"/>
+                                
+                                <TextBox Grid.Column="1" 
+                                         Text="{Binding FormCantidadProducto, UpdateSourceTrigger=PropertyChanged}" 
+                                         Padding="8,7" FontSize="12" Margin="5,0,0,0"
+                                         BorderBrush="#DDD">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <VisualBrush Stretch="None" AlignmentX="Left">
+                                                                <VisualBrush.Visual>
+                                                                    <TextBlock Text="Cant." Foreground="#BBB" 
+                                                                               Margin="10,0,0,0" FontSize="11"/>
+                                                                </VisualBrush.Visual>
+                                                            </VisualBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                
+                                <Button Grid.Column="2" 
+                                        Command="{Binding AgregarProductoCommand}"
+                                        Margin="5,0,0,0" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" Background="#4CAF50" CornerRadius="4" 
+                                                    Padding="10,7">
+                                                <TextBlock Text="+" FontSize="14" FontWeight="Bold" 
+                                                           Foreground="White" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#43A047"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="bd" Property="Background" Value="#CCC"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                            
+                            <!-- Lista de productos agregados -->
+                            <ItemsControl ItemsSource="{Binding ProductosDelCombo}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,4" Padding="10,6" CornerRadius="6"
+                                                Background="#FAFAFA" BorderBrush="#E8E8E8" BorderThickness="1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Producto.Nombre}" 
+                                                               FontSize="12" FontWeight="SemiBold" Foreground="#333"/>
+                                                    <TextBlock FontSize="10" Foreground="#888" Margin="0,1,0,0">
+                                                        <Run Text="{Binding Cantidad, StringFormat='{}{0:G}'}"/>
+                                                        <Run Text="{Binding Unidad}"/>
+                                                        <Run Text=" × $ "/>
+                                                        <Run Text="{Binding CostoUnitario, StringFormat='{}{0:N2}'}"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" 
+                                                           Text="{Binding Total, StringFormat=$ {0:N2}}" 
+                                                           FontSize="12" FontWeight="Bold" Foreground="#555"
+                                                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <Button Grid.Column="2" 
+                                                        Command="{Binding DataContext.QuitarProductoCommand, 
+                                                                 RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Cursor="Hand">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border x:Name="bd" Background="#FFEBEE" CornerRadius="4" 
+                                                                    Padding="6,3">
+                                                                <TextBlock Text="✕" FontSize="10" Foreground="#D32F2F"
+                                                                           HorizontalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Costo total del combo -->
+                            <Border Background="#E8F5E9" CornerRadius="6" Padding="12,8" Margin="0,8,0,0">
+                                <Grid>
+                                    <TextBlock Text="Costo Total:" FontSize="12" Foreground="#333" 
+                                               FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding CostoTotalCombo, StringFormat=$ {0:N2} CUP}" 
+                                               FontSize="14" FontWeight="Bold" Foreground="#2E7D32"
+                                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                    
+                    <!-- Botones Guardar / Cancelar -->
+                    <Grid Grid.Row="2" Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Button Grid.Column="0" Command="{Binding GuardarComboCommand}" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bd" Background="#4CAF50" CornerRadius="6" Padding="12,10">
+                                        <TextBlock Text="💾 Guardar" HorizontalAlignment="Center" 
+                                                   Foreground="White" FontWeight="SemiBold" FontSize="13"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="#43A047"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="bd" Property="Background" Value="#CCC"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        
+                        <Button Grid.Column="2" Command="{Binding CancelarCommand}" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bd" Background="#9E9E9E" CornerRadius="6" Padding="12,10">
+                                        <TextBlock Text="✖ Cancelar" HorizontalAlignment="Center" 
+                                                   Foreground="White" FontWeight="SemiBold" FontSize="13"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="#757575"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- ═══ FILA 3: BARRA DE ESTADO ═══ -->
+        <Border Grid.Row="3" 
+                Background="#4A148C" 
+                CornerRadius="6"
+                Padding="16,10"
+                Margin="0,10,0,0">
+            <Grid>
+                <TextBlock Text="{Binding MensajeEstado}" 
+                           FontSize="12" 
+                           Foreground="#CE93D8"
+                           VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="COMBOS ACTIVOS" 
+                               FontSize="11" 
+                               Foreground="#CE93D8"
+                               FontWeight="Medium"
+                               VerticalAlignment="Center"
+                               Margin="0,0,12,0"/>
+                    <Border Background="#6A1B9A" CornerRadius="4" Padding="10,4">
+                        <TextBlock Text="{Binding CombosFiltrados.Count}" 
+                                   FontSize="15" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

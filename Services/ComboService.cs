@@ -59,6 +59,13 @@ namespace GestionApp.Services
 
         public async Task ActualizarAsync(Combo combo)
         {
+            // Eliminar productos viejos del combo
+            var productosViejos = await _context.Set<ComboProducto>()
+                .Where(cp => cp.ComboId == combo.Id)
+                .ToListAsync();
+            _context.Set<ComboProducto>().RemoveRange(productosViejos);
+
+            // EF detecta los nuevos productos en la colección
             _context.Combos.Update(combo);
             await _context.SaveChangesAsync();
         }
