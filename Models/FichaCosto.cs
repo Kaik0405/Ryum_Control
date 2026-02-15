@@ -141,9 +141,11 @@ namespace GestionApp.Models
         public PeriodoInventario? PeriodoInventario { get; set; }
 
         /// <summary>
-        /// Modelo de conformidad asociado (si existe).
+        /// Entrega de la cual se genera esta ficha.
+        /// La ficha siempre se crea desde una entrega.
         /// </summary>
-        public ModeloConformidad? ModeloConformidad { get; set; }
+        public int? EntregaId { get; set; }
+        public Entrega? Entrega { get; set; }
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }

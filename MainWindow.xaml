@@ -85,11 +85,20 @@
                             </StackPanel>
                         </Button>
                         
+                        <!-- Entregas -->
+                        <Button Style="{StaticResource MenuButtonStyle}"
+                                Command="{Binding NavigateToEntregasCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📦" FontSize="18" Width="30"/>
+                                <TextBlock Text="Entregas" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        
                         <!-- Fichas de Costo -->
                         <Button Style="{StaticResource MenuButtonStyle}"
                                 Command="{Binding NavigateToFichasCostoCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="📋" FontSize="18" Width="30"/>
+                                <TextBlock Text="💰" FontSize="18" Width="30"/>
                                 <TextBlock Text="Fichas de Costo" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>

@@ -88,12 +88,15 @@ namespace GestionApp.Services
     }
 
     /// <summary>
-    /// Interfaz para modelo de conformidad.
+    /// Interfaz para el servicio de entregas.
     /// </summary>
-    public interface IModeloConformidadService : IBaseService<ModeloConformidad>
+    public interface IEntregaService : IBaseService<Entrega>
     {
-        Task<ModeloConformidad> CrearDesdedfichaAsync(int fichaCostoId);
-        Task<string> GenerarNumeroConformidadAsync();
+        Task<Entrega> CrearDesdeComboAsync(int comboId, string receptor, string direccion, string telMovil, string telFijo, string remitente, string agencia);
+        Task<List<Entrega>> ObtenerPendientesAsync();
+        Task<List<Entrega>> ObtenerUrgentesAsync();
+        Task<string> GenerarNumeroOrdenAsync();
+        Task MarcarEntregadaAsync(int entregaId);
     }
 
     /// <summary>

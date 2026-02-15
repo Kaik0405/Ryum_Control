@@ -31,7 +31,8 @@
 GestionApp es una aplicación de escritorio que gestiona:
 
 - **Inventario de productos** (con costos en CUP)
-- **Combos** (agrupaciones de productos para envío, con precio en USD)
+- **Combos** (agrupaciones de productos para envío, con precio en USD y numeración)
+- **Entregas** (órdenes de entrega con alertas de urgencia a 5 días, colores semáforo)
 - **Fichas de Costo** (documentos de venta/envío)
 - **Movimientos financieros** (ingresos y egresos)
 - **Períodos de inventario** (control mensual)
@@ -56,7 +57,7 @@ GestionApp es una aplicación de escritorio que gestiona:
 │
 ├── 📁 Models/                   ← DATOS: Las clases que representan las tablas de la BD
 │   ├── Producto.cs              ← Producto del inventario
-│   ├── Combo.cs                 ← Combo/Agrego/Festejo
+│   ├── Combo.cs                 ← Combo/Agrego/Festejo (con campo Numero)
 │   ├── ComboProducto.cs         ← Producto dentro de un combo (tabla intermedia)
 │   ├── CompraProducto.cs        ← Registro de compra para inventario
 │   ├── Movimiento.cs            ← Movimiento financiero (ingreso/egreso)
@@ -64,7 +65,7 @@ GestionApp es una aplicación de escritorio que gestiona:
 │   ├── PeriodoInventario.cs     ← Período mensual + InventarioSnapshot
 │   ├── Cliente.cs               ← Cliente/receptor
 │   ├── Agencia.cs               ← Agencia de envío
-│   ├── ModeloConformidad.cs     ← Documento de conformidad + ConformidadProducto
+│   ├── ModeloConformidad.cs     ← Entrega + EntregaProducto (sistema de entregas con urgencia)
 │   └── ConfiguracionDistribuidor.cs ← Configuración global del negocio
 │
 ├── 📁 Data/                     ← BASE DE DATOS
@@ -76,6 +77,7 @@ GestionApp es una aplicación de escritorio que gestiona:
 │   ├── NavigationService.cs     ← Implementación de la navegación entre vistas
 │   ├── ProductoService.cs       ← CRUD de productos
 │   ├── ComboService.cs          ← CRUD de combos (con duplicar)
+│   ├── EntregaService.cs        ← CRUD entregas + urgencia + crear desde combo + orden auto
 │   ├── MovimientoService.cs     ← CRUD de movimientos + registrar venta/compra automática
 │   ├── FichaCostoService.cs     ← CRUD de fichas + generar número de ficha
 │   ├── PeriodoInventarioService.cs ← Gestión de períodos mensuales
@@ -85,7 +87,8 @@ GestionApp es una aplicación de escritorio que gestiona:
 │   ├── BaseViewModel.cs         ← Clase base (INotifyPropertyChanged)
 │   ├── MainViewModel.cs         ← ViewModel principal (navegación del sidebar)
 │   ├── InventarioViewModel.cs   ← ✅ Completo: CRUD productos, stock, historial
-│   ├── CombosViewModel.cs       ← ✅ Completo: CRUD combos con productos
+│   ├── CombosViewModel.cs       ← ✅ Completo: CRUD combos con productos + Numero
+│   ├── EntregasViewModel.cs     ← ✅ Completo: entregas, urgencia, filtros, CRUD (515 lín.)
 │   ├── DashboardViewModel.cs    ← ⬜ Esqueleto (sin implementar)
 │   ├── FichasCostoViewModel.cs  ← ⬜ Esqueleto
 │   ├── MovimientosViewModel.cs  ← ⬜ Esqueleto
@@ -93,7 +96,8 @@ GestionApp es una aplicación de escritorio que gestiona:
 │
 ├── 📁 Views/                    ← INTERFAZ VISUAL: lo que ve el usuario
 │   ├── InventarioView.xaml      ← ✅ DataGrid con productos, paneles laterales
-│   ├── CombosView.xaml          ← ✅ Tarjetas de combos, formulario, detalle
+│   ├── CombosView.xaml          ← ✅ Tarjetas de combos con Numero, formulario, detalle
+│   ├── EntregasView.xaml        ← ✅ DataGrid + urgencias + formulario + detalle (594 lín.)
 │   ├── DashboardView.xaml       ← ⬜ Placeholder
 │   ├── FichasCostoView.xaml     ← ⬜ Placeholder
 │   ├── MovimientosView.xaml     ← ⬜ Placeholder
@@ -101,7 +105,8 @@ GestionApp es una aplicación de escritorio que gestiona:
 │   └── (cada .xaml tiene su .xaml.cs vacío)
 │
 ├── 📁 Helpers/                  ← UTILIDADES
-│   └── RelayCommand.cs          ← Implementación de ICommand para botones
+│   ├── RelayCommand.cs          ← Implementación de ICommand para botones
+│   └── EntregaEstadoConverter.cs ← Converters: color/texto por estado de entrega
 │
 └── 📁 docs/                     ← DOCUMENTACIÓN
     └── DOCUMENTACION.md         ← Este archivo
@@ -254,8 +259,50 @@ Control mensual de finanzas.
 - **Cliente** → `NombreCompleto`, `Direccion`, `Telefono`, `Email`, `Notas`
 - **Agencia** → `Nombre`, `Direccion`, `Telefono`, `Notas`
 - **ConfiguracionDistribuidor** → `Nombre`, `NombreNegocio`, `PrefijoFicha` ("FC-"), `UltimoNumeroFicha`, etc.
-- **ModeloConformidad** → Documento de confirmación de recibo del cliente
+- **ModeloConformidad** → Ahora es **Entrega** (ver sección Entrega abajo)
 - **CompraProducto** → Registro individual de compra con `Cantidad`, `CostoUnitario`, `Proveedor`
+
+### Entrega (`Models/ModeloConformidad.cs`)
+
+> **Nota:** El archivo se sigue llamando `ModeloConformidad.cs` pero contiene las clases `Entrega` y `EntregaProducto` (rediseño del sistema de conformidad → entregas).
+
+| Propiedad | Tipo | Descripción |
+|-----------|------|-------------|
+| `Id` | int | Clave primaria |
+| `NumeroOrden` | string | Número automático: "ENT-00001", "ENT-00002"... |
+| `ComboId` | int | FK al combo que se envía |
+| `NombreReceptor` | string | Nombre de quien recibe |
+| `DireccionReceptor` | string | Dirección de entrega |
+| `TelefonoMovil` | string? | Teléfono móvil del receptor |
+| `TelefonoFijo` | string? | Teléfono fijo del receptor |
+| `NombreRemitente` | string | Nombre de quien envía |
+| `Agencia` | string? | Agencia de envío utilizada |
+| `FechaOrden` | DateTime | Fecha en que se creó la orden (auto) |
+| `FechaEntregada` | DateTime? | Fecha en que se entregó (null = pendiente) |
+| `PlazoDias` | int | Días de plazo para entregar (default: 5) |
+| `Notas` | string? | Observaciones opcionales |
+| **Calculadas** | | |
+| `FechaLimite` | DateTime | FechaOrden + PlazoDias |
+| `DiasRestantes` | int | Días que faltan para vencer |
+| `Vencida` | bool | true si pasó FechaLimite y no entregada |
+| `Urgente` | bool | true si DiasRestantes ≤ 2 y no entregada |
+| `Entregada` | bool | true si FechaEntregada tiene valor |
+| `Resumen` | string | "ENT-00001 → Receptor (Combo)" |
+
+### EntregaProducto (dentro de `Models/ModeloConformidad.cs`)
+
+| Propiedad | Tipo | Descripción |
+|-----------|------|-------------|
+| `Id` | int | Clave primaria |
+| `EntregaId` | int | FK a Entrega |
+| `NombreProducto` | string | Nombre del producto copiado |
+| `Unidad` | string | Unidad de medida copiada |
+| `Cantidad` | decimal | Cantidad del producto |
+| `Descripcion` | string | **Calculada**: "2 Unidad de Arroz" |
+
+### Combo.Numero (campo nuevo en `Models/Combo.cs`)
+
+Se agregó `Numero` (int) al modelo Combo para numerar los combos. Tiene un índice único en la BD.
 
 ---
 
@@ -272,12 +319,12 @@ Es el puente entre C# y SQLite usando Entity Framework Core.
 Productos              // Productos del inventario
 ProductoVariantes      // Variantes de precio
 ComprasProductos       // Historial de compras
-Combos                 // Combos/Agregos/Festejos
+Combos                 // Combos/Agregos/Festejos (con campo Numero único)
 ComboProductos         // Productos dentro de combos
 FichasCosto            // Fichas de costo
 FichaCostoProductos    // Productos dentro de fichas
-ModelosConformidad     // Documentos de conformidad
-ConformidadProductos   // Productos en documentos de conformidad
+Entregas               // Entregas con alertas de urgencia (antes ModelosConformidad)
+EntregaProductos       // Productos en entregas (antes ConformidadProductos)
 Movimientos            // Movimientos financieros
 PeriodosInventario     // Períodos mensuales
 InventarioSnapshots    // Fotos del inventario al inicio/fin de mes
@@ -292,6 +339,10 @@ Producto 1──N ProductoVariante      (Cascade: borrar producto = borra varian
 Producto 1──N CompraProducto        (Restrict: no se puede borrar producto con compras)
 Combo 1──N ComboProducto            (Cascade: borrar combo = borra sus productos)
 ComboProducto N──1 Producto         (Restrict: no se borra producto en combo)
+Combo.Numero                        (Índice único)
+Entrega N──1 Combo                  (Restrict: no se borra combo con entregas)
+EntregaProducto N──1 Entrega        (Cascade: borrar entrega = borra sus productos)
+FichaCosto N──1 Entrega             (SetNull: si se borra entrega, ficha queda sin entrega)
 FichaCosto N──1 Combo               (SetNull: si se borra combo, la ficha queda sin combo)
 FichaCosto N──1 Cliente             (SetNull)
 FichaCosto N──1 Agencia             (SetNull)
@@ -338,6 +389,7 @@ IBaseService<T>
 |----------|---------------|---------------|
 | `IProductoService` | `ProductoService.cs` | `ObtenerEnStockAsync`, `BuscarPorNombreAsync`, `ActualizarStockAsync` |
 | `IComboService` | `ComboService.cs` | `ObtenerPorTipoAsync`, `ObtenerConProductosAsync`, `DuplicarComboAsync` |
+| `IEntregaService` | `EntregaService.cs` | `CrearDesdeComboAsync`, `ObtenerPendientesAsync`, `ObtenerUrgentesAsync`, `GenerarNumeroOrdenAsync`, `MarcarEntregadaAsync` |
 | `IMovimientoService` | `MovimientoService.cs` | `ObtenerPorPeriodoAsync`, `ObtenerPorTipoAsync`, `ObtenerPorProductoAsync`, `ObtenerResumenAsync`, `ObtenerBalanceActualAsync`, `RegistrarVentaAsync`, `RegistrarCompraProductoAsync` |
 | `IFichaCostoService` | `FichaCostoService.cs` | `ObtenerPorPeriodoAsync`, `ObtenerPorRangoFechaAsync`, `ObtenerConDetallesAsync`, `GenerarNumeroFichaAsync`, `ObtenerTotalVentasAsync` |
 | `IPeriodoInventarioService` | `PeriodoInventarioService.cs` | `ObtenerPeriodoActualAsync`, `IniciarNuevoPeriodoAsync`, `CerrarPeriodoAsync`, `ObtenerPorMesAsync`, `GenerarSnapshotInventarioAsync` |
@@ -503,6 +555,59 @@ CombosViewModel
 - **MovimientosViewModel** — Solo hereda BaseViewModel
 - **ReportesViewModel** — Solo hereda BaseViewModel
 
+### EntregasViewModel (`ViewModels/EntregasViewModel.cs`) — ✅ **COMPLETO** (515 líneas)
+
+```
+EntregasViewModel
+│
+├── SERVICIOS: IEntregaService, IComboService
+│
+├── CONTADORES DE URGENCIA:
+│   ├── TotalPendientes           → Entregas no entregadas
+│   ├── TotalUrgentes             → Entregas con ≤2 días restantes
+│   └── TotalVencidas             → Entregas pasadas de plazo
+│
+├── DATOS:
+│   ├── Entregas                  → Lista completa de la BD
+│   ├── EntregasFiltradas         → Lista filtrada por estado
+│   ├── CombosDisponibles         → Combos activos (para el form)
+│   ├── ProductosEntrega          → Productos de la entrega seleccionada
+│   ├── FiltroEstado              → ComboBox: Todas/Pendientes/Urgentes/Vencidas/Entregadas
+│   └── EntregaSeleccionada       → Fila seleccionada en el DataGrid
+│
+├── FORMULARIO:
+│   ├── FormComboSeleccionado     → Combo seleccionado (carga productos)
+│   ├── FormNombreReceptor, FormDireccionReceptor
+│   ├── FormTelefonoMovil, FormTelefonoFijo  → 2 teléfonos
+│   ├── FormNombreRemitente, FormAgencia
+│   ├── FormFechaOrden            → Auto: DateTime.Now
+│   ├── FormPlazoDias             → Default: "5"
+│   ├── FormNotas
+│   ├── MostrarFormulario         → Visibilidad del panel
+│   └── EsEdicion                 → Nuevo vs Editar
+│
+├── DETALLE:
+│   ├── MostrarDetalle            → Visibilidad del panel de detalle
+│   └── EntregaDetalle            → Entrega seleccionada para ver
+│
+└── COMANDOS:
+    ├── NuevaEntregaCommand       → Abre formulario vacío
+    ├── EditarEntregaCommand      → Carga datos en formulario
+    ├── EliminarEntregaCommand    → Confirma y elimina
+    ├── GuardarEntregaCommand     → Valida, guarda, recarga
+    ├── CancelarCommand           → Cierra formulario
+    ├── VerDetalleCommand         → Abre panel de detalle con productos
+    ├── CerrarDetalleCommand      → Cierra panel de detalle
+    ├── MarcarEntregadaCommand    → Pone FechaEntregada = hoy
+    └── RefrescarCommand          → Recarga datos
+```
+
+**Detalles importantes:**
+- Al crear una entrega, se copian los productos del combo seleccionado (`CrearDesdeComboAsync`)
+- Los contadores de urgencia se actualizan al cargar datos
+- El filtro de estado filtra: Pendientes (no entregadas), Urgentes (≤2 días), Vencidas (pasadas), Entregadas (completadas)
+- La fecha de orden se asigna automáticamente al abrir el formulario
+
 ### ¿Qué tocar aquí?
 
 - **Agregar funcionalidad a una pantalla existente:**
@@ -598,12 +703,56 @@ Layout de 2 columnas:
 │ Inventario│   que corresponda al ViewModel   │
 │ Combos   │   actual)                         │
 │ Fichas   │                                   │
-│ ─────    ├───────────────────────────────────┤
-│ FINANZAS │   Barra de estado                 │
+│ Entregas ├───────────────────────────────────┤
+│ ─────    │   Barra de estado                 │
+│ FINANZAS │                                   │
 │ Movimient│                                   │
 │ Reportes │                                   │
 └──────────┴───────────────────────────────────┘
 ```
+
+### EntregasView.xaml — ✅ **COMPLETA** (~594 líneas)
+
+Layout de 4 filas con urgencias visuales:
+```
+┌──────────────────────────────────────────────┐
+│ HEADER: "📦 Entregas" + botón Nueva         │  Row 0
+├──────────────────────────────────────────────┤
+│ CONTADORES: [Pendientes] [Urgentes] [Vencidas] │ Row 1
+│ (tarjetas con colores semáforo)              │
+├──────────────────────────────────────────────┤
+│ FILTRO: ComboBox de estado                   │  Row 2
+├──────────────────────────────────────────────┤
+│ CONTENIDO: DataGrid + panel lateral          │  Row 3
+│ ┌─────────────────────┬────────────────────┐ │
+│ │ DataGrid            │ Panel form /       │ │
+│ │ (EntregasFiltradas) │ detalle            │ │
+│ │ con barra de color  │                    │ │
+│ │ por estado          │ Formulario:        │ │
+│ │                     │ - Combo selector   │ │
+│ │ 🔴 Vencida          │ - Fecha (auto)     │ │
+│ │ 🟠 Urgente          │ - Receptor + dir   │ │
+│ │ 🟢 En tiempo        │ - 2 teléfonos      │ │
+│ │ ⚫ Entregada         │ - Remitente        │ │
+│ │                     │ - Agencia          │ │
+│ └─────────────────────┴────────────────────┘ │
+└──────────────────────────────────────────────┘
+```
+
+**Columnas del DataGrid:**
+| Columna | Binding | Formato |
+|---------|---------|---------|
+| Barra color | EntregaEstadoConverter | Rectángulo 4px ancho |
+| # Orden | `NumeroOrden` | "ENT-00001" |
+| Receptor | `NombreReceptor` | Texto |
+| Estado | `EntregaEstadoTextoConverter` | "🟢 En tiempo (3 días)" |
+| Fecha Orden | `FechaOrden` | dd/MM/yyyy |
+| Acciones | Botones | 👁 ✏️ ✅ 🗑️ |
+
+**Converters utilizados** (`Helpers/EntregaEstadoConverter.cs`):
+- `EntregaEstadoConverter` → Color de fondo según estado (rojo/naranja/verde/gris)
+- `EntregaEstadoTextoConverter` → Texto descriptivo con emoji y días restantes
+- `InverseBoolToVisibilityConverter` → Muestra elementos cuando bool es false
 
 ### ¿Qué tocar aquí?
 
@@ -683,6 +832,7 @@ services.AddSingleton<INavigationService, NavigationService>();
 services.AddScoped<IConfiguracionService, ConfiguracionService>();
 services.AddScoped<IProductoService, ProductoService>();
 services.AddScoped<IComboService, ComboService>();
+services.AddScoped<IEntregaService, EntregaService>();
 services.AddScoped<IMovimientoService, MovimientoService>();
 services.AddScoped<IFichaCostoService, FichaCostoService>();
 services.AddScoped<IPeriodoInventarioService, PeriodoInventarioService>();
@@ -694,6 +844,7 @@ services.AddSingleton<MainViewModel>();          // Singleton: solo hay uno
 services.AddTransient<DashboardViewModel>();     // Transient: se crea uno nuevo cada vez
 services.AddTransient<InventarioViewModel>();
 services.AddTransient<CombosViewModel>();
+services.AddTransient<EntregasViewModel>();
 services.AddTransient<FichasCostoViewModel>();
 services.AddTransient<MovimientosViewModel>();
 services.AddTransient<ReportesViewModel>();
@@ -781,6 +932,7 @@ services.AddTransient<ReportesViewModel>();
 |--------|-----------|-------|----------|--------|
 | **Inventario** | InventarioViewModel (743 lín.) | InventarioView (801 lín.) | ProductoService | ✅ Completo |
 | **Combos** | CombosViewModel (512 lín.) | CombosView (698 lín.) | ComboService | ✅ Completo |
+| **Entregas** | EntregasViewModel (515 lín.) | EntregasView (594 lín.) | EntregaService | ✅ Completo |
 | **Dashboard** | DashboardViewModel (esqueleto) | DashboardView (placeholder) | — | ⬜ Pendiente |
 | **Fichas de Costo** | FichasCostoViewModel (esqueleto) | FichasCostoView (placeholder) | FichaCostoService | ⬜ Pendiente |
 | **Movimientos** | MovimientosViewModel (esqueleto) | MovimientosView (placeholder) | MovimientoService | ⬜ Pendiente |
@@ -807,7 +959,21 @@ services.AddTransient<ReportesViewModel>();
 - ✅ Panel de detalle con desglose de productos
 - ✅ Duplicar combo
 - ✅ Filtrado por nombre y tipo
+- ✅ Campo Numero para identificar combos (índice único)
 - ✅ Footer con contador de combos activos
+
+### Funcionalidades completadas en Entregas:
+- ✅ CRUD completo de entregas
+- ✅ Creación desde combo (copia productos automáticamente)
+- ✅ Número de orden automático (ENT-00001, ENT-00002...)
+- ✅ Sistema de urgencia con plazo de 5 días
+- ✅ Colores semáforo: 🔴 Vencida, 🟠 Urgente (≤2 días), 🟢 En tiempo, ⚫ Entregada
+- ✅ Contadores de urgencia en la cabecera (pendientes, urgentes, vencidas)
+- ✅ Filtro por estado (Todas/Pendientes/Urgentes/Vencidas/Entregadas)
+- ✅ Dos campos de teléfono (móvil y fijo)
+- ✅ Fecha de orden automática
+- ✅ Marcar como entregada con un clic
+- ✅ Panel de detalle con productos de la entrega
 
 ---
 

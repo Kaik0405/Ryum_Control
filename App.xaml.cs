@@ -94,12 +94,14 @@ public partial class App : Application
         services.AddScoped<IPeriodoInventarioService, PeriodoInventarioService>();
         services.AddScoped<IClienteService, ClienteService>();
         services.AddScoped<IAgenciaService, AgenciaService>();
+        services.AddScoped<IEntregaService, EntregaService>();
 
         // Registrar ViewModels
         services.AddSingleton<MainViewModel>();
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<InventarioViewModel>();
         services.AddTransient<CombosViewModel>();
+        services.AddTransient<EntregasViewModel>();
         services.AddTransient<FichasCostoViewModel>();
         services.AddTransient<MovimientosViewModel>();
         services.AddTransient<ReportesViewModel>();

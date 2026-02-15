@@ -37,6 +37,7 @@ namespace GestionApp.ViewModels
         // Formulario
         private bool _mostrarFormulario;
         private bool _esEdicion;
+        private string _formNumero = string.Empty;
         private string _formNombre = string.Empty;
         private string _formDescripcion = string.Empty;
         private TipoCombo _formTipo = TipoCombo.Combo;
@@ -114,6 +115,12 @@ namespace GestionApp.ViewModels
         }
 
         public string TituloFormulario => EsEdicion ? "✏️ Editar Combo" : "➕ Nuevo Combo";
+
+        public string FormNumero
+        {
+            get => _formNumero;
+            set => SetProperty(ref _formNumero, value);
+        }
 
         public string FormNombre
         {
@@ -254,6 +261,7 @@ namespace GestionApp.ViewModels
             EsEdicion = true;
             ComboSeleccionado = combo;
 
+            FormNumero = combo.Numero.ToString();
             FormNombre = combo.Nombre;
             FormDescripcion = combo.Descripcion ?? string.Empty;
             FormTipo = combo.Tipo;
@@ -320,8 +328,15 @@ namespace GestionApp.ViewModels
                     precioVenta = 0;
                 }
 
+                if (!int.TryParse(FormNumero, out var numero))
+                {
+                    MensajeEstado = "❌ El número del combo debe ser un entero";
+                    return;
+                }
+
                 if (EsEdicion && ComboSeleccionado != null)
                 {
+                    ComboSeleccionado.Numero = numero;
                     ComboSeleccionado.Nombre = FormNombre.Trim();
                     ComboSeleccionado.Descripcion = string.IsNullOrWhiteSpace(FormDescripcion) ? null : FormDescripcion.Trim();
                     ComboSeleccionado.Tipo = FormTipo;
@@ -347,6 +362,7 @@ namespace GestionApp.ViewModels
                 {
                     var nuevoCombo = new Combo
                     {
+                        Numero = numero,
                         Nombre = FormNombre.Trim(),
                         Descripcion = string.IsNullOrWhiteSpace(FormDescripcion) ? null : FormDescripcion.Trim(),
                         Tipo = FormTipo,
@@ -426,6 +442,7 @@ namespace GestionApp.ViewModels
 
         private void LimpiarFormulario()
         {
+            FormNumero = string.Empty;
             FormNombre = string.Empty;
             FormDescripcion = string.Empty;
             FormTipo = TipoCombo.Combo;

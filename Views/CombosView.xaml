@@ -177,11 +177,13 @@
                                         </Grid>
                                     </Border>
                                     
-                                    <!-- NOMBRE DEL COMBO -->
+                                    <!-- NOMBRE DEL COMBO CON NÚMERO -->
                                     <Border Grid.Row="1" Padding="14,8,14,4">
-                                        <TextBlock Text="{Binding Nombre}" 
-                                                   FontSize="15" FontWeight="Bold" 
-                                                   Foreground="#333" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock FontSize="15" FontWeight="Bold" 
+                                                   Foreground="#333" TextTrimming="CharacterEllipsis">
+                                            <Run Text="#"/><Run Text="{Binding Numero, Mode=OneWay}"/>
+                                            <Run Text=" — "/><Run Text="{Binding Nombre, Mode=OneWay}"/>
+                                        </TextBlock>
                                     </Border>
                                     
                                     <!-- LISTA DE PRODUCTOS -->
@@ -310,6 +312,12 @@
                     
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
+                            <!-- Número del combo -->
+                            <TextBlock Text="Número del Combo *" FontSize="12" Foreground="#555" 
+                                       FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding FormNumero, UpdateSourceTrigger=PropertyChanged}" 
+                                     Padding="10,8" FontSize="13" BorderBrush="#DDD" Margin="0,0,0,12"/>
+
                             <!-- Nombre -->
                             <TextBlock Text="Nombre *" FontSize="12" Foreground="#555" 
                                        FontWeight="SemiBold" Margin="0,0,0,5"/>
@@ -441,7 +449,7 @@
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding NombreProducto}" 
                                                                FontSize="12" FontWeight="SemiBold" Foreground="#333"/>
-                                                    <TextBlock Text="{Binding Descripcion}" 
+                                                    <TextBlock Text="{Binding Descripcion, Mode=OneWay}" 
                                                                FontSize="10" Foreground="#888" Margin="0,1,0,0"/>
                                                 </StackPanel>
                                                 <Button Grid.Column="1" 

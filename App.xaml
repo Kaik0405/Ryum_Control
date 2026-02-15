@@ -17,6 +17,9 @@
             <DataTemplate DataType="{x:Type vm:CombosViewModel}">
                 <views:CombosView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EntregasViewModel}">
+                <views:EntregasView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:FichasCostoViewModel}">
                 <views:FichasCostoView/>
             </DataTemplate>

@@ -3,105 +3,162 @@ using System.ComponentModel.DataAnnotations;
 namespace GestionApp.Models
 {
     /// <summary>
-    /// Modelo de conformidad del cliente.
-    /// Documento que el cliente firma al recibir el pedido.
-    /// Similar a la ficha de costo pero sin información de precios.
+    /// Representa una orden de entrega de un combo.
+    /// Se crea al registrar un envío. Tiene plazo de 5 días para entregarse.
+    /// FLUJO: Combo → Entrega (orden) → Ficha de Costo (después de entregado).
     /// </summary>
-    public class ModeloConformidad
+    public class Entrega
     {
         [Key]
         public int Id { get; set; }
 
         /// <summary>
-        /// Número de conformidad para referencia.
+        /// Número de orden auto-generado (ej: ENT-00001).
         /// </summary>
         [MaxLength(50)]
-        public string NumeroConformidad { get; set; } = string.Empty;
+        public string NumeroOrden { get; set; } = string.Empty;
+
+        #region Combo
 
         /// <summary>
-        /// Ficha de costo relacionada (opcional).
+        /// Combo que se envía/entrega.
         /// </summary>
-        public int? FichaCostoId { get; set; }
-        public FichaCosto? FichaCosto { get; set; }
+        public int ComboId { get; set; }
+        public Combo? Combo { get; set; }
+
+        #endregion
 
         #region Datos del receptor
 
+        /// <summary>
+        /// Nombre completo de quien recibe el paquete.
+        /// </summary>
         [Required]
         [MaxLength(200)]
         public string NombreReceptor { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Dirección de quien recibe.
+        /// </summary>
         [MaxLength(500)]
         public string DireccionReceptor { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Teléfono móvil del receptor.
+        /// </summary>
         [MaxLength(50)]
-        public string TelefonoReceptor { get; set; } = string.Empty;
+        public string TelefonoMovil { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Teléfono fijo del receptor.
+        /// </summary>
+        [MaxLength(50)]
+        public string TelefonoFijo { get; set; } = string.Empty;
 
         #endregion
 
         #region Datos del envío
 
+        /// <summary>
+        /// Persona que envía (remitente en el exterior).
+        /// </summary>
+        [Required]
         [MaxLength(200)]
         public string NombreRemitente { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Agencia usada para el envío.
+        /// </summary>
         [MaxLength(200)]
         public string Agencia { get; set; } = string.Empty;
 
-        public DateTime FechaEnvio { get; set; }
+        #endregion
 
-        public DateTime? FechaRecepcion { get; set; }
+        #region Fechas y plazo
+
+        /// <summary>
+        /// Fecha en que se creó/registró la orden.
+        /// Se asigna automáticamente al crear, pero se puede editar.
+        /// </summary>
+        public DateTime FechaOrden { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Fecha en que se entregó efectivamente (null = aún no entregada).
+        /// </summary>
+        public DateTime? FechaEntregada { get; set; }
+
+        /// <summary>
+        /// Plazo máximo en días para la entrega (por defecto 5).
+        /// </summary>
+        public int PlazoDias { get; set; } = 5;
+
+        /// <summary>
+        /// Fecha límite calculada: FechaOrden + PlazoDias.
+        /// </summary>
+        public DateTime FechaLimite => FechaOrden.AddDays(PlazoDias);
+
+        /// <summary>
+        /// Días restantes para entregar. Negativo = vencido.
+        /// </summary>
+        public int DiasRestantes => (FechaLimite.Date - DateTime.Now.Date).Days;
+
+        /// <summary>
+        /// true si ya se venció el plazo y no se ha entregado.
+        /// </summary>
+        public bool Vencida => !Entregada && DiasRestantes < 0;
+
+        /// <summary>
+        /// true si le quedan 2 días o menos y no se ha entregado.
+        /// </summary>
+        public bool Urgente => !Entregada && DiasRestantes >= 0 && DiasRestantes <= 2;
+
+        /// <summary>
+        /// true si ya fue entregada.
+        /// </summary>
+        public bool Entregada => FechaEntregada.HasValue;
 
         #endregion
 
         /// <summary>
-        /// Productos incluidos en el documento de conformidad.
-        /// Solo muestra producto y cantidad, sin precios.
+        /// Productos incluidos en la entrega.
+        /// Copiados del combo al momento de crear la orden.
         /// </summary>
-        public ICollection<ConformidadProducto> Productos { get; set; } = new List<ConformidadProducto>();
-
-        #region Conformidad
+        public ICollection<EntregaProducto> Productos { get; set; } = new List<EntregaProducto>();
 
         /// <summary>
-        /// Indica si el cliente confirmó la recepción.
-        /// </summary>
-        public bool Confirmado { get; set; }
-
-        /// <summary>
-        /// Fecha de confirmación.
-        /// </summary>
-        public DateTime? FechaConfirmacion { get; set; }
-
-        /// <summary>
-        /// Firma o nombre de quien recibe (texto).
-        /// </summary>
-        [MaxLength(200)]
-        public string? FirmaReceptor { get; set; }
-
-        /// <summary>
-        /// Observaciones del receptor.
+        /// Observaciones del envío.
         /// </summary>
         [MaxLength(1000)]
         public string? Observaciones { get; set; }
 
-        #endregion
+        /// <summary>
+        /// Indica si ya se creó la Ficha de Costo para esta entrega.
+        /// </summary>
+        public bool TieneFichaCosto { get; set; }
 
-        [MaxLength(500)]
-        public string? Notas { get; set; }
+        /// <summary>
+        /// Resumen: "Receptor — Combo #N"
+        /// </summary>
+        public string Resumen => $"{NombreReceptor} — Combo #{Combo?.Numero}";
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }
 
     /// <summary>
-    /// Producto en el modelo de conformidad.
-    /// Solo contiene producto y cantidad, sin precios.
+    /// Producto en una orden de entrega.
+    /// Copia del ComboProducto al momento de crear la orden.
     /// </summary>
-    public class ConformidadProducto
+    public class EntregaProducto
     {
         [Key]
         public int Id { get; set; }
 
-        public int ModeloConformidadId { get; set; }
-        public ModeloConformidad? ModeloConformidad { get; set; }
+        public int EntregaId { get; set; }
+        public Entrega? Entrega { get; set; }
 
+        /// <summary>
+        /// Nombre del producto (copiado del combo).
+        /// </summary>
         [Required]
         [MaxLength(200)]
         public string NombreProducto { get; set; } = string.Empty;
@@ -117,9 +174,8 @@ namespace GestionApp.Models
         public decimal Cantidad { get; set; }
 
         /// <summary>
-        /// Estado del producto al recibir (opcional).
+        /// Descripción formateada: "2 Libra" o "1 Paquete"
         /// </summary>
-        [MaxLength(200)]
-        public string? Estado { get; set; }
+        public string Descripcion => $"{Cantidad:G} {Unidad}";
     }
 }

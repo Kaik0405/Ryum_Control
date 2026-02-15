@@ -20,6 +20,11 @@ namespace GestionApp.Models
         [Key]
         public int Id { get; set; }
 
+        /// <summary>
+        /// Número identificador del combo (los combos están numerados).
+        /// </summary>
+        public int Numero { get; set; }
+
         [Required]
         [MaxLength(200)]
         public string Nombre { get; set; } = string.Empty;

@@ -25,9 +25,9 @@ namespace GestionApp.Data
         public DbSet<FichaCosto> FichasCosto { get; set; }
         public DbSet<FichaCostoProducto> FichaCostoProductos { get; set; }
 
-        // Conformidad
-        public DbSet<ModeloConformidad> ModelosConformidad { get; set; }
-        public DbSet<ConformidadProducto> ConformidadProductos { get; set; }
+        // Entregas (antes Conformidad)
+        public DbSet<Entrega> Entregas { get; set; }
+        public DbSet<EntregaProducto> EntregaProductos { get; set; }
 
         // Movimientos Financieros
         public DbSet<Movimiento> Movimientos { get; set; }
@@ -136,19 +136,29 @@ namespace GestionApp.Data
 
             #endregion
 
-            #region Modelo de Conformidad
+            #region Entregas
 
-            modelBuilder.Entity<ModeloConformidad>()
-                .HasOne(m => m.FichaCosto)
-                .WithOne(f => f.ModeloConformidad)
-                .HasForeignKey<ModeloConformidad>(m => m.FichaCostoId)
+            modelBuilder.Entity<Entrega>()
+                .HasOne(e => e.Combo)
+                .WithMany()
+                .HasForeignKey(e => e.ComboId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EntregaProducto>()
+                .HasOne(ep => ep.Entrega)
+                .WithMany(e => e.Productos)
+                .HasForeignKey(ep => ep.EntregaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // FichaCosto → Entrega (la ficha se crea desde la entrega)
+            modelBuilder.Entity<FichaCosto>()
+                .HasOne(f => f.Entrega)
+                .WithMany()
+                .HasForeignKey(f => f.EntregaId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<ConformidadProducto>()
-                .HasOne(cp => cp.ModeloConformidad)
-                .WithMany(m => m.Productos)
-                .HasForeignKey(cp => cp.ModeloConformidadId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Entrega>()
+                .HasIndex(e => e.NumeroOrden);
 
             #endregion
 
@@ -215,6 +225,7 @@ namespace GestionApp.Data
             modelBuilder.Entity<Producto>().HasIndex(p => p.Nombre);
             modelBuilder.Entity<Producto>().HasIndex(p => p.EnStock);
             modelBuilder.Entity<Combo>().HasIndex(c => c.Nombre);
+            modelBuilder.Entity<Combo>().HasIndex(c => c.Numero).IsUnique();
             modelBuilder.Entity<Cliente>().HasIndex(c => c.NombreCompleto);
             modelBuilder.Entity<FichaCosto>().HasIndex(f => f.NumeroFicha);
             modelBuilder.Entity<FichaCosto>().HasIndex(f => f.FechaEnvio);

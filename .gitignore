@@ -57,3 +57,7 @@ msbuild.wrn
 *.nupkg
 **/[Pp]ackages/*
 !**/[Pp]ackages/build/
+
+# Junk files
+bash.exe.stackdump
+nul

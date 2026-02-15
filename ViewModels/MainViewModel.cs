@@ -47,6 +47,7 @@ namespace GestionApp.ViewModels
         public ICommand NavigateToDashboardCommand { get; }
         public ICommand NavigateToInventarioCommand { get; }
         public ICommand NavigateToCombosCommand { get; }
+        public ICommand NavigateToEntregasCommand { get; }
         public ICommand NavigateToFichasCostoCommand { get; }
         public ICommand NavigateToMovimientosCommand { get; }
         public ICommand NavigateToReportesCommand { get; }
@@ -64,6 +65,7 @@ namespace GestionApp.ViewModels
             NavigateToDashboardCommand = new RelayCommand(_ => NavigateTo<DashboardViewModel>("Dashboard"));
             NavigateToInventarioCommand = new RelayCommand(_ => NavigateTo<InventarioViewModel>("Inventario"));
             NavigateToCombosCommand = new RelayCommand(_ => NavigateTo<CombosViewModel>("Combos"));
+            NavigateToEntregasCommand = new RelayCommand(_ => NavigateTo<EntregasViewModel>("Entregas"));
             NavigateToFichasCostoCommand = new RelayCommand(_ => NavigateTo<FichasCostoViewModel>("Fichas de Costo"));
             NavigateToMovimientosCommand = new RelayCommand(_ => NavigateTo<MovimientosViewModel>("Movimientos"));
             NavigateToReportesCommand = new RelayCommand(_ => NavigateTo<ReportesViewModel>("Reportes"));
