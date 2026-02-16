@@ -255,20 +255,49 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <!-- Productos -->
+                                    <!-- Productos del combo con disponibilidad -->
                                     <TextBlock Text="Productos del combo" FontSize="14" FontWeight="SemiBold" 
-                                               Foreground="#1A237E" Margin="0,10,0,8"/>
-                                    <ItemsControl ItemsSource="{Binding Productos}">
+                                               Foreground="#1A237E" Margin="0,10,0,4"/>
+
+                                    <!-- Banner de disponibilidad general -->
+                                    <Border Visibility="{Binding DataContext.MostrarDisponibilidad, Converter={StaticResource BoolToVis}, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CornerRadius="6" Padding="10,6" Margin="0,0,0,8"
+                                            BorderBrush="#E0E0E0" BorderThickness="1" Background="#FAFAFA">
+                                        <TextBlock Text="{Binding DataContext.DisponibilidadGeneral, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                   FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+
+                                    <!-- Lista con disponibilidad por producto -->
+                                    <ItemsControl ItemsSource="{Binding DataContext.ProductosDisponibilidad, RelativeSource={RelativeSource AncestorType=UserControl}}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="8,6">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="{Binding NombreProducto}" FontSize="13" Foreground="#333"/>
-                                                        <TextBlock Grid.Column="1" Text="{Binding Descripcion, Mode=OneWay}" FontSize="13" Foreground="#666" FontWeight="SemiBold"/>
+                                                        <!-- Icono de estado -->
+                                                        <TextBlock Grid.Column="0" Text="{Binding Icono}" FontSize="13" 
+                                                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <!-- Nombre producto -->
+                                                        <TextBlock Grid.Column="1" Text="{Binding NombreProducto}" 
+                                                                   FontSize="13" Foreground="#333" VerticalAlignment="Center"/>
+                                                        <!-- Cantidad requerida -->
+                                                        <TextBlock Grid.Column="2" FontSize="12" Foreground="#666" 
+                                                                   FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0">
+                                                            <Run Text="{Binding CantidadRequerida, StringFormat='{}{0:G}', Mode=OneWay}"/>
+                                                            <Run Text=" "/>
+                                                            <Run Text="{Binding Unidad, Mode=OneWay}"/>
+                                                        </TextBlock>
+                                                        <!-- Chip de estado -->
+                                                        <Border Grid.Column="3" Background="{Binding ColorFondo}" 
+                                                                CornerRadius="8" Padding="8,2" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Estado}" FontSize="10" 
+                                                                       Foreground="{Binding ColorTexto}" FontWeight="SemiBold"/>
+                                                        </Border>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>
@@ -525,6 +554,39 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
+
+                            <!-- Panel de disponibilidad debajo del combo selector -->
+                            <Border Visibility="{Binding MostrarDisponibilidad, Converter={StaticResource BoolToVis}}"
+                                    CornerRadius="6" Padding="8,6" Margin="0,6,0,0"
+                                    BorderBrush="#E0E0E0" BorderThickness="1" Background="#FAFAFA">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisponibilidadGeneral}" 
+                                               FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding ProductosDisponibilidad}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0,1" Padding="6,3" CornerRadius="4"
+                                                        Background="{Binding ColorFondo}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{Binding Icono}" FontSize="10" 
+                                                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding NombreProducto}" FontSize="10"
+                                                                   Foreground="{Binding ColorTexto}" VerticalAlignment="Center"/>
+                                                        <TextBlock Grid.Column="2" Text="{Binding Detalle}" FontSize="9"
+                                                                   Foreground="{Binding ColorTexto}" VerticalAlignment="Center"
+                                                                   FontStyle="Italic"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
                             <TextBlock Text="NOMBRE DEL RECEPTOR *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>

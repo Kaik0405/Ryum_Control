@@ -42,11 +42,26 @@ public partial class App : Application
             args.Handled = true;
         };
 
-        // Asegurar que la base de datos está creada
+        // Asegurar que la base de datos está creada con el esquema actual
         using (var scope = Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            context.Database.EnsureCreated();
+            
+            // Si la DB existe pero le faltan tablas (esquema viejo), recrearla
+            try
+            {
+                context.Database.EnsureCreated();
+                // Verificar que todas las tablas existen haciendo una query ligera
+                _ = context.Model.GetEntityTypes().Count();
+                // Intentar acceder a la tabla más nueva para validar esquema
+                _ = context.Set<GestionApp.Models.ComboProductoInventario>().Any();
+            }
+            catch
+            {
+                // Esquema desactualizado — recrear la DB
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
         }
 
         // Crear y mostrar la ventana principal

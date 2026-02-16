@@ -20,6 +20,7 @@ namespace GestionApp.Data
         // Combos
         public DbSet<Combo> Combos { get; set; }
         public DbSet<ComboProducto> ComboProductos { get; set; }
+        public DbSet<ComboProductoInventario> ComboProductoInventarios { get; set; }
 
         // Fichas de Costo
         public DbSet<FichaCosto> FichasCosto { get; set; }
@@ -99,6 +100,18 @@ namespace GestionApp.Data
                 .WithMany(c => c.Productos)
                 .HasForeignKey(cp => cp.ComboId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ComboProductoInventario>()
+                .HasOne(cpi => cpi.ComboProducto)
+                .WithMany(cp => cp.ProductosInventario)
+                .HasForeignKey(cpi => cpi.ComboProductoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ComboProductoInventario>()
+                .HasOne(cpi => cpi.Producto)
+                .WithMany()
+                .HasForeignKey(cpi => cpi.ProductoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
 

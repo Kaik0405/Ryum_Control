@@ -34,6 +34,12 @@ namespace GestionApp.Models
         public UnidadMedida Unidad { get; set; } = UnidadMedida.Unidad;
 
         /// <summary>
+        /// Productos del inventario vinculados a este producto del combo.
+        /// Permite vincular varios (ej: cerdo a $40 + cerdo a $50).
+        /// </summary>
+        public ICollection<ComboProductoInventario> ProductosInventario { get; set; } = new List<ComboProductoInventario>();
+
+        /// <summary>
         /// Descripción formateada: "2 Libra" o "1 Paquete"
         /// </summary>
         public string Descripcion => $"{Cantidad:G} {Unidad}";

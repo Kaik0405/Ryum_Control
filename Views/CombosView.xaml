@@ -13,6 +13,8 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <h:ComboColorConverter x:Key="ComboColor"/>
+        <h:NullToBoolConverter x:Key="NullToBool"/>
+        <h:MultiValueToArrayConverter x:Key="MultiValueArray"/>
     </UserControl.Resources>
     
     <Grid Margin="20">
@@ -412,9 +414,34 @@
                                 <TextBlock Text="➕ Agregar producto" FontSize="11" 
                                            FontWeight="Bold" Foreground="#2E7D32"/>
                             </Border>
-                            
+
+                            <!-- Selector de producto del inventario -->
+                            <TextBlock Text="VINCULAR CON INVENTARIO" FontSize="9" Foreground="#1565C0" 
+                                       FontWeight="Bold" Margin="0,0,0,3"/>
+                            <ComboBox ItemsSource="{Binding ProductosInventarioConNinguna}"
+                                      SelectedItem="{Binding ProductoInventarioSeleccionado}"
+                                      Padding="8,6" FontSize="11" BorderBrush="#BBDEFB" Margin="0,0,0,6"
+                                      IsEditable="True" IsTextSearchEnabled="True" TextSearch.TextPath="Nombre">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="11">
+                                            <Run Text="{Binding Nombre, Mode=OneWay}"/>
+                                            <Run Text=" — " Foreground="#BBB"/>
+                                            <Run Text="{Binding StockConUnidad, Mode=OneWay}" Foreground="#888"/>
+                                            <Run Text=" ($" Foreground="#999"/>
+                                            <Run Text="{Binding CostoCompra, Mode=OneWay, StringFormat='{}{0:N2}'}" Foreground="#999"/>
+                                            <Run Text=")" Foreground="#999"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <!-- Campo nombre del producto (deshabilitado si hay inventario seleccionado) -->
+                            <TextBlock Text="NOMBRE DEL PRODUCTO" FontSize="9" Foreground="#888" 
+                                       FontWeight="Bold" Margin="0,0,0,3"/>
                             <TextBox Text="{Binding FormNombreProducto, UpdateSourceTrigger=PropertyChanged}" 
-                                     Padding="10,8" FontSize="12" BorderBrush="#DDD" Margin="0,0,0,6">
+                                     Padding="10,8" FontSize="12" BorderBrush="#DDD" Margin="0,0,0,6"
+                                     IsEnabled="{Binding ProductoInventarioSeleccionado, Converter={StaticResource NullToBool}}">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox">
                                         <Style.Triggers>
@@ -423,7 +450,7 @@
                                                     <Setter.Value>
                                                         <VisualBrush Stretch="None" AlignmentX="Left">
                                                             <VisualBrush.Visual>
-                                                                <TextBlock Text="Nombre del producto..." 
+                                                                <TextBlock Text="Nombre libre (sin inventario)..." 
                                                                            Foreground="#CCC" Margin="12,0,0,0" FontSize="11"/>
                                                             </VisualBrush.Visual>
                                                         </VisualBrush>
@@ -467,6 +494,7 @@
                                 <ComboBox Grid.Column="1" 
                                           ItemsSource="{Binding UnidadesMedida}"
                                           SelectedItem="{Binding FormUnidadProducto}"
+                                          IsEnabled="{Binding ProductoInventarioSeleccionado, Converter={StaticResource NullToBool}}"
                                           Padding="8,8" FontSize="11" Margin="6,0,0,0"/>
                                 
                                 <Button Grid.Column="2" 
@@ -476,7 +504,7 @@
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="bd" Background="#4CAF50" CornerRadius="6" 
                                                     Padding="12,8">
-                                                <TextBlock Text="+" FontSize="14" FontWeight="Bold" 
+                                                <TextBlock Text="✓" FontSize="16" FontWeight="Bold" 
                                                            Foreground="White" HorizontalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
@@ -514,38 +542,105 @@
                                         <DataTemplate>
                                             <Border Margin="0,0,0,5" Padding="10,8" CornerRadius="8"
                                                     Background="#FAFAFA" BorderBrush="#E8E8E8" BorderThickness="1">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding NombreProducto}" 
-                                                                   FontSize="12" FontWeight="SemiBold" Foreground="#333"/>
-                                                        <TextBlock Text="{Binding Descripcion, Mode=OneWay}" 
-                                                                   FontSize="10" Foreground="#999" Margin="0,2,0,0"/>
-                                                    </StackPanel>
-                                                    <Button Grid.Column="1" 
-                                                            Command="{Binding DataContext.QuitarProductoCommand, 
+                                                <StackPanel>
+                                                    <!-- Nombre del producto + botón quitar -->
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding NombreProducto}" 
+                                                                       FontSize="12" FontWeight="SemiBold" Foreground="#333"/>
+                                                            <TextBlock Text="{Binding Descripcion, Mode=OneWay}" 
+                                                                       FontSize="10" Foreground="#999" Margin="0,2,0,0"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="1" 
+                                                                Command="{Binding DataContext.QuitarProductoCommand, 
+                                                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                CommandParameter="{Binding}"
+                                                                Cursor="Hand" VerticalAlignment="Center">
+                                                            <Button.Template>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border x:Name="bd" Background="#FFEBEE" CornerRadius="6" 
+                                                                            Padding="8,4">
+                                                                        <TextBlock Text="✕" FontSize="10" Foreground="#D32F2F"
+                                                                                   HorizontalAlignment="Center"/>
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Button.Template>
+                                                        </Button>
+                                                    </Grid>
+
+                                                    <!-- Vinculaciones con inventario (chips) -->
+                                                    <ItemsControl ItemsSource="{Binding ProductosInventario}" Margin="0,4,0,0">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Background="#E3F2FD" CornerRadius="10" 
+                                                                        Padding="6,2,4,2" Margin="0,0,4,2">
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock FontSize="9" Foreground="#1565C0" 
+                                                                                   VerticalAlignment="Center">
+                                                                            <Run Text="🔗 "/>
+                                                                            <Run Text="{Binding Producto.Nombre, Mode=OneWay}"/>
+                                                                            <Run Text=" (" Foreground="#90CAF9"/>
+                                                                            <Run Text="{Binding Producto.StockConUnidad, Mode=OneWay}" Foreground="#90CAF9"/>
+                                                                            <Run Text=")" Foreground="#90CAF9"/>
+                                                                        </TextBlock>
+                                                                        <Button Cursor="Hand" Margin="3,0,0,0"
+                                                                                Command="{Binding DataContext.DesvincularInventarioCommand, 
+                                                                                         RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                                                            <Button.CommandParameter>
+                                                                                <MultiBinding Converter="{StaticResource MultiValueArray}">
+                                                                                    <Binding RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" Path="DataContext"/>
+                                                                                    <Binding/>
+                                                                                </MultiBinding>
+                                                                            </Button.CommandParameter>
+                                                                            <Button.Template>
+                                                                                <ControlTemplate TargetType="Button">
+                                                                                    <TextBlock Text="✕" FontSize="8" Foreground="#1565C0" 
+                                                                                               VerticalAlignment="Center" Cursor="Hand"/>
+                                                                                </ControlTemplate>
+                                                                            </Button.Template>
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+
+                                                    <!-- Botón para vincular más productos del inventario -->
+                                                    <Button Cursor="Hand" Margin="0,3,0,0"
+                                                            HorizontalAlignment="Left"
+                                                            Command="{Binding DataContext.VincularInventarioCommand, 
                                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                            CommandParameter="{Binding}"
-                                                            Cursor="Hand" VerticalAlignment="Center">
+                                                            CommandParameter="{Binding}">
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="bd" Background="#FFEBEE" CornerRadius="6" 
-                                                                        Padding="8,4">
-                                                                    <TextBlock Text="✕" FontSize="10" Foreground="#D32F2F"
-                                                                               HorizontalAlignment="Center"/>
+                                                                <Border x:Name="bd" Background="#E3F2FD" CornerRadius="8" 
+                                                                        Padding="6,2">
+                                                                    <TextBlock Text="+ vincular inventario" FontSize="9" 
+                                                                               Foreground="#1565C0"/>
                                                                 </Border>
                                                                 <ControlTemplate.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                                        <Setter TargetName="bd" Property="Background" Value="#BBDEFB"/>
                                                                     </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
                                                         </Button.Template>
                                                     </Button>
-                                                </Grid>
+                                                </StackPanel>
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

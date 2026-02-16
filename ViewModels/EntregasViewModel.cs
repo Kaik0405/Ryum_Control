@@ -52,6 +52,11 @@ namespace GestionApp.ViewModels
         private DateTime _formFechaOrden = DateTime.Now;
         private string _formObservaciones = string.Empty;
 
+        // Disponibilidad de inventario
+        private ObservableCollection<ProductoDisponibilidad> _productosDisponibilidad = new();
+        private string _disponibilidadGeneral = string.Empty;
+        private bool _mostrarDisponibilidad;
+
         // Contadores
         private int _totalPendientes;
         private int _totalUrgentes;
@@ -157,7 +162,11 @@ namespace GestionApp.ViewModels
         public Combo? FormComboSeleccionado
         {
             get => _formComboSeleccionado;
-            set => SetProperty(ref _formComboSeleccionado, value);
+            set
+            {
+                if (SetProperty(ref _formComboSeleccionado, value))
+                    CalcularDisponibilidad(value);
+            }
         }
 
         public string FormReceptor
@@ -206,6 +215,28 @@ namespace GestionApp.ViewModels
         {
             get => _formObservaciones;
             set => SetProperty(ref _formObservaciones, value);
+        }
+
+        #endregion
+
+        #region Propiedades de Disponibilidad
+
+        public ObservableCollection<ProductoDisponibilidad> ProductosDisponibilidad
+        {
+            get => _productosDisponibilidad;
+            set => SetProperty(ref _productosDisponibilidad, value);
+        }
+
+        public string DisponibilidadGeneral
+        {
+            get => _disponibilidadGeneral;
+            set => SetProperty(ref _disponibilidadGeneral, value);
+        }
+
+        public bool MostrarDisponibilidad
+        {
+            get => _mostrarDisponibilidad;
+            set => SetProperty(ref _mostrarDisponibilidad, value);
         }
 
         #endregion
@@ -489,6 +520,10 @@ namespace GestionApp.ViewModels
             EntregaDetalle = entrega;
             MostrarDetalle = true;
             MostrarFormulario = false;
+
+            // Calcular disponibilidad usando el combo completo de CombosDisponibles
+            var comboCompleto = CombosDisponibles.FirstOrDefault(c => c.Id == entrega.ComboId);
+            CalcularDisponibilidad(comboCompleto);
         }
 
         private void CerrarFormulario()
@@ -509,6 +544,93 @@ namespace GestionApp.ViewModels
             FormFechaOrden = DateTime.Now;
             FormObservaciones = string.Empty;
             EntregaSeleccionada = null;
+            ProductosDisponibilidad.Clear();
+            MostrarDisponibilidad = false;
+            DisponibilidadGeneral = string.Empty;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // DISPONIBILIDAD DE INVENTARIO
+        // ═══════════════════════════════════════════════════
+
+        /// <summary>
+        /// Calcula la disponibilidad de stock para cada producto del combo
+        /// basándose en las vinculaciones con productos de inventario.
+        /// </summary>
+        private void CalcularDisponibilidad(Combo? combo)
+        {
+            if (combo == null || combo.Productos == null || !combo.Productos.Any())
+            {
+                ProductosDisponibilidad = new ObservableCollection<ProductoDisponibilidad>();
+                MostrarDisponibilidad = false;
+                DisponibilidadGeneral = string.Empty;
+                return;
+            }
+
+            var disponibilidad = new ObservableCollection<ProductoDisponibilidad>();
+
+            foreach (var cp in combo.Productos)
+            {
+                var vinculaciones = cp.ProductosInventario;
+                
+                if (vinculaciones == null || !vinculaciones.Any())
+                {
+                    disponibilidad.Add(new ProductoDisponibilidad
+                    {
+                        NombreProducto = cp.NombreProducto,
+                        CantidadRequerida = cp.Cantidad,
+                        Unidad = cp.Unidad.ToString(),
+                        StockDisponible = 0,
+                        TieneVinculacion = false,
+                        Estado = "Sin vincular",
+                        Icono = "⚪",
+                        ColorFondo = "#F5F5F5",
+                        ColorTexto = "#999",
+                        Detalle = "No vinculado al inventario"
+                    });
+                }
+                else
+                {
+                    var stockTotal = vinculaciones.Sum(v => v.Producto?.CantidadStock ?? 0);
+                    var suficiente = stockTotal >= cp.Cantidad;
+                    var hayAlgo = stockTotal > 0;
+
+                    disponibilidad.Add(new ProductoDisponibilidad
+                    {
+                        NombreProducto = cp.NombreProducto,
+                        CantidadRequerida = cp.Cantidad,
+                        Unidad = cp.Unidad.ToString(),
+                        StockDisponible = stockTotal,
+                        TieneVinculacion = true,
+                        Estado = suficiente ? "Disponible" : (hayAlgo ? "Parcial" : "Agotado"),
+                        Icono = suficiente ? "✅" : (hayAlgo ? "🟡" : "🔴"),
+                        ColorFondo = suficiente ? "#E8F5E9" : (hayAlgo ? "#FFF8E1" : "#FFEBEE"),
+                        ColorTexto = suficiente ? "#2E7D32" : (hayAlgo ? "#F57F17" : "#C62828"),
+                        Detalle = $"{stockTotal:G} {cp.Unidad} disponible — {cp.Cantidad:G} {cp.Unidad} requerido"
+                    });
+                }
+            }
+
+            ProductosDisponibilidad = disponibilidad;
+            MostrarDisponibilidad = true;
+
+            var vinculados = disponibilidad.Where(d => d.TieneVinculacion).ToList();
+            if (!vinculados.Any())
+            {
+                DisponibilidadGeneral = "⚪ Sin vinculaciones de inventario";
+            }
+            else if (vinculados.All(d => d.Estado == "Disponible"))
+            {
+                DisponibilidadGeneral = "✅ Todo disponible en inventario";
+            }
+            else if (vinculados.Any(d => d.Estado == "Agotado"))
+            {
+                DisponibilidadGeneral = "🔴 Hay productos agotados";
+            }
+            else
+            {
+                DisponibilidadGeneral = "🟡 Stock parcial en algunos productos";
+            }
         }
     }
 }

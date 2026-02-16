@@ -21,14 +21,19 @@ namespace GestionApp.ViewModels
     public class CombosViewModel : BaseViewModel
     {
         private readonly IComboService _comboService;
+        private readonly IProductoService _productoService;
 
         // Listas principales
         private ObservableCollection<Combo> _combos = new();
         private ObservableCollection<Combo> _combosFiltrados = new();
         private ObservableCollection<ComboProducto> _productosDelCombo = new();
+        private ObservableCollection<Producto> _productosInventario = new();
 
         // Selección
         private Combo? _comboSeleccionado;
+
+        // Vinculación inventario
+        private Producto? _productoInventarioSeleccionado;
 
         // Filtros
         private string _filtro = string.Empty;
@@ -70,6 +75,65 @@ namespace GestionApp.ViewModels
             get => _productosDelCombo;
             set => SetProperty(ref _productosDelCombo, value);
         }
+
+        public ObservableCollection<Producto> ProductosInventario
+        {
+            get => _productosInventario;
+            set
+            {
+                if (SetProperty(ref _productosInventario, value))
+                    OnPropertyChanged(nameof(ProductosInventarioConNinguna));
+            }
+        }
+
+        /// <summary>
+        /// Lista con un placeholder "(Ninguna)" al inicio para limpiar la selección.
+        /// </summary>
+        public ObservableCollection<Producto> ProductosInventarioConNinguna
+        {
+            get
+            {
+                var lista = new ObservableCollection<Producto>();
+                lista.Add(new Producto { Id = -1, Nombre = "(Ninguna)" });
+                if (_productosInventario != null)
+                {
+                    foreach (var p in _productosInventario)
+                        lista.Add(p);
+                }
+                return lista;
+            }
+        }
+
+        public Producto? ProductoInventarioSeleccionado
+        {
+            get => _productoInventarioSeleccionado;
+            set
+            {
+                // Si seleccionó "(Ninguna)" (Id == -1), limpiar selección
+                if (value != null && value.Id == -1)
+                    value = null;
+
+                if (SetProperty(ref _productoInventarioSeleccionado, value))
+                {
+                    if (value != null)
+                    {
+                        FormUnidadProducto = value.Unidad;
+                        FormNombreProducto = value.Nombre;
+                    }
+                    else
+                    {
+                        FormNombreProducto = string.Empty;
+                        FormUnidadProducto = UnidadMedida.Unidad;
+                    }
+                    OnPropertyChanged(nameof(UnidadAutoAsignada));
+                }
+            }
+        }
+
+        /// <summary>
+        /// true cuando la unidad fue auto-asignada desde el inventario (deshabilitar selector).
+        /// </summary>
+        public bool UnidadAutoAsignada => ProductoInventarioSeleccionado != null;
 
         public Combo? ComboSeleccionado
         {
@@ -176,13 +240,16 @@ namespace GestionApp.ViewModels
         public ICommand CancelarCommand { get; }
         public ICommand AgregarProductoCommand { get; }
         public ICommand QuitarProductoCommand { get; }
+        public ICommand VincularInventarioCommand { get; }
+        public ICommand DesvincularInventarioCommand { get; }
         public ICommand RefrescarCommand { get; }
 
         #endregion
 
-        public CombosViewModel(IComboService comboService)
+        public CombosViewModel(IComboService comboService, IProductoService productoService)
         {
             _comboService = comboService;
+            _productoService = productoService;
 
             CrearComboCommand = new RelayCommand(_ => PrepararNuevoCombo());
             EditarComboCommand = new RelayCommand(param => PrepararEdicion(param as Combo));
@@ -194,8 +261,10 @@ namespace GestionApp.ViewModels
                      !string.IsNullOrWhiteSpace(FormPrecioVenta) &&
                      string.IsNullOrWhiteSpace(FormNombreProducto));
             CancelarCommand = new RelayCommand(_ => CerrarFormulario());
-            AgregarProductoCommand = new RelayCommand(_ => AgregarProductoAlCombo(), _ => !string.IsNullOrWhiteSpace(FormNombreProducto));
+            AgregarProductoCommand = new RelayCommand(_ => AgregarProductoAlCombo(), _ => !string.IsNullOrWhiteSpace(FormNombreProducto) || ProductoInventarioSeleccionado != null);
             QuitarProductoCommand = new RelayCommand(param => QuitarProductoDelCombo(param as ComboProducto));
+            VincularInventarioCommand = new RelayCommand(param => VincularProductoInventario(param as ComboProducto), _ => ProductoInventarioSeleccionado != null);
+            DesvincularInventarioCommand = new RelayCommand(param => DesvincularProductoInventario(param));
             RefrescarCommand = new RelayCommand(async _ => await CargarDatosAsync());
         }
 
@@ -220,7 +289,20 @@ namespace GestionApp.ViewModels
             }
             catch (Exception ex)
             {
-                MensajeEstado = $"Error al cargar: {ex.Message}";
+                MensajeEstado = $"Error al cargar combos: {ex.Message}";
+            }
+
+            // Cargar productos del inventario en bloque separado para que
+            // no falle todo si hay error en combos
+            try
+            {
+                var productos = await _productoService.ObtenerTodosAsync();
+                ProductosInventario = new ObservableCollection<Producto>(
+                    productos.Where(p => p.Activo));
+            }
+            catch (Exception ex)
+            {
+                MensajeEstado += $" | Error inventario: {ex.Message}";
             }
         }
 
@@ -266,13 +348,19 @@ namespace GestionApp.ViewModels
             FormTipo = combo.Tipo;
             FormPrecioVenta = combo.PrecioVenta.ToString();
 
-            // Cargar productos del combo (copia)
+            // Cargar productos del combo (copia con vinculaciones)
             ProductosDelCombo = new ObservableCollection<ComboProducto>(
                 combo.Productos.Select(p => new ComboProducto
                 {
                     NombreProducto = p.NombreProducto,
                     Cantidad = p.Cantidad,
-                    Unidad = p.Unidad
+                    Unidad = p.Unidad,
+                    ProductosInventario = new List<ComboProductoInventario>(
+                        p.ProductosInventario.Select(pi => new ComboProductoInventario
+                        {
+                            ProductoId = pi.ProductoId,
+                            Producto = pi.Producto
+                        }))
                 }));
 
             MostrarFormulario = true;
@@ -281,7 +369,23 @@ namespace GestionApp.ViewModels
 
         private void AgregarProductoAlCombo()
         {
-            if (string.IsNullOrWhiteSpace(FormNombreProducto)) return;
+            // Determinar nombre: del inventario seleccionado o del texto libre
+            string nombreProducto;
+            Producto? productoVinculado = null;
+
+            if (ProductoInventarioSeleccionado != null)
+            {
+                nombreProducto = ProductoInventarioSeleccionado.Nombre;
+                productoVinculado = ProductoInventarioSeleccionado;
+            }
+            else if (!string.IsNullOrWhiteSpace(FormNombreProducto))
+            {
+                nombreProducto = FormNombreProducto.Trim();
+            }
+            else
+            {
+                return;
+            }
 
             // Parsear cantidad
             if (!decimal.TryParse(FormCantidadProducto.Replace('.', ','), out var cantidad) &&
@@ -291,18 +395,79 @@ namespace GestionApp.ViewModels
             }
             if (cantidad <= 0) cantidad = 1;
 
-            ProductosDelCombo.Add(new ComboProducto
+            var nuevoProducto = new ComboProducto
             {
-                NombreProducto = FormNombreProducto.Trim(),
+                NombreProducto = nombreProducto,
                 Cantidad = cantidad,
                 Unidad = FormUnidadProducto
-            });
+            };
+
+            // Si se seleccionó un producto del inventario, vincularlo automáticamente
+            if (productoVinculado != null)
+            {
+                nuevoProducto.ProductosInventario.Add(new ComboProductoInventario
+                {
+                    ProductoId = productoVinculado.Id,
+                    Producto = productoVinculado
+                });
+            }
+
+            ProductosDelCombo.Add(nuevoProducto);
 
             // Limpiar campos del producto
             FormNombreProducto = string.Empty;
             FormCantidadProducto = string.Empty;
             FormUnidadProducto = UnidadMedida.Unidad;
+            ProductoInventarioSeleccionado = null;
             MensajeEstado = "Producto agregado al combo";
+        }
+
+        private void VincularProductoInventario(ComboProducto? comboProducto)
+        {
+            if (comboProducto == null || ProductoInventarioSeleccionado == null) return;
+
+            // Verificar que no esté ya vinculado
+            if (comboProducto.ProductosInventario.Any(pi => pi.ProductoId == ProductoInventarioSeleccionado.Id))
+            {
+                MensajeEstado = "⚠️ Este producto del inventario ya está vinculado";
+                return;
+            }
+
+            comboProducto.ProductosInventario.Add(new ComboProductoInventario
+            {
+                ProductoId = ProductoInventarioSeleccionado.Id,
+                Producto = ProductoInventarioSeleccionado
+            });
+
+            // Forzar actualización visual
+            var idx = ProductosDelCombo.IndexOf(comboProducto);
+            if (idx >= 0)
+            {
+                ProductosDelCombo.RemoveAt(idx);
+                ProductosDelCombo.Insert(idx, comboProducto);
+            }
+
+            ProductoInventarioSeleccionado = null;
+            MensajeEstado = "✅ Producto del inventario vinculado";
+        }
+
+        private void DesvincularProductoInventario(object? param)
+        {
+            if (param is not object[] args || args.Length < 2) return;
+            if (args[0] is not ComboProducto comboProducto) return;
+            if (args[1] is not ComboProductoInventario vinculacion) return;
+
+            comboProducto.ProductosInventario.Remove(vinculacion);
+
+            // Forzar actualización visual
+            var idx = ProductosDelCombo.IndexOf(comboProducto);
+            if (idx >= 0)
+            {
+                ProductosDelCombo.RemoveAt(idx);
+                ProductosDelCombo.Insert(idx, comboProducto);
+            }
+
+            MensajeEstado = "Vinculación eliminada";
         }
 
         private void QuitarProductoDelCombo(ComboProducto? item)
@@ -328,19 +493,8 @@ namespace GestionApp.ViewModels
                 }
 
                 // Auto-generar número para combos nuevos
-                int numero;
                 if (EsEdicion && ComboSeleccionado != null)
                 {
-                    numero = ComboSeleccionado.Numero;
-                }
-                else
-                {
-                    numero = _combos.Count > 0 ? _combos.Max(c => c.Numero) + 1 : 1;
-                }
-
-                if (EsEdicion && ComboSeleccionado != null)
-                {
-                    ComboSeleccionado.Numero = numero;
                     ComboSeleccionado.Nombre = FormNombre.Trim();
                     ComboSeleccionado.Descripcion = string.IsNullOrWhiteSpace(FormDescripcion) ? null : FormDescripcion.Trim();
                     ComboSeleccionado.Tipo = FormTipo;
@@ -350,13 +504,21 @@ namespace GestionApp.ViewModels
                     ComboSeleccionado.Productos.Clear();
                     foreach (var p in ProductosDelCombo)
                     {
-                        ComboSeleccionado.Productos.Add(new ComboProducto
+                        var cp = new ComboProducto
                         {
                             ComboId = ComboSeleccionado.Id,
                             NombreProducto = p.NombreProducto,
                             Cantidad = p.Cantidad,
                             Unidad = p.Unidad
-                        });
+                        };
+                        foreach (var pi in p.ProductosInventario)
+                        {
+                            cp.ProductosInventario.Add(new ComboProductoInventario
+                            {
+                                ProductoId = pi.ProductoId
+                            });
+                        }
+                        ComboSeleccionado.Productos.Add(cp);
                     }
 
                     await _comboService.ActualizarAsync(ComboSeleccionado);
@@ -366,7 +528,6 @@ namespace GestionApp.ViewModels
                 {
                     var nuevoCombo = new Combo
                     {
-                        Numero = numero,
                         Nombre = FormNombre.Trim(),
                         Descripcion = string.IsNullOrWhiteSpace(FormDescripcion) ? null : FormDescripcion.Trim(),
                         Tipo = FormTipo,
@@ -375,12 +536,20 @@ namespace GestionApp.ViewModels
 
                     foreach (var p in ProductosDelCombo)
                     {
-                        nuevoCombo.Productos.Add(new ComboProducto
+                        var cp = new ComboProducto
                         {
                             NombreProducto = p.NombreProducto,
                             Cantidad = p.Cantidad,
                             Unidad = p.Unidad
-                        });
+                        };
+                        foreach (var pi in p.ProductosInventario)
+                        {
+                            cp.ProductosInventario.Add(new ComboProductoInventario
+                            {
+                                ProductoId = pi.ProductoId
+                            });
+                        }
+                        nuevoCombo.Productos.Add(cp);
                     }
 
                     await _comboService.CrearAsync(nuevoCombo);
@@ -392,7 +561,10 @@ namespace GestionApp.ViewModels
             }
             catch (Exception ex)
             {
-                MensajeEstado = $"❌ Error al guardar: {ex.Message}";
+                var innerMsg = ex.InnerException?.InnerException?.Message 
+                    ?? ex.InnerException?.Message 
+                    ?? ex.Message;
+                MensajeEstado = $"❌ Error al guardar: {innerMsg}";
             }
         }
 
@@ -454,6 +626,7 @@ namespace GestionApp.ViewModels
             FormNombreProducto = string.Empty;
             FormCantidadProducto = string.Empty;
             FormUnidadProducto = UnidadMedida.Unidad;
+            ProductoInventarioSeleccionado = null;
             ProductosDelCombo = new ObservableCollection<ComboProducto>();
             ComboSeleccionado = null;
         }
