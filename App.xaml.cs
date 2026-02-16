@@ -98,13 +98,13 @@ public partial class App : Application
 
         // Registrar ViewModels
         services.AddSingleton<MainViewModel>();
-        services.AddTransient<DashboardViewModel>();
-        services.AddTransient<InventarioViewModel>();
-        services.AddTransient<CombosViewModel>();
-        services.AddTransient<EntregasViewModel>();
-        services.AddTransient<FichasCostoViewModel>();
-        services.AddTransient<MovimientosViewModel>();
-        services.AddTransient<ReportesViewModel>();
+        services.AddSingleton<DashboardViewModel>();
+        services.AddSingleton<InventarioViewModel>();
+        services.AddSingleton<CombosViewModel>();
+        services.AddSingleton<EntregasViewModel>();
+        services.AddSingleton<FichasCostoViewModel>();
+        services.AddSingleton<MovimientosViewModel>();
+        services.AddSingleton<ReportesViewModel>();
 
         return services.BuildServiceProvider();
     }

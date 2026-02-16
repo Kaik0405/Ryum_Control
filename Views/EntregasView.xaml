@@ -438,151 +438,334 @@
                 </Grid>
             </Border>
 
-            <!-- ═══ FORMULARIO (visible cuando MostrarFormulario = true) ═══ -->
-            <Border Style="{StaticResource CardStyle}" Padding="25"
+            <!-- ═══ FORMULARIO NUEVA/EDITAR ENTREGA ═══ -->
+            <Border Style="{StaticResource CardStyle}" Padding="0"
                     Visibility="{Binding MostrarFormulario, Converter={StaticResource BoolToVis}}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel MaxWidth="650" HorizontalAlignment="Left">
+                <Grid Width="820" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                        <!-- Título del formulario -->
-                        <TextBlock Text="{Binding TituloFormulario}" 
-                                   FontSize="22" FontWeight="Bold" Foreground="#1A237E" Margin="0,0,0,20"/>
-
-                        <!-- Combo -->
-                        <TextBlock Text="Combo *" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <ComboBox ItemsSource="{Binding CombosDisponibles}"
-                                  SelectedItem="{Binding FormComboSeleccionado}"
-                                  Padding="10,8"
-                                  FontSize="13"
-                                  BorderBrush="#E0E0E0"
-                                  Margin="0,0,0,15">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock>
-                                        <Run Text="#"/><Run Text="{Binding Numero, Mode=OneWay}"/>
-                                        <Run Text=" — "/><Run Text="{Binding Nombre, Mode=OneWay}"/>
-                                        <Run Text=" ("/><Run Text="{Binding Tipo, Mode=OneWay}"/><Run Text=")"/>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-
-                        <!-- Fecha de Orden -->
-                        <TextBlock Text="Fecha de Orden (automática, editable)" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <DatePicker SelectedDate="{Binding FormFechaOrden}"
-                                    Padding="8,6"
-                                    FontSize="13"
-                                    BorderBrush="#E0E0E0"
-                                    Margin="0,0,0,15"/>
-
-                        <!-- Separador: Receptor -->
-                        <Border Height="1" Background="#E0E0E0" Margin="0,5,0,15"/>
-                        <TextBlock Text="DATOS DEL RECEPTOR" FontSize="12" FontWeight="SemiBold" 
-                                   Foreground="#1565C0" Margin="0,0,0,12"/>
-
-                        <!-- Nombre Receptor -->
-                        <TextBlock Text="Nombre del Receptor *" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding FormReceptor, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13" BorderBrush="#E0E0E0" Margin="0,0,0,12"/>
-
-                        <!-- Dirección -->
-                        <TextBlock Text="Dirección" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding FormDireccion, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13" BorderBrush="#E0E0E0" Margin="0,0,0,12"
-                                 TextWrapping="Wrap" AcceptsReturn="True" MinHeight="50"/>
-
-                        <!-- Teléfonos en fila -->
-                        <Grid Margin="0,0,0,12">
+                    <!-- ── ENCABEZADO ── -->
+                    <Border Grid.Row="0" Background="White" Padding="20,14" CornerRadius="8,8,0,0"
+                            BorderBrush="#EEEEEE" BorderThickness="0,0,0,1">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="15"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="📱 Teléfono Móvil" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding FormTelefonoMovil, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="10,8" FontSize="13" BorderBrush="#E0E0E0"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="4" CornerRadius="2" Background="#1565C0" Margin="0,2,12,2"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding TituloFormulario}" 
+                                               FontSize="17" FontWeight="Bold" Foreground="#1A237E"/>
+                                    <TextBlock Text="Complete los campos requeridos (*) para registrar la entrega" 
+                                               FontSize="11" Foreground="#9E9E9E" Margin="0,2,0,0"/>
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="📞 Teléfono Fijo" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding FormTelefonoFijo, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="10,8" FontSize="13" BorderBrush="#E0E0E0"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Separador: Envío -->
-                        <Border Height="1" Background="#E0E0E0" Margin="0,10,0,15"/>
-                        <TextBlock Text="DATOS DEL ENVÍO" FontSize="12" FontWeight="SemiBold" 
-                                   Foreground="#1565C0" Margin="0,0,0,12"/>
-
-                        <!-- Remitente -->
-                        <TextBlock Text="Nombre de quien envía *" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding FormRemitente, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13" BorderBrush="#E0E0E0" Margin="0,0,0,12"/>
-
-                        <!-- Agencia -->
-                        <TextBlock Text="Agencia" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding FormAgencia, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13" BorderBrush="#E0E0E0" Margin="0,0,0,12"/>
-
-                        <!-- Observaciones -->
-                        <TextBlock Text="Observaciones" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding FormObservaciones, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13" BorderBrush="#E0E0E0" Margin="0,0,0,20"
-                                 TextWrapping="Wrap" AcceptsReturn="True" MinHeight="60"/>
-
-                        <!-- Botones del formulario -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Command="{Binding CancelarCommand}"
-                                    Padding="18,10"
-                                    FontSize="13"
-                                    Background="#EEEEEE"
-                                    BorderThickness="0"
-                                    Cursor="Hand"
-                                    Margin="0,0,10,0">
+                            <Button Grid.Column="1" Command="{Binding CancelarCommand}" Cursor="Hand"
+                                    VerticalAlignment="Center">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="{TemplateBinding Background}" 
-                                                CornerRadius="8" Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border x:Name="bd" Background="#FFEBEE" CornerRadius="14" 
+                                                Width="28" Height="28">
+                                            <TextBlock Text="✕" FontSize="13" Foreground="#D32F2F" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#E0E0E0"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
-                                <TextBlock Text="Cancelar" Foreground="#666"/>
                             </Button>
+                        </Grid>
+                    </Border>
 
-                            <Button Command="{Binding GuardarCommand}"
-                                    Padding="25,10"
-                                    FontSize="13"
-                                    Background="#1565C0"
-                                    BorderThickness="0"
-                                    Cursor="Hand">
+                    <!-- ── CUERPO (sin scroll) ── -->
+                    <Grid Grid.Row="1" Margin="20,12,20,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- ROW 0: Headers de sección -->
+                        <Border Grid.Row="0" Grid.Column="0" Background="#E3F2FD" CornerRadius="6" Padding="8,4" Margin="0,0,0,8">
+                            <TextBlock Text="📦 Datos del envío" FontSize="11" FontWeight="Bold" Foreground="#1565C0"/>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="2" Background="#E8F5E9" CornerRadius="6" Padding="8,4" Margin="0,0,0,8">
+                            <TextBlock Text="👤 Datos del receptor" FontSize="11" FontWeight="Bold" Foreground="#2E7D32"/>
+                        </Border>
+
+                        <!-- ROW 1: Combo | Nombre Receptor -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,8">
+                            <TextBlock Text="COMBO *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <ComboBox ItemsSource="{Binding CombosDisponibles}"
+                                      SelectedItem="{Binding FormComboSeleccionado}"
+                                      Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="12">
+                                            <Run Text="#"/><Run Text="{Binding Numero, Mode=OneWay}"/>
+                                            <Run Text=" — "/><Run Text="{Binding Nombre, Mode=OneWay}"/>
+                                            <Run Text=" ("/><Run Text="{Binding Tipo, Mode=OneWay}"/><Run Text=")"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
+                            <TextBlock Text="NOMBRE DEL RECEPTOR *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBox Text="{Binding FormReceptor, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <VisualBrush Stretch="None" AlignmentX="Left">
+                                                            <VisualBrush.Visual>
+                                                                <TextBlock Text="Nombre completo..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+
+                        <!-- ROW 2: Fecha + Agencia | Dirección -->
+                        <Grid Grid.Row="2" Grid.Column="0" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="FECHA DE ORDEN" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <DatePicker SelectedDate="{Binding FormFechaOrden}"
+                                            Padding="4,4" FontSize="12" BorderBrush="#DDD"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="AGENCIA" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBox Text="{Binding FormAgencia, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <VisualBrush Stretch="None" AlignmentX="Left">
+                                                                <VisualBrush.Visual>
+                                                                    <TextBlock Text="Ej: DHL..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                </VisualBrush.Visual>
+                                                            </VisualBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,8">
+                            <TextBlock Text="DIRECCIÓN" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBox Text="{Binding FormDireccion, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8,6" FontSize="12" BorderBrush="#DDD"
+                                     TextWrapping="Wrap" AcceptsReturn="True" Height="52">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Top">
+                                                            <VisualBrush.Visual>
+                                                                <TextBlock Text="Calle, número, ciudad..." Foreground="#CCC" Margin="10,8,0,0" FontSize="11"/>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+
+                        <!-- ROW 3: Segundo bloque headers -->
+                        <Border Grid.Row="3" Grid.Column="0" Background="#FFF3E0" CornerRadius="6" Padding="8,4" Margin="0,2,0,8">
+                            <TextBlock Text="✉️ Remitente" FontSize="11" FontWeight="Bold" Foreground="#E65100"/>
+                        </Border>
+                        <Border Grid.Row="3" Grid.Column="2" Background="#F3E5F5" CornerRadius="6" Padding="8,4" Margin="0,2,0,8">
+                            <TextBlock Text="📞 Contacto" FontSize="11" FontWeight="Bold" Foreground="#7B1FA2"/>
+                        </Border>
+
+                        <!-- ROW 4: Remitente | Teléfonos -->
+                        <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,8">
+                            <TextBlock Text="NOMBRE DE QUIEN ENVÍA *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBox Text="{Binding FormRemitente, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <VisualBrush Stretch="None" AlignmentX="Left">
+                                                            <VisualBrush.Visual>
+                                                                <TextBlock Text="Nombre completo..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+                        <Grid Grid.Row="4" Grid.Column="2" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="📱 MÓVIL" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBox Text="{Binding FormTelefonoMovil, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <VisualBrush Stretch="None" AlignmentX="Left">
+                                                                <VisualBrush.Visual>
+                                                                    <TextBlock Text="+53 5..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                </VisualBrush.Visual>
+                                                            </VisualBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="📞 FIJO" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBox Text="{Binding FormTelefonoFijo, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <VisualBrush Stretch="None" AlignmentX="Left">
+                                                                <VisualBrush.Visual>
+                                                                    <TextBlock Text="Ej: 7..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                </VisualBrush.Visual>
+                                                            </VisualBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- ROW 5: Separador -->
+                        <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" 
+                                BorderBrush="#EEEEEE" BorderThickness="0,1,0,0" Margin="0,2,0,8"/>
+
+                        <!-- ROW 6: Observaciones (col izq) + Botones (col der) -->
+                        <StackPanel Grid.Row="6" Grid.Column="0" Margin="0,0,0,0">
+                            <TextBlock Text="📝 OBSERVACIONES" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBox Text="{Binding FormObservaciones, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8,6" FontSize="12" BorderBrush="#DDD"
+                                     TextWrapping="Wrap" AcceptsReturn="True" Height="40">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <VisualBrush Stretch="None" AlignmentX="Left">
+                                                            <VisualBrush.Visual>
+                                                                <TextBlock Text="Notas adicionales..." 
+                                                                           Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+
+                        <!-- Botones alineados abajo a la derecha -->
+                        <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" 
+                                    HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <Button Command="{Binding CancelarCommand}" Cursor="Hand" Margin="0,0,8,0">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="{TemplateBinding Background}" 
-                                                CornerRadius="8" Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="16,8"
+                                                BorderBrush="#DDD" BorderThickness="1">
+                                            <TextBlock Text="Cancelar" Foreground="#666" FontSize="12"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding GuardarCommand}" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="bd" Background="#1565C0" CornerRadius="6" Padding="20,8">
+                                            <TextBlock Text="💾 Guardar" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="bd" Property="Background" Value="#B0BEC5"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#CCC"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
-                                <TextBlock Text="💾 Guardar Entrega" Foreground="White" FontWeight="SemiBold"/>
                             </Button>
                         </StackPanel>
-                    </StackPanel>
-                </ScrollViewer>
+                    </Grid>
+                </Grid>
             </Border>
         </Grid>
 

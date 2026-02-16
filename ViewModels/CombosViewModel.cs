@@ -261,7 +261,6 @@ namespace GestionApp.ViewModels
             EsEdicion = true;
             ComboSeleccionado = combo;
 
-            FormNumero = combo.Numero.ToString();
             FormNombre = combo.Nombre;
             FormDescripcion = combo.Descripcion ?? string.Empty;
             FormTipo = combo.Tipo;
@@ -328,10 +327,15 @@ namespace GestionApp.ViewModels
                     precioVenta = 0;
                 }
 
-                if (!int.TryParse(FormNumero, out var numero))
+                // Auto-generar número para combos nuevos
+                int numero;
+                if (EsEdicion && ComboSeleccionado != null)
                 {
-                    MensajeEstado = "❌ El número del combo debe ser un entero";
-                    return;
+                    numero = ComboSeleccionado.Numero;
+                }
+                else
+                {
+                    numero = _combos.Count > 0 ? _combos.Max(c => c.Numero) + 1 : 1;
                 }
 
                 if (EsEdicion && ComboSeleccionado != null)
