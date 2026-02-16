@@ -548,18 +548,40 @@ namespace GestionApp.ViewModels
         {
             if (ProductoSeleccionado == null) return;
 
-            // Confirmar con el usuario
-            var resultado = MessageBox.Show(
-                $"¿Eliminar el producto \"{ProductoSeleccionado.Nombre}\"?\n\nEsta acción lo desactivará del inventario.",
-                "Confirmar eliminación",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (resultado != MessageBoxResult.Yes) return;
-
             try
             {
+                // Verificar si el producto tiene vinculaciones con combos
+                var combosVinculados = await _productoService.ObtenerCombosVinculadosAsync(ProductoSeleccionado.Id);
+
+                string mensaje;
+                if (combosVinculados.Any())
+                {
+                    var listaCombos = string.Join(", ", combosVinculados);
+                    mensaje = $"¿Eliminar el producto \"{ProductoSeleccionado.Nombre}\"?\n\n" +
+                              $"⚠️ Este producto está vinculado a los combos:\n{listaCombos}\n\n" +
+                              $"Se eliminarán las vinculaciones y se desactivará del inventario.";
+                }
+                else
+                {
+                    mensaje = $"¿Eliminar el producto \"{ProductoSeleccionado.Nombre}\"?\n\nEsta acción lo desactivará del inventario.";
+                }
+
+                var resultado = MessageBox.Show(
+                    mensaje,
+                    "Confirmar eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (resultado != MessageBoxResult.Yes) return;
+
                 var nombre = ProductoSeleccionado.Nombre;
+
+                // Si tiene vinculaciones, eliminarlas primero
+                if (combosVinculados.Any())
+                {
+                    await _productoService.EliminarVinculacionesComboAsync(ProductoSeleccionado.Id);
+                }
+
                 await _productoService.EliminarAsync(ProductoSeleccionado.Id);
                 MensajeEstado = $"🗑️ Producto \"{nombre}\" eliminado";
                 await CargarDatosAsync();

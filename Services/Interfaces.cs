@@ -22,6 +22,14 @@ namespace GestionApp.Services
         Task<List<Producto>> ObtenerEnStockAsync();
         Task<List<Producto>> BuscarPorNombreAsync(string nombre);
         Task ActualizarStockAsync(int productoId, decimal cantidad);
+        /// <summary>
+        /// Obtiene los nombres de los combos que tienen vinculación con este producto de inventario.
+        /// </summary>
+        Task<List<string>> ObtenerCombosVinculadosAsync(int productoId);
+        /// <summary>
+        /// Elimina todas las vinculaciones de ComboProductoInventario para este producto.
+        /// </summary>
+        Task EliminarVinculacionesComboAsync(int productoId);
     }
 
     /// <summary>

@@ -223,7 +223,7 @@
                     
                     <!-- COLUMNAS: cada una conectada a una propiedad del modelo Producto -->
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Nombre" Width="*" MinWidth="150" SortMemberPath="Nombre">
+                        <DataGridTemplateColumn Header="Nombre" Width="*" MinWidth="120" SortMemberPath="Nombre">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Nombre}" 
@@ -254,39 +254,39 @@
                         
                         <DataGridTextColumn Header="Unidad" 
                                             Binding="{Binding Unidad}" 
-                                            Width="90"/>
+                                            Width="80"/>
                         
-                        <DataGridTextColumn Header="Costo (CUP)" 
+                        <DataGridTextColumn Header="Costo" 
                                             Binding="{Binding CostoCompra, StringFormat=$ {0:N2}}" 
-                                            Width="110"/>
+                                            Width="100"/>
                         
                         <DataGridTextColumn Header="Stock" 
                                             Binding="{Binding StockConUnidad}" 
-                                            Width="120"/>
+                                            Width="110"/>
                         
-                        <DataGridTextColumn Header="Costo Total (CUP)" 
+                        <DataGridTextColumn Header="Costo Total" 
                                             Binding="{Binding CostoTotal, StringFormat=$ {0:N2}}" 
-                                            Width="130"/>
+                                            Width="120"/>
                         
                         <DataGridTextColumn Header="Ingreso" 
                                             Binding="{Binding FechaIngreso, StringFormat={}{0:dd/MM/yyyy}}" 
                                             Width="100"/>
                         
                         <!-- Columna de acciones: Stock +/−, Historial, Editar, Eliminar -->
-                        <DataGridTemplateColumn Header="Acciones" Width="200">
+                        <DataGridTemplateColumn Header="Acciones" Width="350">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <!-- Botón Ingresar stock (+) -->
+                                        <!-- Botón Agregar stock -->
                                         <Button ToolTip="Ingresar stock" Cursor="Hand"
                                                 Command="{Binding DataContext.IngresarStockCommand, 
                                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#E8F5E9" CornerRadius="4" 
-                                                            Padding="7,3" Margin="0,0,2,0">
-                                                        <TextBlock Text="+" FontSize="14" FontWeight="Bold" 
+                                                    <Border x:Name="bd" Background="#E8F5E9" CornerRadius="6" 
+                                                            Padding="10,4" Margin="0,0,4,0">
+                                                        <TextBlock Text="Agregar" FontSize="11" FontWeight="SemiBold" 
                                                                    Foreground="#2E7D32" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
@@ -297,16 +297,16 @@
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
-                                        <!-- Botón Dar salida (−) -->
+                                        <!-- Botón Quitar stock -->
                                         <Button ToolTip="Dar salida" Cursor="Hand"
                                                 Command="{Binding DataContext.SacarStockCommand, 
                                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#FFF3E0" CornerRadius="4" 
-                                                            Padding="7,3" Margin="0,0,2,0">
-                                                        <TextBlock Text="−" FontSize="14" FontWeight="Bold" 
+                                                    <Border x:Name="bd" Background="#FFF3E0" CornerRadius="6" 
+                                                            Padding="10,4" Margin="0,0,4,0">
+                                                        <TextBlock Text="Quitar" FontSize="11" FontWeight="SemiBold" 
                                                                    Foreground="#E65100" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
@@ -326,9 +326,10 @@
                                                 CommandParameter="{Binding}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#E3F2FD" CornerRadius="4" 
-                                                            Padding="7,3" Margin="0,0,2,0">
-                                                        <TextBlock Text="📋" FontSize="12" HorizontalAlignment="Center"/>
+                                                    <Border x:Name="bd" Background="#E3F2FD" CornerRadius="6" 
+                                                            Padding="10,4" Margin="0,0,4,0">
+                                                        <TextBlock Text="Historial" FontSize="11" FontWeight="SemiBold" 
+                                                                   Foreground="#1565C0" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
@@ -341,26 +342,43 @@
                                         <!-- Separador -->
                                         <Border Width="1" Background="#E0E0E0" Margin="3,4" VerticalAlignment="Stretch"/>
                                         <!-- Botón Editar -->
-                                        <Button Content="✏️" 
+                                        <Button ToolTip="Editar producto" Cursor="Hand"
                                                 Command="{Binding DataContext.EditarProductoCommand, 
-                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                Background="Transparent" 
-                                                BorderThickness="0" 
-                                                Cursor="Hand"
-                                                Padding="4,2"
-                                                FontSize="12"
-                                                ToolTip="Editar producto"/>
+                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bd" Background="#E8EAF6" CornerRadius="6" 
+                                                            Padding="10,4" Margin="0,0,4,0">
+                                                        <TextBlock Text="Editar" FontSize="11" FontWeight="SemiBold" 
+                                                                   Foreground="#283593" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bd" Property="Background" Value="#C5CAE9"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
                                         <!-- Botón Eliminar -->
-                                        <Button Content="🗑️" 
+                                        <Button ToolTip="Eliminar producto" Cursor="Hand"
                                                 Command="{Binding DataContext.EliminarProductoCommand, 
-                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                Background="Transparent" 
-                                                BorderThickness="0" 
-                                                Cursor="Hand"
-                                                Padding="4,2"
-                                                FontSize="12"
-                                                Margin="2,0,0,0"
-                                                ToolTip="Eliminar producto"/>
+                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bd" Background="#FFEBEE" CornerRadius="6" 
+                                                            Padding="10,4" Margin="0,0,0,0">
+                                                        <TextBlock Text="Eliminar" FontSize="11" FontWeight="SemiBold" 
+                                                                   Foreground="#C62828" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

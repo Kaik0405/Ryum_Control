@@ -594,6 +594,21 @@ namespace GestionApp.ViewModels
                     var stockTotal = vinculaciones.Sum(v => v.Producto?.CantidadStock ?? 0);
                     var suficiente = stockTotal >= cp.Cantidad;
                     var hayAlgo = stockTotal > 0;
+                    var faltante = cp.Cantidad - stockTotal;
+
+                    string detalle;
+                    if (suficiente)
+                    {
+                        detalle = $"Tenés {stockTotal:G} {cp.Unidad} — necesitás {cp.Cantidad:G} {cp.Unidad} ✓";
+                    }
+                    else if (hayAlgo)
+                    {
+                        detalle = $"Tenés {stockTotal:G} de {cp.Cantidad:G} {cp.Unidad} — faltan {faltante:G} {cp.Unidad}";
+                    }
+                    else
+                    {
+                        detalle = $"Necesitás {cp.Cantidad:G} {cp.Unidad} — no hay stock";
+                    }
 
                     disponibilidad.Add(new ProductoDisponibilidad
                     {
@@ -602,11 +617,11 @@ namespace GestionApp.ViewModels
                         Unidad = cp.Unidad.ToString(),
                         StockDisponible = stockTotal,
                         TieneVinculacion = true,
-                        Estado = suficiente ? "Disponible" : (hayAlgo ? "Parcial" : "Agotado"),
+                        Estado = suficiente ? "Disponible" : (hayAlgo ? $"Faltan {faltante:G} {cp.Unidad}" : "Agotado"),
                         Icono = suficiente ? "✅" : (hayAlgo ? "🟡" : "🔴"),
                         ColorFondo = suficiente ? "#E8F5E9" : (hayAlgo ? "#FFF8E1" : "#FFEBEE"),
                         ColorTexto = suficiente ? "#2E7D32" : (hayAlgo ? "#F57F17" : "#C62828"),
-                        Detalle = $"{stockTotal:G} {cp.Unidad} disponible — {cp.Cantidad:G} {cp.Unidad} requerido"
+                        Detalle = detalle
                     });
                 }
             }
@@ -623,13 +638,14 @@ namespace GestionApp.ViewModels
             {
                 DisponibilidadGeneral = "✅ Todo disponible en inventario";
             }
-            else if (vinculados.Any(d => d.Estado == "Agotado"))
-            {
-                DisponibilidadGeneral = "🔴 Hay productos agotados";
-            }
             else
             {
-                DisponibilidadGeneral = "🟡 Stock parcial en algunos productos";
+                var agotados = vinculados.Count(d => d.StockDisponible == 0);
+                var parciales = vinculados.Count(d => d.StockDisponible > 0 && d.StockDisponible < d.CantidadRequerida);
+                var partes = new List<string>();
+                if (agotados > 0) partes.Add($"{agotados} agotado(s)");
+                if (parciales > 0) partes.Add($"{parciales} con stock parcial");
+                DisponibilidadGeneral = (agotados > 0 ? "🔴" : "🟡") + $" {string.Join(", ", partes)}";
             }
         }
     }

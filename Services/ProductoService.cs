@@ -75,6 +75,30 @@ namespace GestionApp.Services
             }
         }
 
+        public async Task<List<string>> ObtenerCombosVinculadosAsync(int productoId)
+        {
+            return await _context.Set<ComboProductoInventario>()
+                .Where(cpi => cpi.ProductoId == productoId)
+                .Include(cpi => cpi.ComboProducto)
+                    .ThenInclude(cp => cp.Combo)
+                .Select(cpi => cpi.ComboProducto!.Combo!.Nombre)
+                .Distinct()
+                .ToListAsync();
+        }
+
+        public async Task EliminarVinculacionesComboAsync(int productoId)
+        {
+            var vinculaciones = await _context.Set<ComboProductoInventario>()
+                .Where(cpi => cpi.ProductoId == productoId)
+                .ToListAsync();
+
+            if (vinculaciones.Any())
+            {
+                _context.Set<ComboProductoInventario>().RemoveRange(vinculaciones);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task EliminarAsync(int id)
         {
             var producto = await _context.Productos.FindAsync(id);
