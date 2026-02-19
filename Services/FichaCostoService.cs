@@ -110,6 +110,72 @@ namespace GestionApp.Services
             }
         }
 
+        public async Task<FichaCosto?> ObtenerPorEntregaIdAsync(int entregaId)
+        {
+            return await _context.FichasCosto
+                .Include(f => f.Productos)
+                    .ThenInclude(p => p.Producto)
+                .FirstOrDefaultAsync(f => f.EntregaId == entregaId);
+        }
+
+        /// <summary>
+        /// Descuenta del inventario las cantidades de cada producto de la ficha.
+        /// Solo descuenta productos que tengan ProductoId asignado.
+        /// </summary>
+        public async Task DescontarInventarioAsync(FichaCosto ficha)
+        {
+            if (ficha.InventarioDescontado) return;
+
+            // Recargar con productos si es necesario
+            var fichaCompleta = await ObtenerPorIdAsync(ficha.Id) ?? ficha;
+
+            foreach (var prod in fichaCompleta.Productos)
+            {
+                if (prod.ProductoId.HasValue && prod.ProductoId.Value > 0)
+                {
+                    var producto = await _context.Productos.FindAsync(prod.ProductoId.Value);
+                    if (producto != null)
+                    {
+                        producto.CantidadStock -= prod.Cantidad;
+                        if (producto.CantidadStock < 0) producto.CantidadStock = 0;
+                        producto.EnStock = producto.CantidadStock > 0;
+                        producto.FechaModificacion = DateTime.Now;
+                    }
+                }
+            }
+
+            fichaCompleta.InventarioDescontado = true;
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Restaura al inventario las cantidades de cada producto de la ficha.
+        /// Solo restaura si el inventario fue previamente descontado.
+        /// </summary>
+        public async Task RestaurarInventarioAsync(FichaCosto ficha)
+        {
+            if (!ficha.InventarioDescontado) return;
+
+            var fichaCompleta = await ObtenerPorIdAsync(ficha.Id) ?? ficha;
+
+            foreach (var prod in fichaCompleta.Productos)
+            {
+                if (prod.ProductoId.HasValue && prod.ProductoId.Value > 0)
+                {
+                    var producto = await _context.Productos.FindAsync(prod.ProductoId.Value);
+                    if (producto != null)
+                    {
+                        producto.CantidadStock += prod.Cantidad;
+                        producto.EnStock = true;
+                        producto.FechaModificacion = DateTime.Now;
+                    }
+                }
+            }
+
+            fichaCompleta.InventarioDescontado = false;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<decimal> ObtenerTotalVentasAsync(int año, int mes)
         {
             var fichas = await ObtenerPorPeriodoAsync(año, mes);

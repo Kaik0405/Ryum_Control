@@ -14,7 +14,7 @@ namespace GestionApp.Models
         public int FichaCostoId { get; set; }
         public FichaCosto? FichaCosto { get; set; }
 
-        public int ProductoId { get; set; }
+        public int? ProductoId { get; set; }
         public Producto? Producto { get; set; }
 
         [MaxLength(200)]
@@ -120,9 +120,14 @@ namespace GestionApp.Models
         public decimal PrecioVentaUSD { get; set; }
 
         /// <summary>
-        /// Costo total de los productos.
+        /// Costo de transportación (editable, se asigna manualmente).
         /// </summary>
-        public decimal CostoTotal => Productos?.Sum(p => p.Total) ?? 0;
+        public decimal CostoTransportacion { get; set; }
+
+        /// <summary>
+        /// Costo total de los productos + transportación.
+        /// </summary>
+        public decimal CostoTotal => (Productos?.Sum(p => p.Total) ?? 0) + CostoTransportacion;
 
         /// <summary>
         /// Ganancia: PrecioVenta - CostoTotal
@@ -146,6 +151,11 @@ namespace GestionApp.Models
         /// </summary>
         public int? EntregaId { get; set; }
         public Entrega? Entrega { get; set; }
+
+        /// <summary>
+        /// Indica si el inventario ya fue descontado para esta ficha.
+        /// </summary>
+        public bool InventarioDescontado { get; set; }
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }

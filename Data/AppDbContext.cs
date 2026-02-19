@@ -147,6 +147,17 @@ namespace GestionApp.Data
                 .HasForeignKey(fp => fp.FichaCostoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<FichaCostoProducto>()
+                .HasOne(fp => fp.Producto)
+                .WithMany()
+                .HasForeignKey(fp => fp.ProductoId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<FichaCosto>()
+                .Ignore(f => f.CostoTotal)
+                .Ignore(f => f.Ganancia);
+
             #endregion
 
             #region Entregas

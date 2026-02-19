@@ -35,113 +35,132 @@
         <!-- ═══════════════════════════════════════════════════ -->
         <!-- FILA 0: ENCABEZADO - Título y botón de acción -->
         <!-- ═══════════════════════════════════════════════════ -->
-        <Grid Grid.Row="0" Margin="0,0,0,15">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="12,10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
             
-            <StackPanel>
-                <TextBlock Text="📦 Inventario" 
-                           FontSize="28" 
-                           FontWeight="Bold" 
-                           Foreground="#1A237E"/>
-                <TextBlock Text="Gestión de productos y stock" 
-                           FontSize="14" 
-                           Foreground="#666"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="📦 Inventario" 
+                               FontSize="24" 
+                               FontWeight="Bold" 
+                               Foreground="#1A237E"/>
+                    <TextBlock Text="Gestión de productos y stock" 
+                               FontSize="11" 
+                               Foreground="#999"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
             
-            <!-- Botón principal: abre el formulario de nuevo producto -->
-            <Button Grid.Column="1" 
-                    Command="{Binding NuevoProductoCommand}"
-                    Background="#1976D2" 
-                    Foreground="White"
-                    Padding="20,10"
-                    FontSize="13"
-                    FontWeight="SemiBold"
-                    BorderThickness="0"
-                    Cursor="Hand">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" 
-                                Background="{TemplateBinding Background}" 
-                                CornerRadius="6" 
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#1565C0"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-                <TextBlock Text="➕ Nuevo Producto" Foreground="White" FontWeight="SemiBold"/>
-            </Button>
-        </Grid>
+                <!-- Botón principal: abre el formulario de nuevo producto -->
+                <Button Grid.Column="1" 
+                        Command="{Binding NuevoProductoCommand}"
+                        Cursor="Hand" VerticalAlignment="Center">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bd" 
+                                    Background="#1976D2" 
+                                    CornerRadius="8" 
+                                    Padding="18,9">
+                                <TextBlock Text="➕ Nuevo Producto" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#1565C0"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
         
         <!-- ═══════════════════════════════════════════════════ -->
         <!-- FILA 1: BARRA DE FILTROS -->
         <!-- ═══════════════════════════════════════════════════ -->
         <Border Grid.Row="1" 
                 Style="{StaticResource CardStyle}" 
-                Margin="0,0,0,15"
-                Padding="15">
+                Margin="0,0,0,10"
+                Padding="10,8">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <!-- Buscador: cada letra que escribes filtra la lista en tiempo real -->
-                <TextBox Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged}" 
-                         Padding="10,8"
-                         FontSize="13"
-                         BorderBrush="#DDD"
-                         BorderThickness="1">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Triggers>
-                                <Trigger Property="Text" Value="">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <VisualBrush Stretch="None" AlignmentX="Left">
-                                                <VisualBrush.Visual>
-                                                    <TextBlock Text="🔍 Buscar producto por nombre, descripción o categoría..." 
-                                                               Foreground="#999" 
-                                                               Margin="12,0,0,0"/>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                <!-- Buscador (cápsula con icono 🔍) -->
+                <Border Grid.Column="0" Background="#F8F9FA" CornerRadius="10" Padding="4,0"
+                        BorderBrush="#E0E0E0" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#EEEEEE" CornerRadius="8" 
+                                Width="30" Height="30" Margin="2,3,0,3" VerticalAlignment="Center">
+                            <TextBlock Text="🔍" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="8,7" FontSize="12" BorderThickness="0" Background="Transparent"
+                                 Foreground="#333" VerticalAlignment="Center">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <VisualBrush Stretch="None" AlignmentX="Left">
+                                                        <VisualBrush.Visual>
+                                                            <TextBlock Text="Buscar producto por nombre, descripción o categoría..." 
+                                                                       Foreground="#999" Margin="10,0,0,0" FontSize="12"/>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Grid>
+                </Border>
                 
-                <CheckBox Grid.Column="1"
-                          Content=" Solo en stock" 
-                          IsChecked="{Binding MostrarSoloEnStock}"
-                          Margin="15,0,15,0"
-                          VerticalAlignment="Center"
-                          FontSize="13"/>
+                <!-- CheckBox en cápsula -->
+                <Border Grid.Column="2" Background="#F5F5F5" CornerRadius="10" Padding="12,6"
+                        BorderBrush="#E0E0E0" BorderThickness="1">
+                    <CheckBox Content=" Solo en stock" 
+                              IsChecked="{Binding MostrarSoloEnStock}"
+                              VerticalAlignment="Center"
+                              FontSize="12" Foreground="#555"/>
+                </Border>
                 
-                <!-- Botón refrescar -->
-                <Button Grid.Column="2"
-                        Command="{Binding RefrescarCommand}"
-                        Background="Transparent"
-                        BorderThickness="1"
-                        BorderBrush="#DDD"
-                        Padding="10,6"
-                        Cursor="Hand"
+                <!-- Botón actualizar (cápsula) -->
+                <Button Grid.Column="4" Command="{Binding RefrescarCommand}" Cursor="Hand"
                         ToolTip="Recargar lista">
-                    <TextBlock Text="🔄" FontSize="16"/>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bd" Background="Transparent" CornerRadius="10" Padding="12,6"
+                                    BorderBrush="#E0E0E0" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🔄" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                    <TextBlock Text="Actualizar" FontSize="12" FontWeight="SemiBold" Foreground="#555" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
             </Grid>
         </Border>

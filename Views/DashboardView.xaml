@@ -18,7 +18,7 @@
         
         <!-- Encabezado -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Dashboard" 
+            <TextBlock Text="Inicio" 
                        FontSize="28" 
                        FontWeight="Bold" 
                        Foreground="#1A237E"/>

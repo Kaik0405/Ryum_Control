@@ -52,6 +52,9 @@ namespace GestionApp.Services
         Task<FichaCosto?> ObtenerConDetallesAsync(int id);
         Task<string> GenerarNumeroFichaAsync();
         Task<decimal> ObtenerTotalVentasAsync(int año, int mes);
+        Task<FichaCosto?> ObtenerPorEntregaIdAsync(int entregaId);
+        Task DescontarInventarioAsync(FichaCosto ficha);
+        Task RestaurarInventarioAsync(FichaCosto ficha);
     }
 
     /// <summary>

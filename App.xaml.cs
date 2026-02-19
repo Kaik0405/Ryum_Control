@@ -53,8 +53,12 @@ public partial class App : Application
                 context.Database.EnsureCreated();
                 // Verificar que todas las tablas existen haciendo una query ligera
                 _ = context.Model.GetEntityTypes().Count();
-                // Intentar acceder a la tabla más nueva para validar esquema
+                // Intentar acceder a las tablas más nuevas para validar esquema
                 _ = context.Set<GestionApp.Models.ComboProductoInventario>().Any();
+                // Verificar columna CostoTransportacion en FichasCosto
+                _ = context.FichasCosto.Select(f => f.CostoTransportacion).FirstOrDefault();
+                // Verificar columna InventarioDescontado en FichasCosto
+                _ = context.FichasCosto.Select(f => f.InventarioDescontado).FirstOrDefault();
             }
             catch
             {

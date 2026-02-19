@@ -1,9 +1,13 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GestionApp.Helpers;
 using GestionApp.Models;
 using GestionApp.Services;
+using Microsoft.Win32;
 
 namespace GestionApp.ViewModels
 {
@@ -22,6 +26,8 @@ namespace GestionApp.ViewModels
     {
         private readonly IEntregaService _entregaService;
         private readonly IComboService _comboService;
+        private readonly IConfiguracionService _configuracionService;
+        private readonly IFichaCostoService _fichaCostoService;
 
         // Listas principales
         private ObservableCollection<Entrega> _entregas = new();
@@ -61,9 +67,15 @@ namespace GestionApp.ViewModels
         private int _totalPendientes;
         private int _totalUrgentes;
         private int _totalVencidas;
+        private int _totalEntregadas;
 
         // Estado
         private string _mensajeEstado = string.Empty;
+
+        // Modelo de conformidad
+        private bool _mostrarConformidad;
+        private Entrega? _entregaConformidad;
+        private string _nombreDistribuidor = string.Empty;
 
         #region Propiedades de Datos
 
@@ -133,6 +145,12 @@ namespace GestionApp.ViewModels
         {
             get => _totalVencidas;
             set => SetProperty(ref _totalVencidas, value);
+        }
+
+        public int TotalEntregadas
+        {
+            get => _totalEntregadas;
+            set => SetProperty(ref _totalEntregadas, value);
         }
 
         public string MensajeEstado
@@ -252,13 +270,41 @@ namespace GestionApp.ViewModels
         public ICommand GuardarCommand { get; }
         public ICommand CancelarCommand { get; }
         public ICommand RefrescarCommand { get; }
+        public ICommand GenerarConformidadCommand { get; }
+        public ICommand ExportarConformidadImagenCommand { get; }
+        public ICommand ImprimirConformidadCommand { get; }
+        public ICommand CerrarConformidadCommand { get; }
 
         #endregion
 
-        public EntregasViewModel(IEntregaService entregaService, IComboService comboService)
+        #region Propiedades Conformidad
+
+        public bool MostrarConformidad
+        {
+            get => _mostrarConformidad;
+            set => SetProperty(ref _mostrarConformidad, value);
+        }
+
+        public Entrega? EntregaConformidad
+        {
+            get => _entregaConformidad;
+            set => SetProperty(ref _entregaConformidad, value);
+        }
+
+        public string NombreDistribuidor
+        {
+            get => _nombreDistribuidor;
+            set => SetProperty(ref _nombreDistribuidor, value);
+        }
+
+        #endregion
+
+        public EntregasViewModel(IEntregaService entregaService, IComboService comboService, IConfiguracionService configuracionService, IFichaCostoService fichaCostoService)
         {
             _entregaService = entregaService;
             _comboService = comboService;
+            _configuracionService = configuracionService;
+            _fichaCostoService = fichaCostoService;
 
             CrearEntregaCommand = new RelayCommand(_ => PrepararNueva());
             EditarEntregaCommand = new RelayCommand(param => PrepararEdicion(param as Entrega));
@@ -272,6 +318,10 @@ namespace GestionApp.ViewModels
                      && !string.IsNullOrWhiteSpace(FormRemitente));
             CancelarCommand = new RelayCommand(_ => CerrarFormulario());
             RefrescarCommand = new RelayCommand(async _ => await CargarDatosAsync());
+            GenerarConformidadCommand = new RelayCommand(param => AbrirConformidad(param as Entrega));
+            ExportarConformidadImagenCommand = new RelayCommand(_ => { /* se invoca desde code-behind */ });
+            ImprimirConformidadCommand = new RelayCommand(_ => { /* se invoca desde code-behind */ });
+            CerrarConformidadCommand = new RelayCommand(_ => CerrarConformidad());
         }
 
         public override void OnNavigatedTo(object? parameter = null)
@@ -293,6 +343,10 @@ namespace GestionApp.ViewModels
                 FiltrarEntregas();
                 ActualizarContadores();
                 MensajeEstado = $"{entregas.Count} entrega(s) registrada(s)";
+
+                // Cargar nombre del distribuidor
+                var config = await _configuracionService.ObtenerConfiguracionAsync();
+                NombreDistribuidor = config.Nombre;
             }
             catch (Exception ex)
             {
@@ -354,6 +408,7 @@ namespace GestionApp.ViewModels
             TotalPendientes = pendientes.Count;
             TotalUrgentes = pendientes.Count(e => e.Urgente);
             TotalVencidas = pendientes.Count(e => e.Vencida);
+            TotalEntregadas = Entregas.Count(e => e.Entregada);
         }
 
         // ═══════════════════════════════════════════════════
@@ -466,14 +521,12 @@ namespace GestionApp.ViewModels
         {
             if (entrega == null) return;
 
-            if (entrega.TieneFichaCosto)
-            {
-                MensajeEstado = "❌ No se puede eliminar: tiene ficha de costo asociada";
-                return;
-            }
+            var mensaje = entrega.TieneFichaCosto
+                ? $"¿Eliminar la entrega {entrega.NumeroOrden}?\n({entrega.NombreReceptor})\n\n⚠️ También se eliminará la ficha de costo asociada y se restaurará el inventario."
+                : $"¿Eliminar la entrega {entrega.NumeroOrden}?\n({entrega.NombreReceptor})";
 
             var resultado = MessageBox.Show(
-                $"¿Eliminar la entrega {entrega.NumeroOrden}?\n({entrega.NombreReceptor})",
+                mensaje,
                 "Confirmar eliminación",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -482,6 +535,17 @@ namespace GestionApp.ViewModels
 
             try
             {
+                // Si tiene ficha de costo, eliminarla primero (restaura inventario)
+                if (entrega.TieneFichaCosto)
+                {
+                    var ficha = await _fichaCostoService.ObtenerPorEntregaIdAsync(entrega.Id);
+                    if (ficha != null)
+                    {
+                        await _fichaCostoService.RestaurarInventarioAsync(ficha);
+                        await _fichaCostoService.EliminarAsync(ficha.Id);
+                    }
+                }
+
                 await _entregaService.EliminarAsync(entrega.Id);
                 MensajeEstado = $"🗑️ Entrega {entrega.NumeroOrden} eliminada";
                 await CargarDatosAsync();
@@ -505,12 +569,99 @@ namespace GestionApp.ViewModels
             try
             {
                 await _entregaService.MarcarEntregadaAsync(entrega.Id);
-                MensajeEstado = $"✅ Entrega {entrega.NumeroOrden} marcada como entregada";
+
+                // Auto-crear Ficha de Costo
+                if (!entrega.TieneFichaCosto)
+                {
+                    await CrearFichaCostoDesdeEntregaAsync(entrega);
+                }
+
+                MensajeEstado = $"✅ Entrega {entrega.NumeroOrden} entregada — Ficha de costo generada";
                 await CargarDatosAsync();
             }
             catch (Exception ex)
             {
                 MensajeEstado = $"❌ Error: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Crea automáticamente una Ficha de Costo a partir de una entrega.
+        /// Toma los datos del receptor, remitente, combo y productos.
+        /// Los costos se asignan desde los productos de inventario vinculados al combo.
+        /// </summary>
+        private async Task CrearFichaCostoDesdeEntregaAsync(Entrega entrega)
+        {
+            // Obtener el combo completo con productos e inventario vinculado
+            var combo = CombosDisponibles.FirstOrDefault(c => c.Id == entrega.ComboId);
+
+            // Si el combo no se encontró en memoria, cargar desde DB con includes completos
+            if (combo == null && entrega.ComboId > 0)
+            {
+                combo = await _comboService.ObtenerPorIdAsync(entrega.ComboId);
+            }
+
+            // Obtener nombre del distribuidor
+            var config = await _configuracionService.ObtenerConfiguracionAsync();
+
+            // Crear los productos de la ficha con costos del inventario vinculado
+            var productosFicha = new List<FichaCostoProducto>();
+            foreach (var ep in entrega.Productos)
+            {
+                decimal costoUnitario = 0;
+                int? productoInventarioId = null;
+
+                // Buscar el ComboProducto que corresponde a este EntregaProducto por nombre
+                var comboProducto = combo?.Productos
+                    .FirstOrDefault(cp => cp.NombreProducto.Equals(ep.NombreProducto, StringComparison.OrdinalIgnoreCase));
+
+                if (comboProducto?.ProductosInventario != null && comboProducto.ProductosInventario.Any())
+                {
+                    // Tomar el primer producto vinculado del inventario para obtener el costo
+                    var vinculo = comboProducto.ProductosInventario.FirstOrDefault();
+                    if (vinculo?.Producto != null)
+                    {
+                        costoUnitario = vinculo.Producto.CostoCompra;
+                        productoInventarioId = vinculo.ProductoId;
+                    }
+                }
+
+                productosFicha.Add(new FichaCostoProducto
+                {
+                    NombreProducto = ep.NombreProducto,
+                    Unidad = ep.Unidad,
+                    Cantidad = ep.Cantidad,
+                    CostoUnitario = costoUnitario,
+                    ProductoId = productoInventarioId
+                });
+            }
+
+            var ficha = new FichaCosto
+            {
+                ComboId = entrega.ComboId,
+                TipoPedido = combo?.Tipo ?? TipoCombo.Combo,
+                Distribuidor = config.Nombre,
+                Remitente = entrega.NombreRemitente,
+                NombreReceptor = entrega.NombreReceptor,
+                DireccionReceptor = entrega.DireccionReceptor,
+                TelefonoReceptor = entrega.TelefonoMovil,
+                NombreAgencia = entrega.Agencia,
+                FechaEnvio = entrega.FechaOrden,
+                FechaEntrega = DateTime.Now,
+                PrecioVentaUSD = combo?.PrecioVenta ?? 0,
+                EntregaId = entrega.Id,
+                Notas = entrega.Observaciones,
+                Productos = productosFicha
+            };
+
+            await _fichaCostoService.CrearAsync(ficha);
+
+            // Marcar que la entrega ya tiene ficha (recargar desde DB para evitar conflicto de tracking)
+            var entregaDb = await _entregaService.ObtenerPorIdAsync(entrega.Id);
+            if (entregaDb != null)
+            {
+                entregaDb.TieneFichaCosto = true;
+                await _entregaService.ActualizarAsync(entregaDb);
             }
         }
 
@@ -647,6 +798,25 @@ namespace GestionApp.ViewModels
                 if (parciales > 0) partes.Add($"{parciales} con stock parcial");
                 DisponibilidadGeneral = (agotados > 0 ? "🔴" : "🟡") + $" {string.Join(", ", partes)}";
             }
+        }
+
+        // ═══════════════════════════════════════════════════
+        // MODELO DE CONFORMIDAD
+        // ═══════════════════════════════════════════════════
+
+        private void AbrirConformidad(Entrega? entrega)
+        {
+            if (entrega == null) return;
+            EntregaConformidad = entrega;
+            MostrarConformidad = true;
+            MostrarDetalle = false;
+            MostrarFormulario = false;
+        }
+
+        private void CerrarConformidad()
+        {
+            MostrarConformidad = false;
+            EntregaConformidad = null;
         }
     }
 }
