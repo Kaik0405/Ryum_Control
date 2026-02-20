@@ -862,23 +862,6 @@
                                                FontSize="11" Foreground="#9E9E9E" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
-                            <Button Grid.Column="1" Command="{Binding CancelarCommand}" Cursor="Hand"
-                                    VerticalAlignment="Center">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#FFEBEE" CornerRadius="14" 
-                                                Width="28" Height="28">
-                                            <TextBlock Text="✕" FontSize="13" Foreground="#D32F2F" FontWeight="Bold"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
                         </Grid>
                     </Border>
 
@@ -993,12 +976,12 @@
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="FECHA DE ORDEN" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <DatePicker SelectedDate="{Binding FormFechaOrden}"
-                                            Padding="4,4" FontSize="12" BorderBrush="#DDD"/>
+                                            Padding="8,5" FontSize="12"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="AGENCIA" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <TextBox Text="{Binding FormAgencia, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                         Padding="8,5" FontSize="12" BorderBrush="#DDD">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                             <Style.Triggers>
@@ -1162,41 +1145,53 @@
                         </StackPanel>
 
                         <!-- Botones alineados abajo a la derecha -->
-                        <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" 
-                                    HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                            <Button Command="{Binding CancelarCommand}" Cursor="Hand" Margin="0,0,8,0">
+                        <Grid Grid.Row="6" Grid.Column="2" 
+                              VerticalAlignment="Bottom">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Command="{Binding CancelarCommand}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="16,8"
-                                                BorderBrush="#DDD" BorderThickness="1">
-                                            <TextBlock Text="Cancelar" Foreground="#666" FontSize="12"/>
+                                        <Border x:Name="bd" Background="White" CornerRadius="8" Padding="16,10"
+                                                BorderBrush="#E53935" BorderThickness="1.5">
+                                            <TextBlock x:Name="txt" Text="Cancelar" Foreground="#E53935" 
+                                                       FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                            <Button Command="{Binding GuardarCommand}" Cursor="Hand">
+                            <Button Grid.Column="2" Command="{Binding GuardarCommand}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#1565C0" CornerRadius="6" Padding="20,8">
-                                            <TextBlock Text="💾 Guardar" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                                        <Border x:Name="bd" Background="White" CornerRadius="8" Padding="20,10"
+                                                BorderBrush="#4CAF50" BorderThickness="1.5">
+                                            <TextBlock x:Name="txt" Text="Guardar" Foreground="#4CAF50" 
+                                                       FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#4CAF50"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="bd" Property="Background" Value="#CCC"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                <Setter TargetName="bd" Property="BorderBrush" Value="#CCC"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="#CCC"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                     </ScrollViewer>
                 </Grid>

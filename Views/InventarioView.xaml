@@ -435,7 +435,7 @@
                                    FontWeight="SemiBold"
                                    Margin="0,0,0,5"/>
                         <TextBox Text="{Binding FormNombre, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="10,8" 
+                                 Padding="8,5" 
                                  FontSize="13"
                                  BorderBrush="#DDD"/>
                         
@@ -446,11 +446,11 @@
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormDescripcion, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="10,8" 
+                                 Padding="8,5" 
                                  FontSize="13"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
-                                 Height="60"
+                                 Height="50"
                                  BorderBrush="#DDD"/>
                         
                         <!-- Campo: Unidad de medida -->
@@ -461,7 +461,7 @@
                                    Margin="0,12,0,5"/>
                         <ComboBox ItemsSource="{Binding UnidadesMedida}" 
                                   SelectedItem="{Binding FormUnidad}"
-                                  Padding="10,8" 
+                                  Padding="8,5" 
                                   FontSize="13"/>
                         
                         <!-- Campo: Costo de compra -->
@@ -471,7 +471,7 @@
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormCostoCompra, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="10,8" 
+                                 Padding="8,5" 
                                  FontSize="13"
                                  BorderBrush="#DDD"/>
                         
@@ -482,7 +482,7 @@
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormCantidadStock, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="10,8" 
+                                 Padding="8,5" 
                                  FontSize="13"
                                  BorderBrush="#DDD"/>
                         
@@ -494,51 +494,53 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             
-                            <!-- Botón Guardar (azul) -->
+                            <!-- Botón Guardar (verde outline) -->
                             <Button Grid.Column="0"
                                     Command="{Binding GuardarProductoCommand}"
-                                    Padding="0,10"
-                                    Cursor="Hand"
-                                    FontSize="13">
+                                    Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#4CAF50" CornerRadius="6" Padding="12,10">
-                                            <TextBlock Text="💾 Guardar" 
+                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
+                                                BorderBrush="#4CAF50" BorderThickness="1.5">
+                                            <TextBlock x:Name="txt" Text="Guardar" 
                                                        HorizontalAlignment="Center" 
-                                                       Foreground="White" 
+                                                       Foreground="#4CAF50" 
                                                        FontWeight="SemiBold"
                                                        FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#43A047"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#4CAF50"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="bd" Property="Background" Value="#CCC"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                <Setter TargetName="bd" Property="BorderBrush" Value="#CCC"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="#CCC"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
                             
-                            <!-- Botón Cancelar (gris) -->
+                            <!-- Botón Cancelar (rojo outline) -->
                             <Button Grid.Column="2"
                                     Command="{Binding CancelarCommand}"
-                                    Padding="0,10"
-                                    Cursor="Hand"
-                                    FontSize="13">
+                                    Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#9E9E9E" CornerRadius="6" Padding="12,10">
-                                            <TextBlock Text="✖ Cancelar" 
+                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
+                                                BorderBrush="#E53935" BorderThickness="1.5">
+                                            <TextBlock x:Name="txt" Text="Cancelar" 
                                                        HorizontalAlignment="Center" 
-                                                       Foreground="White" 
+                                                       Foreground="#E53935" 
                                                        FontWeight="SemiBold"
                                                        FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#757575"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -586,7 +588,7 @@
                                FontWeight="SemiBold"
                                Margin="0,0,0,5"/>
                     <TextBox Text="{Binding AjusteCantidad, UpdateSourceTrigger=PropertyChanged}" 
-                             Padding="10,8" 
+                             Padding="8,5" 
                              FontSize="13"
                              BorderBrush="#DDD"/>
                     
@@ -597,7 +599,7 @@
                                FontWeight="SemiBold"
                                Margin="0,12,0,5"/>
                     <TextBox Text="{Binding AjusteMotivo, UpdateSourceTrigger=PropertyChanged}" 
-                             Padding="10,8" 
+                             Padding="8,5" 
                              FontSize="13"
                              TextWrapping="Wrap"
                              Height="50"
@@ -616,19 +618,23 @@
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" Background="#4CAF50" CornerRadius="6" Padding="12,10">
-                                        <TextBlock Text="✅ Confirmar" 
+                                    <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
+                                            BorderBrush="#4CAF50" BorderThickness="1.5">
+                                        <TextBlock x:Name="txt" Text="✅ Confirmar" 
                                                    HorizontalAlignment="Center" 
-                                                   Foreground="White" 
+                                                   Foreground="#4CAF50" 
                                                    FontWeight="SemiBold"
                                                    FontSize="13"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="#43A047"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#4CAF50"/>
+                                            <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                         </Trigger>
                                         <Trigger Property="IsEnabled" Value="False">
-                                            <Setter TargetName="bd" Property="Background" Value="#CCC"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                            <Setter TargetName="bd" Property="BorderBrush" Value="#CCC"/>
+                                            <Setter TargetName="txt" Property="Foreground" Value="#CCC"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -640,16 +646,18 @@
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" Background="#9E9E9E" CornerRadius="6" Padding="12,10">
-                                        <TextBlock Text="✖ Cancelar" 
+                                    <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
+                                            BorderBrush="#E53935" BorderThickness="1.5">
+                                        <TextBlock x:Name="txt" Text="✖ Cancelar" 
                                                    HorizontalAlignment="Center" 
-                                                   Foreground="White" 
+                                                   Foreground="#E53935" 
                                                    FontWeight="SemiBold"
                                                    FontSize="13"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="#757575"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                            <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
