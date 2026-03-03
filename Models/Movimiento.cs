@@ -21,6 +21,7 @@ namespace GestionApp.Models
         Transporte,
         Remesa,
         FondoInicial,
+        DescontarEntrega,
         Otro
     }
 

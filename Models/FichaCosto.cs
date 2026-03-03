@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace GestionApp.Models
 {
@@ -36,8 +37,14 @@ namespace GestionApp.Models
     /// Ficha de costo para un envío/venta.
     /// Contiene toda la información del pedido, destinatario y productos.
     /// </summary>
-    public class FichaCosto
+    public class FichaCosto : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         [Key]
         public int Id { get; set; }
 
@@ -122,7 +129,21 @@ namespace GestionApp.Models
         /// <summary>
         /// Costo de transportación (editable, se asigna manualmente).
         /// </summary>
-        public decimal CostoTransportacion { get; set; }
+        private decimal _costoTransportacion;
+        public decimal CostoTransportacion
+        {
+            get => _costoTransportacion;
+            set
+            {
+                if (_costoTransportacion != value)
+                {
+                    _costoTransportacion = value;
+                    OnPropertyChanged(nameof(CostoTransportacion));
+                    OnPropertyChanged(nameof(CostoTotal));
+                    OnPropertyChanged(nameof(Ganancia));
+                }
+            }
+        }
 
         /// <summary>
         /// Costo total de los productos + transportación.
@@ -156,6 +177,12 @@ namespace GestionApp.Models
         /// Indica si el inventario ya fue descontado para esta ficha.
         /// </summary>
         public bool InventarioDescontado { get; set; }
+
+        /// <summary>
+        /// Indica si la ficha fue editada después de descontar inventario.
+        /// Cuando es true, se permite re-descontar (revertir + descontar de nuevo).
+        /// </summary>
+        public bool EditadoPostDescuento { get; set; }
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }

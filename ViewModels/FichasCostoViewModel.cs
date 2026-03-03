@@ -323,8 +323,15 @@ namespace GestionApp.ViewModels
                     }
                 }
 
+                // Si ya se había descontado, marcar como editado para permitir re-descuento
+                if (FichaSeleccionada.InventarioDescontado)
+                {
+                    FichaSeleccionada.EditadoPostDescuento = true;
+                }
+
                 await _fichaCostoService.ActualizarAsync(FichaSeleccionada);
                 MensajeEstado = $"✅ Costos actualizados — {FichaSeleccionada.NumeroFicha}";
+                OnPropertyChanged(nameof(FichaSeleccionada));
                 ActualizarTotales();
             }
             catch (Exception ex)
@@ -341,9 +348,10 @@ namespace GestionApp.ViewModels
         {
             if (FichaSeleccionada == null) return;
 
-            if (FichaSeleccionada.InventarioDescontado)
+            // Si ya descontado Y NO editado -> no permitir
+            if (FichaSeleccionada.InventarioDescontado && !FichaSeleccionada.EditadoPostDescuento)
             {
-                MensajeEstado = "ℹ️ El inventario ya fue descontado para esta ficha";
+                MensajeEstado = "ℹ️ El inventario ya fue descontado. Edita la ficha primero si necesitas corregir.";
                 return;
             }
 
@@ -356,10 +364,17 @@ namespace GestionApp.ViewModels
                 return;
             }
 
+            bool esReDescuento = FichaSeleccionada.InventarioDescontado && FichaSeleccionada.EditadoPostDescuento;
+
+            var mensaje = esReDescuento
+                ? $"¿Actualizar el descuento de inventario?\n\nSe revertirá el descuento anterior y se aplicará uno nuevo con los datos corregidos.\n" +
+                  $"Ficha: {FichaSeleccionada.NumeroFicha}"
+                : $"¿Confirmar y descontar del inventario?\n\nSe descontarán las cantidades de los productos seleccionados.\n" +
+                  $"Ficha: {FichaSeleccionada.NumeroFicha}";
+
             var resultado = MessageBox.Show(
-                $"¿Confirmar y descontar del inventario?\n\nSe descontarán las cantidades de los productos seleccionados.\n" +
-                $"Ficha: {FichaSeleccionada.NumeroFicha}",
-                "Confirmar descuento de inventario",
+                mensaje,
+                esReDescuento ? "Actualizar descuento de inventario" : "Confirmar descuento de inventario",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
@@ -379,12 +394,22 @@ namespace GestionApp.ViewModels
 
                 await _fichaCostoService.ActualizarAsync(FichaSeleccionada);
 
-                // Descontar inventario
-                await _fichaCostoService.DescontarInventarioAsync(FichaSeleccionada);
+                if (esReDescuento)
+                {
+                    // Revertir descuento anterior + aplicar nuevo
+                    await _fichaCostoService.RevertirYRedescontarAsync(FichaSeleccionada);
+                    MensajeEstado = $"✅ Inventario actualizado — {FichaSeleccionada.NumeroFicha} (corregió descuento anterior)";
+                }
+                else
+                {
+                    // Primer descuento
+                    await _fichaCostoService.DescontarInventarioAsync(FichaSeleccionada);
+                    MensajeEstado = $"✅ Inventario descontado — {FichaSeleccionada.NumeroFicha}";
+                }
 
-                MensajeEstado = $"✅ Inventario descontado — {FichaSeleccionada.NumeroFicha}";
                 OnPropertyChanged(nameof(FichaSeleccionada));
                 ActualizarTotales();
+                await CargarFichasAsync();
             }
             catch (Exception ex)
             {
