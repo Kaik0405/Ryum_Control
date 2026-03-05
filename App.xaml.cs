@@ -49,35 +49,8 @@ public partial class App : Application
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             
-            // Si la DB existe pero le faltan tablas (esquema viejo), recrearla
-            try
-            {
-                context.Database.EnsureCreated();
-                // Verificar que todas las tablas existen haciendo una query ligera
-                _ = context.Model.GetEntityTypes().Count();
-                // Intentar acceder a las tablas más nuevas para validar esquema
-                _ = context.Set<GestionApp.Models.ComboProductoInventario>().Any();
-                // Verificar columna CostoTransportacion en FichasCosto
-                _ = context.FichasCosto.Select(f => f.CostoTransportacion).FirstOrDefault();
-                // Verificar columna InventarioDescontado en FichasCosto
-                _ = context.FichasCosto.Select(f => f.InventarioDescontado).FirstOrDefault();
-                // Verificar columnas nuevas
-                _ = context.FichasCosto.Select(f => f.EditadoPostDescuento).FirstOrDefault();
-                _ = context.Agencias.Select(a => a.LogoPath).FirstOrDefault();
-                // Verificar columnas de remesa en Entregas
-                _ = context.Entregas.Select(e => e.EsRemesa).FirstOrDefault();
-                _ = context.Entregas.Select(e => e.MontoRemesa).FirstOrDefault();
-                // Verificar columna EntregaId en Movimientos
-                _ = context.Movimientos.Select(m => m.EntregaId).FirstOrDefault();
-                // Verificar columna TasaCambioCUP en Configuracion
-                _ = context.Configuracion.Select(c => c.TasaCambioCUP).FirstOrDefault();
-            }
-            catch
-            {
-                // Esquema desactualizado — recrear la DB
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-            }
+            // Migrador seguro: crea la BD si no existe, agrega columnas/tablas faltantes sin borrar datos
+            DatabaseMigrator.Migrar(context);
 
             // Seed: agencias por defecto (Rios y Yumury)
             if (!context.Agencias.Any())

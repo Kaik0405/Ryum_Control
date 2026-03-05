@@ -4,170 +4,609 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:GestionApp.ViewModels"
+             xmlns:models="clr-namespace:GestionApp.Models"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel}"
-             d:DesignHeight="600" d:DesignWidth="800"
+             d:DesignHeight="900" d:DesignWidth="1100"
              Background="#F5F5F5">
     
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <!-- Encabezado -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Inicio" 
-                       FontSize="28" 
-                       FontWeight="Bold" 
-                       Foreground="#1A237E"/>
-            <TextBlock Text="{Binding MesActual}" 
-                       FontSize="14" 
-                       Foreground="#666"/>
-        </StackPanel>
-        
-        <!-- Tarjetas de resumen -->
-        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
-            <!-- Fondos Actuales -->
-            <Border Style="{StaticResource CardStyle}" Margin="0,0,10,0">
-                <StackPanel>
-                    <TextBlock Text="💰 Fondos Actuales" 
-                               FontSize="12" 
-                               Foreground="#666" 
-                               Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding FondosActuales, StringFormat=C2}" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               Foreground="#2E7D32"/>
-                    <TextBlock Text="{Binding FondosIniciales, StringFormat='Inicial: {0:C2}'}" 
-                               FontSize="11" 
-                               Foreground="#999"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="24,20,24,24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- Header + Saludo -->
+                <RowDefinition Height="Auto"/>  <!-- KPI Cards -->
+                <RowDefinition Height="Auto"/>  <!-- Alertas + Entregas Urgentes -->
+                <RowDefinition Height="Auto"/>  <!-- Movimientos + Destinos + Remesas -->
+            </Grid.RowDefinitions>
+
+            <!-- ═════════════════════════════════════════════ -->
+            <!-- ROW 0: HEADER -->
+            <!-- ═════════════════════════════════════════════ -->
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{Binding Saludo}" 
+                               FontSize="28" FontWeight="Bold" Foreground="#1A237E"/>
+                    <TextBlock Text="{Binding MesActual}" 
+                               FontSize="13" Foreground="#888" Margin="0,2,0,0"
+                               FontStyle="Italic"/>
                 </StackPanel>
-            </Border>
-            
-            <!-- Ventas del Mes -->
-            <Border Style="{StaticResource CardStyle}" Margin="5,0,5,0">
-                <StackPanel>
-                    <TextBlock Text="📦 Ventas del Mes" 
-                               FontSize="12" 
-                               Foreground="#666" 
-                               Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding VentasDelMes}" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               Foreground="#1565C0"/>
-                    <TextBlock Text="fichas registradas" 
-                               FontSize="11" 
-                               Foreground="#999"/>
-                </StackPanel>
-            </Border>
-            
-            <!-- Ganancias -->
-            <Border Style="{StaticResource CardStyle}" Margin="5,0,5,0">
-                <StackPanel>
-                    <TextBlock Text="📈 Ingresos" 
-                               FontSize="12" 
-                               Foreground="#666" 
-                               Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding GananciasDelMes, StringFormat=C2}" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               Foreground="#2E7D32"/>
-                    <TextBlock Text="ingresos totales" 
-                               FontSize="11" 
-                               Foreground="#999"/>
-                </StackPanel>
-            </Border>
-            
-            <!-- Gastos -->
-            <Border Style="{StaticResource CardStyle}" Margin="10,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="📉 Gastos" 
-                               FontSize="12" 
-                               Foreground="#666" 
-                               Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding GastosDelMes, StringFormat=C2}" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               Foreground="#C62828"/>
-                    <TextBlock Text="egresos totales" 
-                               FontSize="11" 
-                               Foreground="#999"/>
-                </StackPanel>
-            </Border>
-        </UniformGrid>
-        
-        <!-- Área de contenido principal -->
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!-- Panel izquierdo: Balance -->
-            <Border Style="{StaticResource CardStyle}" 
-                    Grid.Column="0" 
-                    Margin="0,0,10,0">
-                <StackPanel>
-                    <TextBlock Text="Balance del Mes" 
-                               FontSize="16" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,15"/>
-                    
-                    <Border Background="#E8F5E9" 
-                            CornerRadius="5" 
-                            Padding="15" 
-                            Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Balance: " 
-                                       FontSize="14" 
-                                       VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding BalanceMes, StringFormat=C2}" 
-                                       FontSize="20" 
-                                       FontWeight="Bold" 
-                                       Foreground="#2E7D32"/>
-                        </StackPanel>
-                    </Border>
-                    
-                    <TextBlock Text="Resumen del período actual" 
-                               FontSize="12" 
-                               Foreground="#666"/>
-                </StackPanel>
-            </Border>
-            
-            <!-- Panel derecho: Acciones rápidas -->
-            <Border Style="{StaticResource CardStyle}" 
-                    Grid.Column="1" 
-                    Margin="10,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="Acciones Rápidas" 
-                               FontSize="16" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,15"/>
-                    
-                    <TextBlock Text="Selecciona una sección del menú para comenzar a trabajar." 
-                               FontSize="13" 
-                               Foreground="#666" 
-                               TextWrapping="Wrap"
-                               Margin="0,0,0,15"/>
-                    
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="• Inventario: Gestiona tus productos" 
-                                   FontSize="12" 
-                                   Margin="0,5"/>
-                        <TextBlock Text="• Combos: Crea paquetes de productos" 
-                                   FontSize="12" 
-                                   Margin="0,5"/>
-                        <TextBlock Text="• Fichas: Registra tus ventas" 
-                                   FontSize="12" 
-                                   Margin="0,5"/>
-                        <TextBlock Text="• Movimientos: Controla ingresos y gastos" 
-                                   FontSize="12" 
-                                   Margin="0,5"/>
+                
+                <!-- Botón refrescar -->
+                <Button Grid.Column="1" 
+                        Command="{Binding RefrescarCommand}"
+                        Background="Transparent" BorderThickness="0"
+                        Cursor="Hand" VerticalAlignment="Center"
+                        ToolTip="Actualizar datos">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔄" FontSize="16" Margin="0,0,6,0"/>
+                        <TextBlock Text="Actualizar" FontSize="13" Foreground="#1565C0" FontWeight="SemiBold"/>
                     </StackPanel>
-                </StackPanel>
-            </Border>
+                </Button>
+            </Grid>
+
+            <!-- ═════════════════════════════════════════════ -->
+            <!-- ROW 1: KPI CARDS -->
+            <!-- ═════════════════════════════════════════════ -->
+            <UniformGrid Grid.Row="1" Columns="5" Margin="0,0,0,18">
+                
+                <!-- Balance Actual -->
+                <Border Margin="0,0,8,0" CornerRadius="12" Padding="16,14"
+                        Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="💰" FontSize="16" Margin="0,0,6,0"/>
+                            <TextBlock Text="Balance" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" 
+                                   Text="{Binding BalanceActual, StringFormat='{}{0:N0} CUP'}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#1565C0"/>
+                        <TextBlock Grid.Row="2" Text="balance global" 
+                                   FontSize="10" Foreground="#AAA" Margin="0,2,0,0"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Ingresos del Mes -->
+                <Border Margin="4,0,4,0" CornerRadius="12" Padding="16,14"
+                        Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="📈" FontSize="16" Margin="0,0,6,0"/>
+                            <TextBlock Text="Ingresos" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" 
+                                   Text="{Binding IngresosDelMes, StringFormat='{}{0:N0} CUP'}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#2E7D32"/>
+                        <TextBlock Grid.Row="2" Text="este mes" 
+                                   FontSize="10" Foreground="#AAA" Margin="0,2,0,0"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Egresos del Mes -->
+                <Border Margin="4,0,4,0" CornerRadius="12" Padding="16,14"
+                        Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="📉" FontSize="16" Margin="0,0,6,0"/>
+                            <TextBlock Text="Egresos" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" 
+                                   Text="{Binding EgresosDelMes, StringFormat='{}{0:N0} CUP'}" 
+                                   FontSize="22" FontWeight="Bold" Foreground="#C62828"/>
+                        <TextBlock Grid.Row="2" Text="este mes" 
+                                   FontSize="10" Foreground="#AAA" Margin="0,2,0,0"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Entregas Pendientes -->
+                <Border Margin="4,0,4,0" CornerRadius="12" Padding="16,14"
+                        Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="📦" FontSize="16" Margin="0,0,6,0"/>
+                            <TextBlock Text="Entregas" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" FontSize="22" FontWeight="Bold" Foreground="#E65100">
+                            <Run Text="{Binding EntregasPendientesCount, Mode=OneWay}"/>
+                            <Run Text=" pend." FontSize="13" FontWeight="Normal"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="2" FontSize="10" Foreground="#AAA" Margin="0,2,0,0">
+                            <Run Text="{Binding VentasDelMes, Mode=OneWay}"/>
+                            <Run Text=" fichas este mes"/>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+                
+                <!-- Remesas -->
+                <Border Margin="8,0,0,0" CornerRadius="12" Padding="16,14"
+                        Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="💵" FontSize="16" Margin="0,0,6,0"/>
+                            <TextBlock Text="Remesas" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" FontSize="22" FontWeight="Bold" Foreground="#6A1B9A">
+                            <Run Text="{Binding RemesasPendientesCount, Mode=OneWay}"/>
+                            <Run Text=" pend." FontSize="13" FontWeight="Normal"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="2" FontSize="10" Foreground="#AAA" Margin="0,2,0,0">
+                            <Run Text="{Binding RemesasPendientesTotal, StringFormat='{}{0:N0}', Mode=OneWay}"/>
+                            <Run Text=" CUP total"/>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </UniformGrid>
+
+            <!-- ═════════════════════════════════════════════ -->
+            <!-- ROW 2: ALERTAS STOCK + ENTREGAS URGENTES -->
+            <!-- ═════════════════════════════════════════════ -->
+            <Grid Grid.Row="2" Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="1.3*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- ═══ ALERTAS DE INVENTARIO ═══ -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Header -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="⚠️" FontSize="18" Margin="0,0,8,0"/>
+                            <TextBlock Text="Alertas de Inventario" FontSize="15" FontWeight="SemiBold" 
+                                       Foreground="#333" VerticalAlignment="Center"/>
+                            <Border Background="#FFEBEE" CornerRadius="10" Padding="8,2" Margin="10,0,0,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ProductosSinStock}" 
+                                           FontSize="11" FontWeight="Bold" Foreground="#C62828"/>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Lista -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding AlertasStock}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="8" Padding="12,8" Margin="0,0,0,6"
+                                            Background="{Binding ColorFondo}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Icono}" 
+                                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Nombre}" 
+                                                       FontSize="13" FontWeight="SemiBold" 
+                                                       Foreground="#333" VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Detalle}" 
+                                                       FontSize="11" VerticalAlignment="Center"
+                                                       Foreground="{Binding ColorTexto}" FontWeight="SemiBold"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <!-- Empty state -->
+                        <TextBlock Grid.Row="1" Text="✅ Todo el inventario está en orden"
+                                   FontSize="13" Foreground="#888" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Margin="0,20,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AlertasStock.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+                
+                <!-- ═══ ENTREGAS URGENTES ═══ -->
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Header -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="🚨" FontSize="18" Margin="0,0,8,0"/>
+                            <TextBlock Text="Entregas Próximas" FontSize="15" FontWeight="SemiBold" 
+                                       Foreground="#333" VerticalAlignment="Center"/>
+                            <Border Background="#FFF3E0" CornerRadius="10" Padding="8,2" Margin="10,0,0,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding EntregasPendientesCount}" 
+                                           FontSize="11" FontWeight="Bold" Foreground="#E65100"/>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Lista -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding EntregasUrgentes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="8" Padding="10,8" Margin="0,0,0,5"
+                                            Background="{Binding ColorFondo}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0" Text="{Binding Icono}" 
+                                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="#333"
+                                                           TextTrimming="CharacterEllipsis">
+                                                    <Run Text="{Binding NumeroOrden, Mode=OneWay}"/>
+                                                    <Run Text=" — " Foreground="#AAA"/>
+                                                    <Run Text="{Binding NombreReceptor, Mode=OneWay}"/>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding Direccion}" FontSize="10.5" 
+                                                           Foreground="#888" TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                            
+                                            <Border Grid.Column="2" CornerRadius="6" Padding="8,3" Margin="8,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Background="{Binding ColorFondo}">
+                                                <TextBlock Text="{Binding EstadoTexto}" 
+                                                           FontSize="10.5" FontWeight="Bold"
+                                                           Foreground="{Binding ColorTexto}"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <!-- Empty state -->
+                        <TextBlock Grid.Row="1" Text="✅ No hay entregas pendientes"
+                                   FontSize="13" Foreground="#888" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Margin="0,20,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EntregasUrgentes.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ═════════════════════════════════════════════ -->
+            <!-- ROW 3: MOVIMIENTOS + DESTINOS + REMESAS -->
+            <!-- ═════════════════════════════════════════════ -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.4*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- ═══ MOVIMIENTOS RECIENTES ═══ -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Header -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="📋" FontSize="18" Margin="0,0,8,0"/>
+                            <TextBlock Text="Movimientos Recientes" FontSize="15" FontWeight="SemiBold" 
+                                       Foreground="#333" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Lista -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding MovimientosRecientes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:Movimiento}">
+                                    <Border CornerRadius="6" Padding="10,7" Margin="0,0,0,4"
+                                            Background="#FAFAFA">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <!-- Icono tipo -->
+                                            <Border Grid.Column="0" Width="28" Height="28" CornerRadius="14" 
+                                                    Margin="0,0,10,0" VerticalAlignment="Center">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Tipo}" Value="Egreso">
+                                                                <Setter Property="Background" Value="#FFEBEE"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           FontSize="13">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="📥"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Tipo}" Value="Egreso">
+                                                                    <Setter Property="Text" Value="📤"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                            
+                                            <!-- Info -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Concepto}" FontSize="12" FontWeight="SemiBold"
+                                                           Foreground="#333" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Fecha, StringFormat='{}{0:dd MMM}'}" 
+                                                           FontSize="10" Foreground="#AAA"/>
+                                            </StackPanel>
+                                            
+                                            <!-- Monto -->
+                                            <TextBlock Grid.Column="2" VerticalAlignment="Center"
+                                                       FontSize="12.5" FontWeight="Bold"
+                                                       Text="{Binding Monto, StringFormat='{}{0:N0} CUP'}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#2E7D32"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Tipo}" Value="Egreso">
+                                                                <Setter Property="Foreground" Value="#C62828"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <!-- Empty state -->
+                        <TextBlock Grid.Row="1" Text="Sin movimientos este mes"
+                                   FontSize="13" Foreground="#888" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Margin="0,20,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MovimientosRecientes.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+                
+                <!-- ═══ DESTINOS PENDIENTES ═══ -->
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Header -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="📍" FontSize="18" Margin="0,0,8,0"/>
+                            <TextBlock Text="Destinos" FontSize="15" FontWeight="SemiBold" 
+                                       Foreground="#333" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Lista -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding DestinosPendientes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="8" Padding="10,8" Margin="0,0,0,5">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#F5F5F5"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding TieneUrgente}" Value="True">
+                                                        <Setter Property="Background" Value="#FFF3E0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                       Text="{Binding Provincia}" 
+                                                       FontSize="12.5" FontWeight="SemiBold" Foreground="#333"/>
+                                            
+                                            <Border Grid.Row="0" Grid.Column="1" CornerRadius="8" 
+                                                    Padding="7,2" Background="#E3F2FD" VerticalAlignment="Center">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Foreground="#1565C0">
+                                                    <Run Text="{Binding Cantidad, Mode=OneWay}"/>
+                                                </TextBlock>
+                                            </Border>
+                                            
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                       Text="{Binding Municipios}" 
+                                                       FontSize="10.5" Foreground="#888" Margin="0,2,0,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <!-- Empty state -->
+                        <TextBlock Grid.Row="1" Text="Sin destinos registrados"
+                                   FontSize="13" Foreground="#888" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Margin="0,20,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DestinosPendientes.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+                
+                <!-- ═══ REMESAS PENDIENTES ═══ -->
+                <Border Grid.Column="4" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Header -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="💵" FontSize="18" Margin="0,0,8,0"/>
+                            <TextBlock Text="Remesas" FontSize="15" FontWeight="SemiBold" 
+                                       Foreground="#333" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Lista -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding RemesasPendientes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="8" Padding="10,8" Margin="0,0,0,5"
+                                            Background="#F3E5F5">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                       Text="{Binding NombreReceptor}" 
+                                                       FontSize="12.5" FontWeight="SemiBold" 
+                                                       Foreground="#333" TextTrimming="CharacterEllipsis"/>
+                                            
+                                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                                                       Text="{Binding EstadoTexto}" 
+                                                       FontSize="11" FontWeight="Bold" Foreground="#6A1B9A"
+                                                       VerticalAlignment="Center"/>
+                                            
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                       FontSize="10.5" Foreground="#888" Margin="0,2,0,0"
+                                                       TextTrimming="CharacterEllipsis">
+                                                <Run Text="{Binding Direccion, Mode=OneWay}"/>
+                                                <Run Text=" · "/>
+                                                <Run Text="{Binding DiasRestantes, Mode=OneWay}"/>
+                                                <Run Text="d restantes"/>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <!-- Empty state -->
+                        <TextBlock Grid.Row="1" Text="Sin remesas pendientes"
+                                   FontSize="13" Foreground="#888" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Margin="0,20,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RemesasPendientes.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
-    </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -21,12 +21,10 @@ namespace GestionApp.ViewModels
 
         // ── Distribuidor ──
         private string _distNombre = string.Empty;
-        private string _distNombreNegocio = string.Empty;
-        private string _distTelefono = string.Empty;
-        private string _distDireccion = string.Empty;
         private string _distPrefijoFicha = "FC-";
         private string _distPrefijoConformidad = "CONF-";
         private decimal _distTasaCambio = 300m;
+        private bool _modoEdicion;
 
         // ── Agencias ──
         private ObservableCollection<Agencia> _agencias = new();
@@ -51,24 +49,6 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _distNombre, value);
         }
 
-        public string DistNombreNegocio
-        {
-            get => _distNombreNegocio;
-            set => SetProperty(ref _distNombreNegocio, value);
-        }
-
-        public string DistTelefono
-        {
-            get => _distTelefono;
-            set => SetProperty(ref _distTelefono, value);
-        }
-
-        public string DistDireccion
-        {
-            get => _distDireccion;
-            set => SetProperty(ref _distDireccion, value);
-        }
-
         public string DistPrefijoFicha
         {
             get => _distPrefijoFicha;
@@ -88,6 +68,12 @@ namespace GestionApp.ViewModels
         {
             get => _distTasaCambio;
             set => SetProperty(ref _distTasaCambio, value);
+        }
+
+        public bool ModoEdicion
+        {
+            get => _modoEdicion;
+            set => SetProperty(ref _modoEdicion, value);
         }
 
         #endregion
@@ -169,6 +155,9 @@ namespace GestionApp.ViewModels
         #region Comandos
 
         public ICommand GuardarDistribuidorCommand { get; }
+        public ICommand EditarDistribuidorCommand { get; }
+        public ICommand CancelarEdicionCommand { get; }
+        public ICommand GuardarTasaCommand { get; }
         public ICommand NuevaAgenciaCommand { get; }
         public ICommand EditarAgenciaCommand { get; }
         public ICommand EliminarAgenciaCommand { get; }
@@ -185,6 +174,9 @@ namespace GestionApp.ViewModels
             _agenciaService = agenciaService;
 
             GuardarDistribuidorCommand = new RelayCommand(async _ => await GuardarDistribuidorAsync());
+            EditarDistribuidorCommand = new RelayCommand(_ => ModoEdicion = true);
+            CancelarEdicionCommand = new RelayCommand(async _ => { ModoEdicion = false; await CargarDatosAsync(); });
+            GuardarTasaCommand = new RelayCommand(async _ => await GuardarTasaAsync());
             NuevaAgenciaCommand = new RelayCommand(_ => PrepararNuevaAgencia());
             EditarAgenciaCommand = new RelayCommand(param => PrepararEdicionAgencia(param as Agencia));
             EliminarAgenciaCommand = new RelayCommand(async param => await EliminarAgenciaAsync(param as Agencia));
@@ -211,12 +203,10 @@ namespace GestionApp.ViewModels
                 // Cargar configuración del distribuidor
                 var config = await _configuracionService.ObtenerConfiguracionAsync();
                 DistNombre = config.Nombre;
-                DistNombreNegocio = config.NombreNegocio ?? string.Empty;
-                DistTelefono = config.Telefono ?? string.Empty;
-                DistDireccion = config.Direccion ?? string.Empty;
                 DistPrefijoFicha = config.PrefijoFicha;
                 DistPrefijoConformidad = config.PrefijoConformidad;
                 DistTasaCambio = config.TasaCambioCUP;
+                ModoEdicion = false;
 
                 // Cargar agencias
                 await CargarAgenciasAsync();
@@ -245,30 +235,38 @@ namespace GestionApp.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(DistNombre))
                 {
-                    MessageBox.Show("El nombre del distribuidor es obligatorio.", "Validación",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MensajeEstado = "❌ El nombre del distribuidor es obligatorio";
                     return;
                 }
 
                 var config = await _configuracionService.ObtenerConfiguracionAsync();
                 config.Nombre = DistNombre.Trim();
-                config.NombreNegocio = string.IsNullOrWhiteSpace(DistNombreNegocio) ? null : DistNombreNegocio.Trim();
-                config.Telefono = string.IsNullOrWhiteSpace(DistTelefono) ? null : DistTelefono.Trim();
-                config.Direccion = string.IsNullOrWhiteSpace(DistDireccion) ? null : DistDireccion.Trim();
                 config.PrefijoFicha = string.IsNullOrWhiteSpace(DistPrefijoFicha) ? "FC-" : DistPrefijoFicha.Trim();
                 config.PrefijoConformidad = string.IsNullOrWhiteSpace(DistPrefijoConformidad) ? "CONF-" : DistPrefijoConformidad.Trim();
                 config.TasaCambioCUP = DistTasaCambio > 0 ? DistTasaCambio : 300m;
 
                 await _configuracionService.ActualizarConfiguracionAsync(config);
-                MensajeEstado = "✅ Datos del distribuidor guardados";
-                MessageBox.Show("Datos del distribuidor guardados correctamente.", "Guardado",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                ModoEdicion = false;
+                MensajeEstado = "✅ Datos guardados correctamente";
             }
             catch (Exception ex)
             {
                 MensajeEstado = $"❌ Error: {ex.Message}";
-                MessageBox.Show($"Error al guardar: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task GuardarTasaAsync()
+        {
+            try
+            {
+                var config = await _configuracionService.ObtenerConfiguracionAsync();
+                config.TasaCambioCUP = DistTasaCambio > 0 ? DistTasaCambio : 300m;
+                await _configuracionService.ActualizarConfiguracionAsync(config);
+                MensajeEstado = "✅ Tasa de cambio actualizada";
+            }
+            catch (Exception ex)
+            {
+                MensajeEstado = $"❌ Error: {ex.Message}";
             }
         }
 
