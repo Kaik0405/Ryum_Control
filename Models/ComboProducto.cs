@@ -25,8 +25,21 @@ namespace GestionApp.Models
 
         /// <summary>
         /// Cantidad o peso del producto en el combo.
+        /// Si hay rango, esta es la cantidad mínima.
         /// </summary>
         public decimal Cantidad { get; set; }
+
+        /// <summary>
+        /// Cantidad máxima del rango (nullable).
+        /// Si tiene valor y es mayor que Cantidad, el producto se entrega en rango.
+        /// Ej: Carne 12-15 Libra → Cantidad=12, CantidadMaxima=15
+        /// </summary>
+        public decimal? CantidadMaxima { get; set; }
+
+        /// <summary>
+        /// Indica si el producto tiene rango de cantidad.
+        /// </summary>
+        public bool EsRango => CantidadMaxima.HasValue && CantidadMaxima.Value > Cantidad;
 
         /// <summary>
         /// Unidad de medida para este producto en el combo.
@@ -40,8 +53,8 @@ namespace GestionApp.Models
         public ICollection<ComboProductoInventario> ProductosInventario { get; set; } = new List<ComboProductoInventario>();
 
         /// <summary>
-        /// Descripción formateada: "2 Libra" o "1 Paquete"
+        /// Descripción formateada: "12-15 Libra" o "2 Libra"
         /// </summary>
-        public string Descripcion => $"{Cantidad:G} {Unidad}";
+        public string Descripcion => EsRango ? $"{Cantidad:G}-{CantidadMaxima:G} {Unidad}" : $"{Cantidad:G} {Unidad}";
     }
 }

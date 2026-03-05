@@ -18,6 +18,7 @@ namespace GestionApp.ViewModels
         private readonly IEntregaService _entregaService;
         private readonly IProductoService _productoService;
         private readonly IComboService _comboService;
+        private readonly IMovimientoService _movimientoService;
 
         private ObservableCollection<FichaCosto> _fichas = new();
         private ObservableCollection<FichaCosto> _fichasFiltradas = new();
@@ -102,9 +103,9 @@ namespace GestionApp.ViewModels
         public decimal TotalCostos => FichasFiltradas?.Sum(f => f.CostoTotal) ?? 0;
 
         /// <summary>
-        /// Ganancia total en el período.
+        /// Ganancia total en CUP en el período.
         /// </summary>
-        public decimal TotalGanancia => TotalVentas - TotalCostos;
+        public decimal TotalGanancia => FichasFiltradas?.Sum(f => f.Ganancia) ?? 0;
 
         private string _mensajeEstado = string.Empty;
         public string MensajeEstado
@@ -144,13 +145,15 @@ namespace GestionApp.ViewModels
             IConfiguracionService configuracionService,
             IEntregaService entregaService,
             IProductoService productoService,
-            IComboService comboService)
+            IComboService comboService,
+            IMovimientoService movimientoService)
         {
             _fichaCostoService = fichaCostoService;
             _configuracionService = configuracionService;
             _entregaService = entregaService;
             _productoService = productoService;
             _comboService = comboService;
+            _movimientoService = movimientoService;
 
             // Rango por defecto: mes actual
             _fechaDesde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -175,11 +178,17 @@ namespace GestionApp.ViewModels
         // CARGA DE DATOS
         // ═══════════════════════════════════════════════════
 
+        private decimal _tasaCambio = 300m;
+
         private async Task CargarFichasAsync()
         {
             try
             {
+                var config = await _configuracionService.ObtenerConfiguracionAsync();
+                _tasaCambio = config.TasaCambioCUP > 0 ? config.TasaCambioCUP : 300m;
+
                 var fichas = await _fichaCostoService.ObtenerPorRangoFechaAsync(FechaDesde, FechaHasta);
+                foreach (var f in fichas) f.TasaCambio = _tasaCambio;
                 Fichas = new ObservableCollection<FichaCosto>(fichas);
                 FiltrarFichas();
                 MensajeEstado = $"{fichas.Count} ficha(s) en el período";
@@ -331,8 +340,11 @@ namespace GestionApp.ViewModels
 
                 await _fichaCostoService.ActualizarAsync(FichaSeleccionada);
                 MensajeEstado = $"✅ Costos actualizados — {FichaSeleccionada.NumeroFicha}";
-                OnPropertyChanged(nameof(FichaSeleccionada));
                 ActualizarTotales();
+
+                // Cerrar editor y volver a la lista
+                CerrarDetalle();
+                await CargarFichasAsync();
             }
             catch (Exception ex)
             {
@@ -492,6 +504,9 @@ namespace GestionApp.ViewModels
             {
                 // Restaurar inventario si fue descontado
                 await _fichaCostoService.RestaurarInventarioAsync(ficha);
+
+                // Limpiar movimientos financieros asociados (Venta, DescontarEntrega, Transporte)
+                await _movimientoService.EliminarPorFichaCostoIdAsync(ficha.Id);
 
                 // Resetear la entrega asociada
                 if (ficha.EntregaId.HasValue)

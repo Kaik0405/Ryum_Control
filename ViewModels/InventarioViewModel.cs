@@ -51,6 +51,7 @@ namespace GestionApp.ViewModels
         private string _formCostoCompra = string.Empty;
         private string _formCantidadStock = string.Empty;
         private UnidadMedida _formUnidad = UnidadMedida.Unidad;
+        private bool _formEsEntrega;
 
         // Campos para ajuste de stock
         private bool _modoAjusteStock;
@@ -203,6 +204,12 @@ namespace GestionApp.ViewModels
         {
             get => _formUnidad;
             set => SetProperty(ref _formUnidad, value);
+        }
+
+        public bool FormEsEntrega
+        {
+            get => _formEsEntrega;
+            set => SetProperty(ref _formEsEntrega, value);
         }
 
         #endregion
@@ -451,6 +458,7 @@ namespace GestionApp.ViewModels
             FormCostoCompra = ProductoSeleccionado.CostoCompra.ToString();
             FormCantidadStock = ProductoSeleccionado.CantidadStock.ToString();
             FormUnidad = ProductoSeleccionado.Unidad;
+            FormEsEntrega = ProductoSeleccionado.EsEntrega;
 
             MostrarFormulario = true;
             OnPropertyChanged(nameof(TituloFormulario));
@@ -488,6 +496,7 @@ namespace GestionApp.ViewModels
                     ProductoSeleccionado.CantidadStock = cantidadStock;
                     ProductoSeleccionado.EnStock = cantidadStock > 0;
                     ProductoSeleccionado.Unidad = FormUnidad;
+                    ProductoSeleccionado.EsEntrega = FormEsEntrega;
 
                     await _productoService.ActualizarAsync(ProductoSeleccionado);
                     MensajeEstado = $"✅ Producto \"{FormNombre}\" actualizado";
@@ -503,22 +512,24 @@ namespace GestionApp.ViewModels
                         CantidadStock = cantidadStock,
                         EnStock = cantidadStock > 0,
                         Unidad = FormUnidad,
+                        EsEntrega = FormEsEntrega,
                         FechaIngreso = DateTime.Now
                     };
 
                     await _productoService.CrearAsync(nuevoProducto);
 
-                    // Registrar como egreso (compra de producto) en los movimientos
-                    // Solo si tiene costo > 0
+                    // Registrar movimiento financiero solo si tiene costo > 0
                     if (costoCompra > 0 && cantidadStock > 0)
                     {
                         var periodo = await _periodoService.ObtenerPeriodoActualAsync();
                         var movimiento = new Movimiento
                         {
-                            Concepto = $"Compra - {nuevoProducto.Nombre}",
-                            Descripcion = $"Ingreso de {cantidadStock} {FormUnidad} al inventario",
+                            Concepto = FormEsEntrega
+                                ? $"Entrega compañía — {nuevoProducto.Nombre}"
+                                : $"Compra — {nuevoProducto.Nombre}",
+                            Descripcion = $"{(FormEsEntrega ? "Entrega" : "Compra")} de {cantidadStock} {FormUnidad} de {nuevoProducto.Nombre} al inventario",
                             Monto = costoCompra * cantidadStock,
-                            Tipo = TipoMovimiento.Egreso,
+                            Tipo = FormEsEntrega ? TipoMovimiento.Ingreso : TipoMovimiento.Egreso,
                             Categoria = CategoriaMovimiento.CompraProducto,
                             ProductoId = nuevoProducto.Id,
                             PeriodoInventarioId = periodo?.Id,
@@ -527,7 +538,8 @@ namespace GestionApp.ViewModels
                         await _movimientoService.CrearAsync(movimiento);
                     }
 
-                    MensajeEstado = $"✅ Producto \"{FormNombre}\" creado (egreso registrado: ${costoCompra * cantidadStock:N2})";
+                    var tipoTexto = FormEsEntrega ? "ingreso" : "egreso";
+                    MensajeEstado = $"✅ Producto \"{FormNombre}\" creado ({tipoTexto} registrado: ${costoCompra * cantidadStock:N2})";
                 }
 
                 // Cerrar formulario y recargar la lista
@@ -620,6 +632,7 @@ namespace GestionApp.ViewModels
             FormCostoCompra = string.Empty;
             FormCantidadStock = string.Empty;
             FormUnidad = UnidadMedida.Unidad;
+            FormEsEntrega = false;
             ProductoSeleccionado = null;
         }
 
@@ -701,9 +714,11 @@ namespace GestionApp.ViewModels
                     Concepto = AjusteEsIngreso
                         ? $"Ingreso inventario — {nombreProducto}"
                         : $"Salida inventario — {nombreProducto}",
-                    Descripcion = $"{(AjusteEsIngreso ? "Ingreso" : "Salida")} de {cantidad} {ProductoSeleccionado.Unidad}{motivo}",
+                    Descripcion = $"{(AjusteEsIngreso ? "Ingreso" : "Salida")} de {cantidad} {ProductoSeleccionado.Unidad} de {nombreProducto}{motivo}",
                     Monto = ProductoSeleccionado.CostoCompra * cantidad,
-                    Tipo = TipoMovimiento.Egreso,
+                    Tipo = AjusteEsIngreso
+                        ? (ProductoSeleccionado.EsEntrega ? TipoMovimiento.Ingreso : TipoMovimiento.Egreso)
+                        : TipoMovimiento.Egreso,
                     Categoria = AjusteEsIngreso ? CategoriaMovimiento.CompraProducto : CategoriaMovimiento.Otro,
                     ProductoId = ProductoSeleccionado.Id,
                     PeriodoInventarioId = periodo?.Id,

@@ -151,9 +151,16 @@ namespace GestionApp.Models
         public decimal CostoTotal => (Productos?.Sum(p => p.Total) ?? 0) + CostoTransportacion;
 
         /// <summary>
-        /// Ganancia: PrecioVenta - CostoTotal
+        /// Tasa de cambio para calcular ganancia (no persistida).
+        /// Se asigna desde el ViewModel al cargar las fichas.
         /// </summary>
-        public decimal Ganancia => PrecioVentaUSD - CostoTotal;
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public decimal TasaCambio { get; set; } = 300m;
+
+        /// <summary>
+        /// Ganancia en CUP: (PrecioVentaUSD × TasaCambio) − CostoTotal.
+        /// </summary>
+        public decimal Ganancia => (PrecioVentaUSD * TasaCambio) - CostoTotal;
 
         #endregion
 

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+using System.Windows.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using GestionApp.Data;
@@ -59,6 +61,16 @@ public partial class App : Application
                 _ = context.FichasCosto.Select(f => f.CostoTransportacion).FirstOrDefault();
                 // Verificar columna InventarioDescontado en FichasCosto
                 _ = context.FichasCosto.Select(f => f.InventarioDescontado).FirstOrDefault();
+                // Verificar columnas nuevas
+                _ = context.FichasCosto.Select(f => f.EditadoPostDescuento).FirstOrDefault();
+                _ = context.Agencias.Select(a => a.LogoPath).FirstOrDefault();
+                // Verificar columnas de remesa en Entregas
+                _ = context.Entregas.Select(e => e.EsRemesa).FirstOrDefault();
+                _ = context.Entregas.Select(e => e.MontoRemesa).FirstOrDefault();
+                // Verificar columna EntregaId en Movimientos
+                _ = context.Movimientos.Select(m => m.EntregaId).FirstOrDefault();
+                // Verificar columna TasaCambioCUP en Configuracion
+                _ = context.Configuracion.Select(c => c.TasaCambioCUP).FirstOrDefault();
             }
             catch
             {
@@ -66,7 +78,20 @@ public partial class App : Application
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
             }
+
+            // Seed: agencias por defecto (Rios y Yumury)
+            if (!context.Agencias.Any())
+            {
+                context.Agencias.AddRange(
+                    new GestionApp.Models.Agencia { Nombre = "Rios", LogoPath = "rios", Activo = true },
+                    new GestionApp.Models.Agencia { Nombre = "Yumury", LogoPath = "yumury", Activo = true }
+                );
+                context.SaveChanges();
+            }
         }
+
+        // Copiar logos embebidos a AppData si no existen (primera ejecución)
+        CopiarLogosEmbebidos();
 
         // Crear y mostrar la ventana principal
         var mainWindow = new MainWindow
@@ -79,6 +104,43 @@ public partial class App : Application
     /// <summary>
     /// Configura todos los servicios y ViewModels para DI.
     /// </summary>
+    /// <summary>
+    /// Copia los logos embebidos (Assets/Logos/) a %AppData%/GestionApp/Logos/
+    /// solo si no existen ya, para no sobreescribir logos personalizados del usuario.
+    /// </summary>
+    private static void CopiarLogosEmbebidos()
+    {
+        try
+        {
+            var logosDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "GestionApp", "Logos");
+            Directory.CreateDirectory(logosDir);
+
+            // Lista de logos embebidos conocidos
+            var logosEmbebidos = new[] { "rios", "yumury" };
+
+            foreach (var logo in logosEmbebidos)
+            {
+                var destino = Path.Combine(logosDir, $"{logo}.png");
+                if (File.Exists(destino)) continue; // No sobreescribir logos personalizados
+
+                try
+                {
+                    var uri = new Uri($"pack://application:,,,/Assets/Logos/{logo}.png", UriKind.Absolute);
+                    var streamInfo = Application.GetResourceStream(uri);
+                    if (streamInfo != null)
+                    {
+                        using var fileStream = File.Create(destino);
+                        streamInfo.Stream.CopyTo(fileStream);
+                    }
+                }
+                catch { }
+            }
+        }
+        catch { }
+    }
+
     private static IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
@@ -124,6 +186,7 @@ public partial class App : Application
         services.AddSingleton<FichasCostoViewModel>();
         services.AddSingleton<MovimientosViewModel>();
         services.AddSingleton<ReportesViewModel>();
+        services.AddSingleton<AjustesViewModel>();
 
         return services.BuildServiceProvider();
     }

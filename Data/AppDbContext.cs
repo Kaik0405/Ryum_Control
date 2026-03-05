@@ -156,7 +156,8 @@ namespace GestionApp.Data
 
             modelBuilder.Entity<FichaCosto>()
                 .Ignore(f => f.CostoTotal)
-                .Ignore(f => f.Ganancia);
+                .Ignore(f => f.Ganancia)
+                .Ignore(f => f.TasaCambio);
 
             #endregion
 
@@ -166,7 +167,18 @@ namespace GestionApp.Data
                 .HasOne(e => e.Combo)
                 .WithMany()
                 .HasForeignKey(e => e.ComboId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entrega>()
+                .Ignore(e => e.DireccionCompleta)
+                .Ignore(e => e.DireccionResumida)
+                .Ignore(e => e.FechaLimite)
+                .Ignore(e => e.DiasRestantes)
+                .Ignore(e => e.Vencida)
+                .Ignore(e => e.Urgente)
+                .Ignore(e => e.Entregada)
+                .Ignore(e => e.Resumen);
 
             modelBuilder.Entity<EntregaProducto>()
                 .HasOne(ep => ep.Entrega)
@@ -204,6 +216,12 @@ namespace GestionApp.Data
                 .HasOne(m => m.PeriodoInventario)
                 .WithMany(p => p.Movimientos)
                 .HasForeignKey(m => m.PeriodoInventarioId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Movimiento>()
+                .HasOne(m => m.Entrega)
+                .WithMany()
+                .HasForeignKey(m => m.EntregaId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             #endregion

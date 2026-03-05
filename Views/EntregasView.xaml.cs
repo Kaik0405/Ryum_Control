@@ -1,6 +1,8 @@
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
@@ -149,6 +151,14 @@ namespace GestionApp.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// Solo permite dígitos, coma y punto en campos numéricos.
+        /// </summary>
+        private void NumericOnly_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !Regex.IsMatch(e.Text, @"^[\d.,]$");
         }
     }
 }

@@ -84,6 +84,7 @@ namespace GestionApp.ViewModels
         public ICommand NavigateToFichasCostoCommand { get; }
         public ICommand NavigateToMovimientosCommand { get; }
         public ICommand NavigateToReportesCommand { get; }
+        public ICommand NavigateToAjustesCommand { get; }
         public ICommand GuardarNombreCommand { get; }
         public ICommand EditarNombreCommand { get; }
 
@@ -103,8 +104,9 @@ namespace GestionApp.ViewModels
             NavigateToCombosCommand = new RelayCommand(_ => NavigateTo<CombosViewModel>("Combos"));
             NavigateToEntregasCommand = new RelayCommand(_ => NavigateTo<EntregasViewModel>("Entregas"));
             NavigateToFichasCostoCommand = new RelayCommand(_ => NavigateTo<FichasCostoViewModel>("Fichas de Costo"));
-            NavigateToMovimientosCommand = new RelayCommand(_ => NavigateTo<MovimientosViewModel>("Movimientos"));
+            NavigateToMovimientosCommand = new RelayCommand(_ => NavigateTo<MovimientosViewModel>("Finanzas"));
             NavigateToReportesCommand = new RelayCommand(_ => NavigateTo<ReportesViewModel>("Reportes"));
+            NavigateToAjustesCommand = new RelayCommand(_ => NavigateTo<AjustesViewModel>("Ajustes"));
             GuardarNombreCommand = new RelayCommand(async _ => await GuardarNombreAsync(), _ => !string.IsNullOrWhiteSpace(FormNombreUsuario));
             EditarNombreCommand = new RelayCommand(_ =>
             {

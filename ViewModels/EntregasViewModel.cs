@@ -28,11 +28,14 @@ namespace GestionApp.ViewModels
         private readonly IComboService _comboService;
         private readonly IConfiguracionService _configuracionService;
         private readonly IFichaCostoService _fichaCostoService;
+        private readonly IAgenciaService _agenciaService;
+        private readonly IMovimientoService _movimientoService;
 
         // Listas principales
         private ObservableCollection<Entrega> _entregas = new();
         private ObservableCollection<Entrega> _entregasFiltradas = new();
         private ObservableCollection<Combo> _combosDisponibles = new();
+        private ObservableCollection<Agencia> _agenciasDisponibles = new();
 
         // Selección
         private Entrega? _entregaSeleccionada;
@@ -50,13 +53,20 @@ namespace GestionApp.ViewModels
         private bool _esEdicion;
         private Combo? _formComboSeleccionado;
         private string _formReceptor = string.Empty;
-        private string _formDireccion = string.Empty;
+        private string _formProvincia = string.Empty;
+        private string _formMunicipio = string.Empty;
+        private string _formLocalidad = string.Empty;
+        private string _formDireccionParticular = string.Empty;
+        private ObservableCollection<string> _municipiosDisponibles = new();
         private string _formTelefonoMovil = string.Empty;
         private string _formTelefonoFijo = string.Empty;
         private string _formRemitente = string.Empty;
         private string _formAgencia = string.Empty;
+        private Agencia? _formAgenciaSeleccionada;
         private DateTime _formFechaOrden = DateTime.Now;
         private string _formObservaciones = string.Empty;
+        private bool _esRemesa;
+        private decimal _formMontoRemesa;
 
         // Disponibilidad de inventario
         private ObservableCollection<ProductoDisponibilidad> _productosDisponibilidad = new();
@@ -95,6 +105,12 @@ namespace GestionApp.ViewModels
         {
             get => _combosDisponibles;
             set => SetProperty(ref _combosDisponibles, value);
+        }
+
+        public ObservableCollection<Agencia> AgenciasDisponibles
+        {
+            get => _agenciasDisponibles;
+            set => SetProperty(ref _agenciasDisponibles, value);
         }
 
         public Entrega? EntregaSeleccionada
@@ -175,7 +191,9 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _esEdicion, value);
         }
 
-        public string TituloFormulario => EsEdicion ? "✏️ Editar Entrega" : "📦 Nueva Entrega";
+        public string TituloFormulario => EsRemesa 
+            ? (EsEdicion ? "✏️ Editar Remesa" : "💵 Nueva Remesa") 
+            : (EsEdicion ? "✏️ Editar Entrega" : "📦 Nueva Entrega");
 
         public Combo? FormComboSeleccionado
         {
@@ -193,10 +211,45 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _formReceptor, value);
         }
 
-        public string FormDireccion
+        public string[] ProvinciasDisponibles => CubaData.Provincias;
+
+        public ObservableCollection<string> MunicipiosDisponibles
         {
-            get => _formDireccion;
-            set => SetProperty(ref _formDireccion, value);
+            get => _municipiosDisponibles;
+            set => SetProperty(ref _municipiosDisponibles, value);
+        }
+
+        public string FormProvincia
+        {
+            get => _formProvincia;
+            set
+            {
+                if (SetProperty(ref _formProvincia, value))
+                {
+                    // Al cambiar provincia, actualizar municipios y limpiar selección
+                    var municipios = CubaData.ObtenerMunicipios(value);
+                    MunicipiosDisponibles = new ObservableCollection<string>(municipios);
+                    FormMunicipio = string.Empty;
+                }
+            }
+        }
+
+        public string FormMunicipio
+        {
+            get => _formMunicipio;
+            set => SetProperty(ref _formMunicipio, value);
+        }
+
+        public string FormLocalidad
+        {
+            get => _formLocalidad;
+            set => SetProperty(ref _formLocalidad, value);
+        }
+
+        public string FormDireccionParticular
+        {
+            get => _formDireccionParticular;
+            set => SetProperty(ref _formDireccionParticular, value);
         }
 
         public string FormTelefonoMovil
@@ -223,6 +276,16 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _formAgencia, value);
         }
 
+        public Agencia? FormAgenciaSeleccionada
+        {
+            get => _formAgenciaSeleccionada;
+            set
+            {
+                if (SetProperty(ref _formAgenciaSeleccionada, value) && value != null)
+                    FormAgencia = value.Nombre;
+            }
+        }
+
         public DateTime FormFechaOrden
         {
             get => _formFechaOrden;
@@ -233,6 +296,22 @@ namespace GestionApp.ViewModels
         {
             get => _formObservaciones;
             set => SetProperty(ref _formObservaciones, value);
+        }
+
+        public bool EsRemesa
+        {
+            get => _esRemesa;
+            set
+            {
+                if (SetProperty(ref _esRemesa, value))
+                    OnPropertyChanged(nameof(TituloFormulario));
+            }
+        }
+
+        public decimal FormMontoRemesa
+        {
+            get => _formMontoRemesa;
+            set => SetProperty(ref _formMontoRemesa, value);
         }
 
         #endregion
@@ -262,6 +341,7 @@ namespace GestionApp.ViewModels
         #region Comandos
 
         public ICommand CrearEntregaCommand { get; }
+        public ICommand CrearRemesaCommand { get; }
         public ICommand EditarEntregaCommand { get; }
         public ICommand EliminarEntregaCommand { get; }
         public ICommand MarcarEntregadaCommand { get; }
@@ -299,14 +379,17 @@ namespace GestionApp.ViewModels
 
         #endregion
 
-        public EntregasViewModel(IEntregaService entregaService, IComboService comboService, IConfiguracionService configuracionService, IFichaCostoService fichaCostoService)
+        public EntregasViewModel(IEntregaService entregaService, IComboService comboService, IConfiguracionService configuracionService, IFichaCostoService fichaCostoService, IAgenciaService agenciaService, IMovimientoService movimientoService)
         {
             _entregaService = entregaService;
             _comboService = comboService;
             _configuracionService = configuracionService;
             _fichaCostoService = fichaCostoService;
+            _agenciaService = agenciaService;
+            _movimientoService = movimientoService;
 
             CrearEntregaCommand = new RelayCommand(_ => PrepararNueva());
+            CrearRemesaCommand = new RelayCommand(_ => PrepararNuevaRemesa());
             EditarEntregaCommand = new RelayCommand(param => PrepararEdicion(param as Entrega));
             EliminarEntregaCommand = new RelayCommand(async param => await EliminarAsync(param as Entrega));
             MarcarEntregadaCommand = new RelayCommand(async param => await MarcarEntregadaAsync(param as Entrega));
@@ -314,8 +397,9 @@ namespace GestionApp.ViewModels
             CerrarDetalleCommand = new RelayCommand(_ => { MostrarDetalle = false; EntregaDetalle = null; });
             GuardarCommand = new RelayCommand(
                 async _ => await GuardarAsync(),
-                _ => !string.IsNullOrWhiteSpace(FormReceptor) && FormComboSeleccionado != null
-                     && !string.IsNullOrWhiteSpace(FormRemitente));
+                _ => !string.IsNullOrWhiteSpace(FormReceptor) 
+                     && !string.IsNullOrWhiteSpace(FormRemitente)
+                     && (EsRemesa ? FormMontoRemesa > 0 : FormComboSeleccionado != null));
             CancelarCommand = new RelayCommand(_ => CerrarFormulario());
             RefrescarCommand = new RelayCommand(async _ => await CargarDatosAsync());
             GenerarConformidadCommand = new RelayCommand(param => AbrirConformidad(param as Entrega));
@@ -354,6 +438,20 @@ namespace GestionApp.ViewModels
             }
 
             await CargarCombosAsync();
+            await CargarAgenciasAsync();
+        }
+
+        private async Task CargarAgenciasAsync()
+        {
+            try
+            {
+                var agencias = await _agenciaService.ObtenerTodosAsync();
+                AgenciasDisponibles = new ObservableCollection<Agencia>(agencias.Where(a => a.Activo));
+            }
+            catch (Exception ex)
+            {
+                MensajeEstado = $"Error al cargar agencias: {ex.Message}";
+            }
         }
 
         private async Task CargarCombosAsync()
@@ -395,6 +493,10 @@ namespace GestionApp.ViewModels
                     e.NumeroOrden.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
                     e.NombreRemitente.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
                     e.Agencia.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
+                    e.Provincia.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
+                    e.Municipio.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
+                    e.Localidad.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ||
+                    (e.EsRemesa && "remesa".Contains(Filtro, StringComparison.OrdinalIgnoreCase)) ||
                     (e.Combo?.Nombre.Contains(Filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (e.Combo?.Numero.ToString().Contains(Filtro) ?? false));
             }
@@ -418,8 +520,21 @@ namespace GestionApp.ViewModels
         private async void PrepararNueva()
         {
             EsEdicion = false;
+            EsRemesa = false;
             LimpiarFormulario();
-            FormFechaOrden = DateTime.Now; // Fecha automática
+            FormFechaOrden = DateTime.Now;
+            await CargarCombosAsync();
+            MostrarFormulario = true;
+            MostrarDetalle = false;
+            OnPropertyChanged(nameof(TituloFormulario));
+        }
+
+        private async void PrepararNuevaRemesa()
+        {
+            EsEdicion = false;
+            LimpiarFormulario();
+            EsRemesa = true;
+            FormFechaOrden = DateTime.Now;
             await CargarCombosAsync();
             MostrarFormulario = true;
             MostrarDetalle = false;
@@ -432,15 +547,21 @@ namespace GestionApp.ViewModels
             EsEdicion = true;
             EntregaSeleccionada = entrega;
 
-            FormComboSeleccionado = CombosDisponibles.FirstOrDefault(c => c.Id == entrega.ComboId);
+            FormComboSeleccionado = entrega.EsRemesa ? null : CombosDisponibles.FirstOrDefault(c => c.Id == entrega.ComboId);
             FormReceptor = entrega.NombreReceptor;
-            FormDireccion = entrega.DireccionReceptor;
+            FormProvincia = entrega.Provincia;
+            FormMunicipio = entrega.Municipio;
+            FormLocalidad = entrega.Localidad;
+            FormDireccionParticular = entrega.DireccionParticular;
             FormTelefonoMovil = entrega.TelefonoMovil;
             FormTelefonoFijo = entrega.TelefonoFijo;
             FormRemitente = entrega.NombreRemitente;
             FormAgencia = entrega.Agencia;
+            FormAgenciaSeleccionada = AgenciasDisponibles.FirstOrDefault(a => a.Nombre.Equals(entrega.Agencia, StringComparison.OrdinalIgnoreCase));
             FormFechaOrden = entrega.FechaOrden;
             FormObservaciones = entrega.Observaciones ?? string.Empty;
+            EsRemesa = entrega.EsRemesa;
+            FormMontoRemesa = entrega.MontoRemesa;
 
             MostrarFormulario = true;
             MostrarDetalle = false;
@@ -451,9 +572,15 @@ namespace GestionApp.ViewModels
         {
             try
             {
-                if (FormComboSeleccionado == null)
+                if (!EsRemesa && FormComboSeleccionado == null)
                 {
                     MensajeEstado = "❌ Debe seleccionar un combo";
+                    return;
+                }
+
+                if (EsRemesa && FormMontoRemesa <= 0)
+                {
+                    MensajeEstado = "❌ El monto de la remesa debe ser mayor a 0";
                     return;
                 }
 
@@ -472,37 +599,61 @@ namespace GestionApp.ViewModels
                 if (EsEdicion && EntregaSeleccionada != null)
                 {
                     EntregaSeleccionada.NombreReceptor = FormReceptor.Trim();
-                    EntregaSeleccionada.DireccionReceptor = FormDireccion.Trim();
+                    EntregaSeleccionada.Provincia = FormProvincia;
+                    EntregaSeleccionada.Municipio = FormMunicipio;
+                    EntregaSeleccionada.Localidad = FormLocalidad.Trim();
+                    EntregaSeleccionada.DireccionParticular = FormDireccionParticular.Trim();
+                    EntregaSeleccionada.DireccionReceptor = ComponerDireccion();
                     EntregaSeleccionada.TelefonoMovil = FormTelefonoMovil.Trim();
                     EntregaSeleccionada.TelefonoFijo = FormTelefonoFijo.Trim();
                     EntregaSeleccionada.NombreRemitente = FormRemitente.Trim();
                     EntregaSeleccionada.Agencia = FormAgencia.Trim();
                     EntregaSeleccionada.FechaOrden = FormFechaOrden;
                     EntregaSeleccionada.Observaciones = string.IsNullOrWhiteSpace(FormObservaciones) ? null : FormObservaciones.Trim();
+                    EntregaSeleccionada.EsRemesa = EsRemesa;
+                    EntregaSeleccionada.MontoRemesa = FormMontoRemesa;
 
                     await _entregaService.ActualizarAsync(EntregaSeleccionada);
-                    MensajeEstado = $"✅ Entrega {EntregaSeleccionada.NumeroOrden} actualizada";
+                    MensajeEstado = EsRemesa 
+                        ? $"✅ Remesa {EntregaSeleccionada.NumeroOrden} actualizada" 
+                        : $"✅ Entrega {EntregaSeleccionada.NumeroOrden} actualizada";
+                }
+                else if (EsRemesa)
+                {
+                    var nueva = await _entregaService.CrearRemesaAsync(
+                        FormReceptor.Trim(),
+                        ComponerDireccion(),
+                        FormTelefonoMovil.Trim(),
+                        FormTelefonoFijo.Trim(),
+                        FormRemitente.Trim(),
+                        FormAgencia.Trim(),
+                        FormMontoRemesa);
+
+                    if (FormFechaOrden.Date != DateTime.Now.Date)
+                        nueva.FechaOrden = FormFechaOrden;
+                    if (!string.IsNullOrWhiteSpace(FormObservaciones))
+                        nueva.Observaciones = FormObservaciones.Trim();
+                    AsignarCamposDireccion(nueva);
+                    await _entregaService.ActualizarAsync(nueva);
+
+                    MensajeEstado = $"✅ Remesa {nueva.NumeroOrden} creada — {FormMontoRemesa:N0} CUP";
                 }
                 else
                 {
                     var nueva = await _entregaService.CrearDesdeComboAsync(
-                        FormComboSeleccionado.Id,
+                        FormComboSeleccionado!.Id,
                         FormReceptor.Trim(),
-                        FormDireccion.Trim(),
+                        ComponerDireccion(),
                         FormTelefonoMovil.Trim(),
                         FormTelefonoFijo.Trim(),
                         FormRemitente.Trim(),
                         FormAgencia.Trim());
 
-                    // Actualizar fecha si fue modificada (no es la de creación)
                     if (FormFechaOrden.Date != DateTime.Now.Date)
-                    {
                         nueva.FechaOrden = FormFechaOrden;
-                    }
                     if (!string.IsNullOrWhiteSpace(FormObservaciones))
-                    {
                         nueva.Observaciones = FormObservaciones.Trim();
-                    }
+                    AsignarCamposDireccion(nueva);
                     await _entregaService.ActualizarAsync(nueva);
 
                     MensajeEstado = $"✅ Entrega {nueva.NumeroOrden} creada — plazo: 5 días";
@@ -542,12 +693,17 @@ namespace GestionApp.ViewModels
                     if (ficha != null)
                     {
                         await _fichaCostoService.RestaurarInventarioAsync(ficha);
+                        // Limpiar movimientos financieros de la ficha (Venta, DescontarEntrega, Transporte)
+                        await _movimientoService.EliminarPorFichaCostoIdAsync(ficha.Id);
                         await _fichaCostoService.EliminarAsync(ficha.Id);
                     }
                 }
 
+                // Limpiar movimientos financieros de la entrega (Remesa)
+                await _movimientoService.EliminarPorEntregaIdAsync(entrega.Id);
+
                 await _entregaService.EliminarAsync(entrega.Id);
-                MensajeEstado = $"🗑️ Entrega {entrega.NumeroOrden} eliminada";
+                MensajeEstado = $"🗑️ Entrega {entrega.NumeroOrden} eliminada — finanzas e inventario restaurados";
                 await CargarDatosAsync();
             }
             catch (Exception ex)
@@ -563,6 +719,22 @@ namespace GestionApp.ViewModels
             if (entrega.Entregada)
             {
                 MensajeEstado = "ℹ️ Ya fue marcada como entregada";
+                return;
+            }
+
+            if (entrega.EsRemesa)
+            {
+                try
+                {
+                    await _entregaService.MarcarEntregadaAsync(entrega.Id);
+                    await _movimientoService.RegistrarRemesaAsync(entrega);
+                    MensajeEstado = $"✅ Remesa {entrega.NumeroOrden} entregada — Registrada en Finanzas ({entrega.MontoRemesa:N0} CUP)";
+                    await CargarDatosAsync();
+                }
+                catch (Exception ex)
+                {
+                    MensajeEstado = $"❌ Error al entregar remesa: {ex.Message}";
+                }
                 return;
             }
 
@@ -596,9 +768,9 @@ namespace GestionApp.ViewModels
             var combo = CombosDisponibles.FirstOrDefault(c => c.Id == entrega.ComboId);
 
             // Si el combo no se encontró en memoria, cargar desde DB con includes completos
-            if (combo == null && entrega.ComboId > 0)
+            if (combo == null && entrega.ComboId.HasValue && entrega.ComboId.Value > 0)
             {
-                combo = await _comboService.ObtenerPorIdAsync(entrega.ComboId);
+                combo = await _comboService.ObtenerPorIdAsync(entrega.ComboId.Value);
             }
 
             // Obtener nombre del distribuidor
@@ -643,7 +815,7 @@ namespace GestionApp.ViewModels
                 Distribuidor = config.Nombre,
                 Remitente = entrega.NombreRemitente,
                 NombreReceptor = entrega.NombreReceptor,
-                DireccionReceptor = entrega.DireccionReceptor,
+                DireccionReceptor = entrega.DireccionCompleta,
                 TelefonoReceptor = entrega.TelefonoMovil,
                 NombreAgencia = entrega.Agencia,
                 FechaEnvio = entrega.FechaOrden,
@@ -687,17 +859,53 @@ namespace GestionApp.ViewModels
         {
             FormComboSeleccionado = null;
             FormReceptor = string.Empty;
-            FormDireccion = string.Empty;
+            FormProvincia = string.Empty;
+            FormMunicipio = string.Empty;
+            FormLocalidad = string.Empty;
+            FormDireccionParticular = string.Empty;
+            MunicipiosDisponibles = new ObservableCollection<string>();
             FormTelefonoMovil = string.Empty;
             FormTelefonoFijo = string.Empty;
             FormRemitente = string.Empty;
             FormAgencia = string.Empty;
+            FormAgenciaSeleccionada = null;
             FormFechaOrden = DateTime.Now;
             FormObservaciones = string.Empty;
+            EsRemesa = false;
+            FormMontoRemesa = 0;
             EntregaSeleccionada = null;
             ProductosDisponibilidad.Clear();
             MostrarDisponibilidad = false;
             DisponibilidadGeneral = string.Empty;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // HELPERS DE DIRECCIÓN
+        // ═══════════════════════════════════════════════════
+
+        /// <summary>
+        /// Compone la dirección completa desde los campos estructurados.
+        /// Formato: "DireccionParticular, Localidad, Municipio, Provincia"
+        /// </summary>
+        private string ComponerDireccion()
+        {
+            var partes = new List<string>();
+            if (!string.IsNullOrWhiteSpace(FormDireccionParticular)) partes.Add(FormDireccionParticular.Trim());
+            if (!string.IsNullOrWhiteSpace(FormLocalidad)) partes.Add(FormLocalidad.Trim());
+            if (!string.IsNullOrWhiteSpace(FormMunicipio)) partes.Add(FormMunicipio);
+            if (!string.IsNullOrWhiteSpace(FormProvincia)) partes.Add(FormProvincia);
+            return string.Join(", ", partes);
+        }
+
+        /// <summary>
+        /// Asigna los campos de dirección estructurados a una entrega.
+        /// </summary>
+        private void AsignarCamposDireccion(Entrega entrega)
+        {
+            entrega.Provincia = FormProvincia;
+            entrega.Municipio = FormMunicipio;
+            entrega.Localidad = FormLocalidad.Trim();
+            entrega.DireccionParticular = FormDireccionParticular.Trim();
         }
 
         // ═══════════════════════════════════════════════════
@@ -746,19 +954,20 @@ namespace GestionApp.ViewModels
                     var suficiente = stockTotal >= cp.Cantidad;
                     var hayAlgo = stockTotal > 0;
                     var faltante = cp.Cantidad - stockTotal;
+                    var cantTexto = cp.EsRango ? $"{cp.Cantidad:G}-{cp.CantidadMaxima:G}" : $"{cp.Cantidad:G}";
 
                     string detalle;
                     if (suficiente)
                     {
-                        detalle = $"Tenés {stockTotal:G} {cp.Unidad} — necesitás {cp.Cantidad:G} {cp.Unidad} ✓";
+                        detalle = $"Tenés {stockTotal:G} {cp.Unidad} — necesitás {cantTexto} {cp.Unidad} ✓";
                     }
                     else if (hayAlgo)
                     {
-                        detalle = $"Tenés {stockTotal:G} de {cp.Cantidad:G} {cp.Unidad} — faltan {faltante:G} {cp.Unidad}";
+                        detalle = $"Tenés {stockTotal:G} de {cantTexto} {cp.Unidad} — faltan {faltante:G} {cp.Unidad}";
                     }
                     else
                     {
-                        detalle = $"Necesitás {cp.Cantidad:G} {cp.Unidad} — no hay stock";
+                        detalle = $"Necesitás {cantTexto} {cp.Unidad} — no hay stock";
                     }
 
                     disponibilidad.Add(new ProductoDisponibilidad

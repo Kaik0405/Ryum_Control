@@ -22,6 +22,7 @@ namespace GestionApp.Models
         Remesa,
         FondoInicial,
         DescontarEntrega,
+        Extraccion,
         Otro
     }
 
@@ -66,6 +67,12 @@ namespace GestionApp.Models
         /// </summary>
         public int? ProductoId { get; set; }
         public Producto? Producto { get; set; }
+
+        /// <summary>
+        /// Referencia a la entrega si el movimiento es una remesa.
+        /// </summary>
+        public int? EntregaId { get; set; }
+        public Entrega? Entrega { get; set; }
 
         /// <summary>
         /// Período de inventario al que pertenece este movimiento.

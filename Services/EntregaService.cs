@@ -108,6 +108,35 @@ namespace GestionApp.Services
         }
 
         /// <summary>
+        /// Crea una nueva entrega de tipo REMESA (envío de dinero).
+        /// No tiene combo ni productos, solo un monto.
+        /// </summary>
+        public async Task<Entrega> CrearRemesaAsync(
+            string receptor, string direccion, string telMovil, string telFijo,
+            string remitente, string agencia, decimal monto)
+        {
+            var entrega = new Entrega
+            {
+                NumeroOrden = await GenerarNumeroOrdenAsync(),
+                EsRemesa = true,
+                MontoRemesa = monto,
+                ComboId = null,
+                NombreReceptor = receptor,
+                DireccionReceptor = direccion,
+                TelefonoMovil = telMovil,
+                TelefonoFijo = telFijo,
+                NombreRemitente = remitente,
+                Agencia = agencia,
+                FechaOrden = DateTime.Now,
+                FechaCreacion = DateTime.Now
+            };
+
+            _context.Entregas.Add(entrega);
+            await _context.SaveChangesAsync();
+            return entrega;
+        }
+
+        /// <summary>
         /// Obtiene las entregas no entregadas (pendientes).
         /// </summary>
         public async Task<List<Entrega>> ObtenerPendientesAsync()

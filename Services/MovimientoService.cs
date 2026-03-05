@@ -21,6 +21,7 @@ namespace GestionApp.Services
             return await _context.Movimientos
                 .Include(m => m.FichaCosto)
                 .Include(m => m.Producto)
+                .Include(m => m.Entrega)
                 .OrderByDescending(m => m.Fecha)
                 .ToListAsync();
         }
@@ -30,6 +31,7 @@ namespace GestionApp.Services
             return await _context.Movimientos
                 .Include(m => m.FichaCosto)
                 .Include(m => m.Producto)
+                .Include(m => m.Entrega)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
@@ -38,7 +40,20 @@ namespace GestionApp.Services
             return await _context.Movimientos
                 .Include(m => m.FichaCosto)
                 .Include(m => m.Producto)
+                .Include(m => m.Entrega)
                 .Where(m => m.Fecha.Year == año && m.Fecha.Month == mes)
+                .OrderByDescending(m => m.Fecha)
+                .ToListAsync();
+        }
+
+        public async Task<List<Movimiento>> ObtenerPorRangoFechaAsync(DateTime desde, DateTime hasta)
+        {
+            var hastaFin = hasta.Date.AddDays(1);
+            return await _context.Movimientos
+                .Include(m => m.FichaCosto)
+                .Include(m => m.Producto)
+                .Include(m => m.Entrega)
+                .Where(m => m.Fecha >= desde.Date && m.Fecha < hastaFin)
                 .OrderByDescending(m => m.Fecha)
                 .ToListAsync();
         }
@@ -64,29 +79,38 @@ namespace GestionApp.Services
         public async Task<(decimal Ingresos, decimal Egresos)> ObtenerResumenAsync(int año, int mes)
         {
             var movimientos = await ObtenerPorPeriodoAsync(año, mes);
-            
-            var ingresos = movimientos
-                .Where(m => m.Tipo == TipoMovimiento.Ingreso)
-                .Sum(m => m.Monto);
-            
-            var egresos = movimientos
-                .Where(m => m.Tipo == TipoMovimiento.Egreso)
-                .Sum(m => m.Monto);
+            var ingresos = movimientos.Where(m => m.Tipo == TipoMovimiento.Ingreso).Sum(m => m.Monto);
+            var egresos = movimientos.Where(m => m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
+            return (ingresos, egresos);
+        }
 
+        public async Task<(decimal Ingresos, decimal Egresos)> ObtenerResumenRangoAsync(DateTime desde, DateTime hasta)
+        {
+            var hastaFin = hasta.Date.AddDays(1);
+            var movs = await _context.Movimientos
+                .Where(m => m.Fecha >= desde.Date && m.Fecha < hastaFin)
+                .ToListAsync();
+            var ingresos = movs.Where(m => m.Tipo == TipoMovimiento.Ingreso).Sum(m => m.Monto);
+            var egresos = movs.Where(m => m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
             return (ingresos, egresos);
         }
 
         public async Task<decimal> ObtenerBalanceActualAsync()
         {
-            var ingresos = await _context.Movimientos
-                .Where(m => m.Tipo == TipoMovimiento.Ingreso)
-                .SumAsync(m => m.Monto);
-            
-            var egresos = await _context.Movimientos
-                .Where(m => m.Tipo == TipoMovimiento.Egreso)
-                .SumAsync(m => m.Monto);
-
+            var movs = await _context.Movimientos.ToListAsync();
+            var ingresos = movs.Where(m => m.Tipo == TipoMovimiento.Ingreso).Sum(m => m.Monto);
+            var egresos = movs.Where(m => m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
             return ingresos - egresos;
+        }
+
+        public async Task<decimal> ObtenerTotalInvertidoAsync()
+        {
+            var movs = await _context.Movimientos
+                .Where(m => m.Tipo == TipoMovimiento.Egreso
+                    && (m.Categoria == CategoriaMovimiento.CompraProducto
+                        || m.Categoria == CategoriaMovimiento.Transporte))
+                .ToListAsync();
+            return movs.Sum(m => m.Monto);
         }
 
         public async Task<Movimiento> CrearAsync(Movimiento movimiento)
@@ -130,7 +154,6 @@ namespace GestionApp.Services
                 Fecha = ficha.FechaEnvio,
                 FechaCreacion = DateTime.Now
             };
-
             await CrearAsync(movimiento);
         }
 
@@ -140,7 +163,6 @@ namespace GestionApp.Services
         public async Task RegistrarCompraProductoAsync(CompraProducto compra)
         {
             var producto = await _context.Productos.FindAsync(compra.ProductoId);
-            
             var movimiento = new Movimiento
             {
                 Concepto = $"Compra - {producto?.Nombre ?? "Producto"}",
@@ -153,7 +175,57 @@ namespace GestionApp.Services
                 Fecha = compra.Fecha,
                 FechaCreacion = DateTime.Now
             };
+            await CrearAsync(movimiento);
+        }
 
+        /// <summary>
+        /// Elimina todos los movimientos vinculados a una ficha de costo.
+        /// Usado al eliminar fichas/entregas para limpiar financiero.
+        /// </summary>
+        public async Task EliminarPorFichaCostoIdAsync(int fichaCostoId)
+        {
+            var movimientos = await _context.Movimientos
+                .Where(m => m.FichaCostoId == fichaCostoId)
+                .ToListAsync();
+            if (movimientos.Any())
+            {
+                _context.Movimientos.RemoveRange(movimientos);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Elimina todos los movimientos vinculados a una entrega.
+        /// Usado al eliminar entregas para limpiar financiero.
+        /// </summary>
+        public async Task EliminarPorEntregaIdAsync(int entregaId)
+        {
+            var movimientos = await _context.Movimientos
+                .Where(m => m.EntregaId == entregaId)
+                .ToListAsync();
+            if (movimientos.Any())
+            {
+                _context.Movimientos.RemoveRange(movimientos);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Registra automáticamente una remesa como egreso.
+        /// </summary>
+        public async Task RegistrarRemesaAsync(Entrega entrega)
+        {
+            var movimiento = new Movimiento
+            {
+                Concepto = $"Remesa - Orden {entrega.NumeroOrden}",
+                Descripcion = $"Remesa a {entrega.NombreReceptor} — {entrega.MontoRemesa:N0} CUP via {entrega.Agencia}",
+                Monto = entrega.MontoRemesa,
+                Tipo = TipoMovimiento.Egreso,
+                Categoria = CategoriaMovimiento.Remesa,
+                EntregaId = entrega.Id,
+                Fecha = entrega.FechaOrden,
+                FechaCreacion = DateTime.Now
+            };
             await CrearAsync(movimiento);
         }
     }

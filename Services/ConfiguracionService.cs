@@ -32,6 +32,7 @@ namespace GestionApp.Services
                     PrefijoConformidad = "CONF-",
                     UltimoNumeroFicha = 0,
                     UltimoNumeroConformidad = 0,
+                    TasaCambioCUP = 300m,
                     FechaCreacion = DateTime.Now
                 };
                 _context.Configuracion.Add(config);

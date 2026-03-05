@@ -425,6 +425,7 @@
                                         </Border>
                                         <TextBox Grid.Column="1"
                                                  Text="{Binding FormPrecioVenta, UpdateSourceTrigger=PropertyChanged}" 
+                                                 PreviewTextInput="NumericOnly_PreviewTextInput"
                                                  Padding="8,5" FontSize="12" BorderBrush="#DDD"
                                                  VerticalAlignment="Stretch"/>
                                     </Grid>
@@ -443,7 +444,8 @@
                             <ComboBox ItemsSource="{Binding ProductosInventarioConNinguna}"
                                       SelectedItem="{Binding ProductoInventarioSeleccionado}"
                                       Padding="6,4" FontSize="11" BorderBrush="#BBDEFB" Margin="0,0,0,5"
-                                      IsEditable="True" IsTextSearchEnabled="True" TextSearch.TextPath="Nombre">
+                                      IsEditable="True" IsTextSearchEnabled="True" TextSearch.TextPath="Nombre"
+                                      StaysOpenOnEdit="True">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock FontSize="11">
@@ -486,12 +488,15 @@
                             
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="55"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 
                                 <TextBox Text="{Binding FormCantidadProducto, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumericOnly_PreviewTextInput"
                                          Padding="6,4" FontSize="11" BorderBrush="#DDD">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -501,7 +506,34 @@
                                                         <Setter.Value>
                                                             <VisualBrush Stretch="None" AlignmentX="Left">
                                                                 <VisualBrush.Visual>
-                                                                    <TextBlock Text="Cant." Foreground="#CCC" 
+                                                                    <TextBlock Text="Mín." Foreground="#CCC" 
+                                                                               Margin="10,0,0,0" FontSize="10"/>
+                                                                </VisualBrush.Visual>
+                                                            </VisualBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                                <TextBlock Grid.Column="1" Text="–" VerticalAlignment="Center" 
+                                           Foreground="#999" Margin="4,0" FontSize="12"/>
+
+                                <TextBox Grid.Column="2" 
+                                         Text="{Binding FormCantidadMaxima, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumericOnly_PreviewTextInput"
+                                         Padding="6,4" FontSize="11" BorderBrush="#DDD">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <VisualBrush Stretch="None" AlignmentX="Left">
+                                                                <VisualBrush.Visual>
+                                                                    <TextBlock Text="Máx." Foreground="#CCC" 
                                                                                Margin="10,0,0,0" FontSize="10"/>
                                                                 </VisualBrush.Visual>
                                                             </VisualBrush>
@@ -513,13 +545,13 @@
                                     </TextBox.Style>
                                 </TextBox>
                                 
-                                <ComboBox Grid.Column="1" 
+                                <ComboBox Grid.Column="3" 
                                           ItemsSource="{Binding UnidadesMedida}"
                                           SelectedItem="{Binding FormUnidadProducto}"
                                           IsEnabled="{Binding ProductoInventarioSeleccionado, Converter={StaticResource NullToBool}}"
                                           Padding="6,4" FontSize="11" Margin="6,0,0,0"/>
                                 
-                                <Button Grid.Column="2" 
+                                <Button Grid.Column="4" 
                                         Command="{Binding AgregarProductoCommand}"
                                         Margin="6,0,0,0" Cursor="Hand">
                                     <Button.Template>

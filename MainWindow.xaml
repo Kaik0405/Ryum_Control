@@ -179,17 +179,17 @@
                         <TextBlock Text="F I N A N Z A S" FontSize="10" Foreground="#4A6485" 
                                    Margin="14,0,0,6" FontWeight="Bold"/>
                         
-                        <!-- ─── Movimientos ─── -->
-                        <RadioButton GroupName="Nav" IsChecked="{Binding MenuSeleccionado, Converter={StaticResource MenuCheckConverter}, ConverterParameter=Movimientos, Mode=OneWay}"
+                        <!-- ─── Finanzas ─── -->
+                        <RadioButton GroupName="Nav" IsChecked="{Binding MenuSeleccionado, Converter={StaticResource MenuCheckConverter}, ConverterParameter=Finanzas, Mode=OneWay}"
                                      Command="{Binding NavigateToMovimientosCommand}"
-                                     Style="{StaticResource SidebarNavStyle}" Tag="Movimientos">
+                                     Style="{StaticResource SidebarNavStyle}" Tag="Finanzas">
                             <StackPanel Orientation="Horizontal">
                                 <Grid Width="22" Height="22" Margin="0,0,12,0">
-                                    <Path Data="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"
+                                    <Path Data="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
                                           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" 
                                           Stretch="Uniform"/>
                                 </Grid>
-                                <TextBlock Text="Movimientos" VerticalAlignment="Center" FontSize="13" FontWeight="Medium"/>
+                                <TextBlock Text="Finanzas" VerticalAlignment="Center" FontSize="13" FontWeight="Medium"/>
                             </StackPanel>
                         </RadioButton>
                         
@@ -204,6 +204,35 @@
                                           Stretch="Uniform"/>
                                 </Grid>
                                 <TextBlock Text="Reportes" VerticalAlignment="Center" FontSize="13" FontWeight="Medium"/>
+                            </StackPanel>
+                        </RadioButton>
+                        
+                        <!-- Separador SISTEMA -->
+                        <Border Margin="6,16,6,8" Opacity="0.15">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="#5C7AA7" Offset="0.3"/>
+                                    <GradientStop Color="#5C7AA7" Offset="0.7"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border Height="1"/>
+                        </Border>
+                        <TextBlock Text="S I S T E M A" FontSize="10" Foreground="#4A6485" 
+                                   Margin="14,0,0,6" FontWeight="Bold"/>
+                        
+                        <!-- ─── Ajustes ─── -->
+                        <RadioButton GroupName="Nav" IsChecked="{Binding MenuSeleccionado, Converter={StaticResource MenuCheckConverter}, ConverterParameter=Ajustes, Mode=OneWay}"
+                                     Command="{Binding NavigateToAjustesCommand}"
+                                     Style="{StaticResource SidebarNavStyle}" Tag="Ajustes">
+                            <StackPanel Orientation="Horizontal">
+                                <Grid Width="22" Height="22" Margin="0,0,12,0">
+                                    <Path Data="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" 
+                                          Stretch="Uniform"/>
+                                </Grid>
+                                <TextBlock Text="Ajustes" VerticalAlignment="Center" FontSize="13" FontWeight="Medium"/>
                             </StackPanel>
                         </RadioButton>
                         

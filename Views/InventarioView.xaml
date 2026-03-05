@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:GestionApp.ViewModels"
+             xmlns:h="clr-namespace:GestionApp.Helpers"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:InventarioViewModel}"
              d:DesignHeight="700" d:DesignWidth="950"
@@ -22,6 +23,7 @@
     <!-- Conversor para mostrar/ocultar el formulario -->
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <h:InverseBoolConverter x:Key="InverseBoolConverter"/>
     </UserControl.Resources>
     
     <Grid Margin="20">
@@ -182,7 +184,7 @@
                           CanUserAddRows="False"
                           IsReadOnly="True"
                           HeadersVisibility="Column"
-                          GridLinesVisibility="Horizontal"
+                          GridLinesVisibility="None"
                           BorderThickness="0"
                           Background="Transparent"
                           RowHeight="46"
@@ -207,6 +209,14 @@
                             <Setter Property="MinHeight" Value="46"/>
                             <Setter Property="Padding" Value="0,4"/>
                             <Style.Triggers>
+                                <!-- Verde suave si está en stock -->
+                                <DataTrigger Binding="{Binding EnStock}" Value="True">
+                                    <Setter Property="Background" Value="#F1F8E9"/>
+                                </DataTrigger>
+                                <!-- Rojo suave si no está en stock -->
+                                <DataTrigger Binding="{Binding EnStock}" Value="False">
+                                    <Setter Property="Background" Value="#FFF3F0"/>
+                                </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="#E3F2FD"/>
                                 </Trigger>
@@ -279,9 +289,25 @@
                                             Binding="{Binding CostoCompra, StringFormat=$ {0:N2}}" 
                                             Width="100"/>
                         
-                        <DataGridTextColumn Header="Stock" 
-                                            Binding="{Binding StockConUnidad}" 
-                                            Width="110"/>
+                        <DataGridTemplateColumn Header="Stock" 
+                                            Width="110" SortMemberPath="CantidadStock">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StockConUnidad}" VerticalAlignment="Center" FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#2E7D32"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EnStock}" Value="False">
+                                                        <Setter Property="Foreground" Value="#C62828"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         
                         <DataGridTextColumn Header="Costo Total" 
                                             Binding="{Binding CostoTotal, StringFormat=$ {0:N2}}" 
@@ -463,7 +489,24 @@
                                   SelectedItem="{Binding FormUnidad}"
                                   Padding="8,5" 
                                   FontSize="13"/>
-                        
+                                                <!-- Campo: Tipo de adquisición -->
+                        <TextBlock Text="Tipo de adquisición" 
+                                   FontSize="12" 
+                                   Foreground="#666" 
+                                   FontWeight="SemiBold"
+                                   Margin="0,12,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton Grid.Column="0" GroupName="TipoAdq" Content="🛒 Compra" 
+                                         IsChecked="{Binding FormEsEntrega, Converter={StaticResource InverseBoolConverter}}"
+                                         FontSize="12" FontWeight="SemiBold" VerticalContentAlignment="Center" Padding="4,0"/>
+                            <RadioButton Grid.Column="1" GroupName="TipoAdq" Content="📦 Entrega" 
+                                         IsChecked="{Binding FormEsEntrega}"
+                                         FontSize="12" FontWeight="SemiBold" VerticalContentAlignment="Center" Padding="4,0"/>
+                        </Grid>
                         <!-- Campo: Costo de compra -->
                         <TextBlock Text="Costo de Compra" 
                                    FontSize="12" 
@@ -471,6 +514,7 @@
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormCostoCompra, UpdateSourceTrigger=PropertyChanged}" 
+                                 PreviewTextInput="NumericOnly_PreviewTextInput"
                                  Padding="8,5" 
                                  FontSize="13"
                                  BorderBrush="#DDD"/>
@@ -482,6 +526,7 @@
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormCantidadStock, UpdateSourceTrigger=PropertyChanged}" 
+                                 PreviewTextInput="NumericOnly_PreviewTextInput"
                                  Padding="8,5" 
                                  FontSize="13"
                                  BorderBrush="#DDD"/>
@@ -588,6 +633,7 @@
                                FontWeight="SemiBold"
                                Margin="0,0,0,5"/>
                     <TextBox Text="{Binding AjusteCantidad, UpdateSourceTrigger=PropertyChanged}" 
+                             PreviewTextInput="NumericOnly_PreviewTextInput"
                              Padding="8,5" 
                              FontSize="13"
                              BorderBrush="#DDD"/>

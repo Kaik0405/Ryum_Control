@@ -51,6 +51,7 @@ namespace GestionApp.ViewModels
         // Campos para agregar producto al combo
         private string _formNombreProducto = string.Empty;
         private string _formCantidadProducto = string.Empty;
+        private string _formCantidadMaxima = string.Empty;
         private UnidadMedida _formUnidadProducto = UnidadMedida.Unidad;
 
         // Estado
@@ -220,6 +221,12 @@ namespace GestionApp.ViewModels
         {
             get => _formCantidadProducto;
             set => SetProperty(ref _formCantidadProducto, value);
+        }
+
+        public string FormCantidadMaxima
+        {
+            get => _formCantidadMaxima;
+            set => SetProperty(ref _formCantidadMaxima, value);
         }
 
         public UnidadMedida FormUnidadProducto
@@ -395,10 +402,22 @@ namespace GestionApp.ViewModels
             }
             if (cantidad <= 0) cantidad = 1;
 
+            // Parsear cantidad máxima (rango opcional)
+            decimal? cantidadMaxima = null;
+            if (!string.IsNullOrWhiteSpace(FormCantidadMaxima))
+            {
+                if (decimal.TryParse(FormCantidadMaxima.Replace('.', ','), out var max) ||
+                    decimal.TryParse(FormCantidadMaxima, out max))
+                {
+                    if (max > cantidad) cantidadMaxima = max;
+                }
+            }
+
             var nuevoProducto = new ComboProducto
             {
                 NombreProducto = nombreProducto,
                 Cantidad = cantidad,
+                CantidadMaxima = cantidadMaxima,
                 Unidad = FormUnidadProducto
             };
 
@@ -417,6 +436,7 @@ namespace GestionApp.ViewModels
             // Limpiar campos del producto
             FormNombreProducto = string.Empty;
             FormCantidadProducto = string.Empty;
+            FormCantidadMaxima = string.Empty;
             FormUnidadProducto = UnidadMedida.Unidad;
             ProductoInventarioSeleccionado = null;
             MensajeEstado = "Producto agregado al combo";
@@ -625,6 +645,7 @@ namespace GestionApp.ViewModels
             FormPrecioVenta = string.Empty;
             FormNombreProducto = string.Empty;
             FormCantidadProducto = string.Empty;
+            FormCantidadMaxima = string.Empty;
             FormUnidadProducto = UnidadMedida.Unidad;
             ProductoInventarioSeleccionado = null;
             ProductosDelCombo = new ObservableCollection<ComboProducto>();

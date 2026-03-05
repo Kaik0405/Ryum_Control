@@ -21,10 +21,24 @@ namespace GestionApp.Models
         #region Combo
 
         /// <summary>
-        /// Combo que se envía/entrega.
+        /// Combo que se envía/entrega. Null si es remesa.
         /// </summary>
-        public int ComboId { get; set; }
+        public int? ComboId { get; set; }
         public Combo? Combo { get; set; }
+
+        #endregion
+
+        #region Remesa
+
+        /// <summary>
+        /// Indica si esta entrega es una remesa (envío de dinero) en vez de un combo.
+        /// </summary>
+        public bool EsRemesa { get; set; }
+
+        /// <summary>
+        /// Monto en CUP de la remesa. Solo aplica cuando EsRemesa = true.
+        /// </summary>
+        public decimal MontoRemesa { get; set; }
 
         #endregion
 
@@ -38,10 +52,65 @@ namespace GestionApp.Models
         public string NombreReceptor { get; set; } = string.Empty;
 
         /// <summary>
-        /// Dirección de quien recibe.
+        /// Dirección de quien recibe (campo legacy, se compone de los campos estructurados).
         /// </summary>
         [MaxLength(500)]
         public string DireccionReceptor { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Provincia de Cuba donde se entrega.
+        /// </summary>
+        [MaxLength(100)]
+        public string Provincia { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Municipio dentro de la provincia.
+        /// </summary>
+        [MaxLength(100)]
+        public string Municipio { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Localidad / reparto / zona dentro del municipio.
+        /// </summary>
+        [MaxLength(200)]
+        public string Localidad { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Dirección particular (calle, número, entre calles, etc.).
+        /// </summary>
+        [MaxLength(300)]
+        public string DireccionParticular { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Dirección completa formateada para mostrar.
+        /// Formato: "DireccionParticular, Localidad, Municipio, Provincia"
+        /// </summary>
+        public string DireccionCompleta
+        {
+            get
+            {
+                var partes = new List<string>();
+                if (!string.IsNullOrWhiteSpace(DireccionParticular)) partes.Add(DireccionParticular);
+                if (!string.IsNullOrWhiteSpace(Localidad)) partes.Add(Localidad);
+                if (!string.IsNullOrWhiteSpace(Municipio)) partes.Add(Municipio);
+                if (!string.IsNullOrWhiteSpace(Provincia)) partes.Add(Provincia);
+                return partes.Count > 0 ? string.Join(", ", partes) : DireccionReceptor;
+            }
+        }
+
+        /// <summary>
+        /// Provincia y municipio resumidos para la tabla.
+        /// </summary>
+        public string DireccionResumida
+        {
+            get
+            {
+                var partes = new List<string>();
+                if (!string.IsNullOrWhiteSpace(Municipio)) partes.Add(Municipio);
+                if (!string.IsNullOrWhiteSpace(Provincia)) partes.Add(Provincia);
+                return partes.Count > 0 ? string.Join(", ", partes) : DireccionReceptor;
+            }
+        }
 
         /// <summary>
         /// Teléfono móvil del receptor.
@@ -137,9 +206,11 @@ namespace GestionApp.Models
         public bool TieneFichaCosto { get; set; }
 
         /// <summary>
-        /// Resumen: "Receptor — Combo #N"
+        /// Resumen descriptivo.
         /// </summary>
-        public string Resumen => $"{NombreReceptor} — Combo #{Combo?.Numero}";
+        public string Resumen => EsRemesa 
+            ? $"💵 Remesa {MontoRemesa:N0} CUP — {NombreReceptor}" 
+            : $"{NombreReceptor} — Combo #{Combo?.Numero}";
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }

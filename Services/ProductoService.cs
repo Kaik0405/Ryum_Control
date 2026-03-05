@@ -69,6 +69,7 @@ namespace GestionApp.Services
             if (producto != null)
             {
                 producto.CantidadStock += cantidad;
+                if (producto.CantidadStock < 0) producto.CantidadStock = 0; // Protección contra negativos
                 producto.EnStock = producto.CantidadStock > 0;
                 producto.FechaModificacion = DateTime.Now;
                 await _context.SaveChangesAsync();

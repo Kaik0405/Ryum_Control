@@ -46,6 +46,13 @@ namespace GestionApp.Models
         public decimal CantidadStock { get; set; }
 
         /// <summary>
+        /// Indica si el producto fue entregado por la compañía (true)
+        /// o comprado con dinero propio (false).
+        /// Entrega: no se registra egreso al crearlo.
+        /// </summary>
+        public bool EsEntrega { get; set; }
+
+        /// <summary>
         /// Indica si el producto está disponible para usar en combos.
         /// </summary>
         public bool EnStock { get; set; } = true;

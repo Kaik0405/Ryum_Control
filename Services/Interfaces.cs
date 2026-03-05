@@ -66,10 +66,22 @@ namespace GestionApp.Services
         Task<List<Movimiento>> ObtenerPorPeriodoAsync(int año, int mes);
         Task<List<Movimiento>> ObtenerPorTipoAsync(TipoMovimiento tipo);
         Task<List<Movimiento>> ObtenerPorProductoAsync(int productoId);
+        Task<List<Movimiento>> ObtenerPorRangoFechaAsync(DateTime desde, DateTime hasta);
         Task<(decimal Ingresos, decimal Egresos)> ObtenerResumenAsync(int año, int mes);
+        Task<(decimal Ingresos, decimal Egresos)> ObtenerResumenRangoAsync(DateTime desde, DateTime hasta);
         Task<decimal> ObtenerBalanceActualAsync();
+        Task<decimal> ObtenerTotalInvertidoAsync();
         Task RegistrarVentaAsync(FichaCosto ficha);
         Task RegistrarCompraProductoAsync(CompraProducto compra);
+        Task RegistrarRemesaAsync(Entrega entrega);
+        /// <summary>
+        /// Elimina todos los movimientos asociados a una ficha de costo.
+        /// </summary>
+        Task EliminarPorFichaCostoIdAsync(int fichaCostoId);
+        /// <summary>
+        /// Elimina todos los movimientos asociados a una entrega.
+        /// </summary>
+        Task EliminarPorEntregaIdAsync(int entregaId);
     }
 
     /// <summary>
@@ -105,6 +117,7 @@ namespace GestionApp.Services
     public interface IEntregaService : IBaseService<Entrega>
     {
         Task<Entrega> CrearDesdeComboAsync(int comboId, string receptor, string direccion, string telMovil, string telFijo, string remitente, string agencia);
+        Task<Entrega> CrearRemesaAsync(string receptor, string direccion, string telMovil, string telFijo, string remitente, string agencia, decimal monto);
         Task<List<Entrega>> ObtenerPendientesAsync();
         Task<List<Entrega>> ObtenerUrgentesAsync();
         Task<string> GenerarNumeroOrdenAsync();

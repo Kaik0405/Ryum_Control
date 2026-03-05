@@ -63,6 +63,12 @@ namespace GestionApp.Models
         /// </summary>
         public int UltimoNumeroConformidad { get; set; }
 
+        /// <summary>
+        /// Tasa de cambio: cuántos CUP equivale 1 USD.
+        /// Ejemplo: 300 significa que 1 USD = 300 CUP.
+        /// </summary>
+        public decimal TasaCambioCUP { get; set; } = 300m;
+
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaModificacion { get; set; }
     }

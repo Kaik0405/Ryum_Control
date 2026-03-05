@@ -10,6 +10,8 @@
         <ResourceDictionary>
             <!-- Conversor para menú -->
             <h:MenuCheckConverter x:Key="MenuCheckConverter"/>
+            <h:AgenciaLogoConverter x:Key="AgenciaLogo"/>
+            <h:FechaMasUnDiaConverter x:Key="FechaMasUnDia"/>
 
             <!-- DataTemplates para navegación ViewModel -> View -->
             <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
@@ -32,6 +34,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ReportesViewModel}">
                 <views:ReportesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AjustesViewModel}">
+                <views:AjustesView/>
             </DataTemplate>
             
             <!-- ═══════════════════════════════════════ -->
@@ -178,6 +183,21 @@
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 
+            <!-- Toggle button solo flecha (para ComboBox editable — solo ocupa la columna de la flecha) -->
+            <ControlTemplate x:Key="ComboBoxToggleButtonEditable" TargetType="ToggleButton">
+                <Border Background="Transparent">
+                    <Path x:Name="Arrow" 
+                          Data="M0,0 L4,4 8,0" Stroke="#1976D2" StrokeThickness="1.5"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          Fill="Transparent"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="Arrow" Property="Stroke" Value="#BDBDBD"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
             <!-- Template del ComboBox editable (TextBox interno) -->
             <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
                 <Border x:Name="PART_ContentHost" Focusable="False"
@@ -197,7 +217,19 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ComboBox">
                             <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <!-- Borde visual para modo editable (no interactivo) -->
+                                <Border x:Name="EditableBorder" Grid.ColumnSpan="2"
+                                        CornerRadius="8" BorderThickness="1.2"
+                                        BorderBrush="#90CAF9" Background="White"
+                                        IsHitTestVisible="False" Visibility="Collapsed"/>
+                                
                                 <ToggleButton x:Name="ToggleButton"
+                                              Grid.ColumnSpan="2"
                                               Template="{StaticResource ComboBoxToggleButton}"
                                               Focusable="False"
                                               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
@@ -255,9 +287,36 @@
                                 </Trigger>
                                 <Trigger Property="IsEditable" Value="True">
                                     <Setter Property="IsTabStop" Value="False"/>
+                                    <Setter TargetName="EditableBorder" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="ToggleButton" Property="Grid.Column" Value="1"/>
+                                    <Setter TargetName="ToggleButton" Property="Grid.ColumnSpan" Value="1"/>
+                                    <Setter TargetName="ToggleButton" Property="Template" Value="{StaticResource ComboBoxToggleButtonEditable}"/>
                                     <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                                     <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
                                 </Trigger>
+                                <!-- Hover/Open/Disabled para borde editable -->
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsEditable" Value="True"/>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="EditableBorder" Property="BorderBrush" Value="#1976D2"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsEditable" Value="True"/>
+                                        <Condition Property="IsDropDownOpen" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="EditableBorder" Property="BorderBrush" Value="#1565C0"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsEditable" Value="True"/>
+                                        <Condition Property="IsEnabled" Value="False"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="EditableBorder" Property="Background" Value="#F5F5F5"/>
+                                    <Setter TargetName="EditableBorder" Property="BorderBrush" Value="#E0E0E0"/>
+                                </MultiTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

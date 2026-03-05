@@ -88,9 +88,6 @@ namespace GestionApp.Services
             _context.FichasCosto.Add(ficha);
             await _context.SaveChangesAsync();
 
-            // Registrar como venta (ingreso)
-            await _movimientoService.RegistrarVentaAsync(ficha);
-
             return ficha;
         }
 
@@ -174,6 +171,24 @@ namespace GestionApp.Services
                 }
             }
 
+            // Registrar transporte como egreso si tiene costo
+            if (fichaCompleta.CostoTransportacion > 0)
+            {
+                var movTransporte = new GestionApp.Models.Movimiento
+                {
+                    Concepto = $"Transporte {fichaCompleta.NumeroFicha}",
+                    Descripcion = $"Transporte ficha {fichaCompleta.NumeroFicha} → {receptor} via {agencia}",
+                    Monto = fichaCompleta.CostoTransportacion,
+                    Tipo = GestionApp.Models.TipoMovimiento.Egreso,
+                    Categoria = GestionApp.Models.CategoriaMovimiento.Transporte,
+                    FichaCostoId = fichaCompleta.Id,
+                    PeriodoInventarioId = fichaCompleta.PeriodoInventarioId,
+                    Fecha = fichaCompleta.FechaEnvio,
+                    FechaCreacion = DateTime.Now
+                };
+                await _movimientoService.CrearAsync(movTransporte);
+            }
+
             fichaCompleta.InventarioDescontado = true;
             fichaCompleta.EditadoPostDescuento = false;
             await _context.SaveChangesAsync();
@@ -191,10 +206,11 @@ namespace GestionApp.Services
             // Paso 1: Restaurar inventario
             await RestaurarInventarioAsync(ficha);
 
-            // Paso 2: Eliminar movimientos de descuento anteriores de esta ficha
+            // Paso 2: Eliminar movimientos de descuento y transporte anteriores de esta ficha
             var movimientosAnteriores = await _context.Movimientos
                 .Where(m => m.FichaCostoId == ficha.Id 
-                         && m.Categoria == CategoriaMovimiento.DescontarEntrega)
+                         && (m.Categoria == CategoriaMovimiento.DescontarEntrega
+                             || m.Categoria == CategoriaMovimiento.Transporte))
                 .ToListAsync();
             _context.Movimientos.RemoveRange(movimientosAnteriores);
             await _context.SaveChangesAsync();

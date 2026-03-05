@@ -23,6 +23,14 @@ namespace GestionApp.Models
         [MaxLength(500)]
         public string? Notas { get; set; }
 
+        /// <summary>
+        /// Ruta al logo de la agencia.
+        /// Para agencias embebidas: "pack://application:,,,/Assets/Logos/rios.png"
+        /// Para agencias añadidas: ruta en %AppData%/GestionApp/Logos/
+        /// </summary>
+        [MaxLength(500)]
+        public string? LogoPath { get; set; }
+
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
         public bool Activo { get; set; } = true;
