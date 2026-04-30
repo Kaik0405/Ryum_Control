@@ -23,6 +23,7 @@ namespace GestionApp.Models
         FondoInicial,
         DescontarEntrega,
         Extraccion,
+        GastoAdicional,
         Otro
     }
 

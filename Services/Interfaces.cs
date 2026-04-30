@@ -30,6 +30,7 @@ namespace GestionApp.Services
         /// Elimina todas las vinculaciones de ComboProductoInventario para este producto.
         /// </summary>
         Task EliminarVinculacionesComboAsync(int productoId);
+        Task<List<CompraProducto>> ObtenerComprasPorRangoAsync(DateTime desde, DateTime hasta);
     }
 
     /// <summary>

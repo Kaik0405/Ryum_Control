@@ -69,6 +69,13 @@ namespace GestionApp.Models
         /// </summary>
         public decimal TasaCambioCUP { get; set; } = 300m;
 
+        /// <summary>
+        /// Ruta donde se guardan los reportes PDF generados.
+        /// Si es null/vacío se usa %AppData%/GestionApp/Reportes/.
+        /// </summary>
+        [MaxLength(500)]
+        public string? RutaReportes { get; set; }
+
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaModificacion { get; set; }
     }

@@ -6,142 +6,337 @@
              xmlns:vm="clr-namespace:GestionApp.ViewModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:ReportesViewModel}"
-             d:DesignHeight="600" d:DesignWidth="800"
+             d:DesignHeight="700" d:DesignWidth="1100"
              Background="#F5F5F5">
-    
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <!-- Encabezado -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Reportes" 
-                       FontSize="28" 
-                       FontWeight="Bold" 
-                       Foreground="#1A237E"/>
-            <TextBlock Text="Genera reportes mensuales en PDF o Excel" 
-                       FontSize="14" 
-                       Foreground="#666"/>
-        </StackPanel>
-        
-        <!-- Contenido -->
-        <Grid Grid.Row="1">
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- FILA 0: ENCABEZADO                                  -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="12,10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="Reportes" 
+                               FontSize="24" FontWeight="Bold" Foreground="#1A237E"/>
+                    <TextBlock Text="Genera reportes PDF con los datos del período seleccionado" 
+                               FontSize="12" Foreground="#666" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- Botón abrir carpeta -->
+                <Button Grid.Column="2" 
+                        Content="📂 Abrir carpeta"
+                        Command="{Binding AbrirCarpetaReportesCommand}"
+                        Background="#F5F5F5" Foreground="#333"
+                        BorderBrush="#E0E0E0" BorderThickness="1"
+                        Padding="12,7" Cursor="Hand" FontSize="12"
+                        VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- FILA 1: FILTRO DE FECHAS + ATAJOS                  -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="14,12" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Atajos rápidos -->
+                <TextBlock Grid.Column="0" Text="Período:" FontSize="13" FontWeight="SemiBold"
+                           Foreground="#1A237E" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding AtajosPeriodo}"
+                          SelectedValuePath="Key"
+                          DisplayMemberPath="Value"
+                          SelectedValue="{Binding AtajoSeleccionado}"
+                          Width="170" Padding="8,6" Margin="0,0,20,0"/>
+
+                <!-- Desde -->
+                <TextBlock Grid.Column="2" Text="Desde:" FontSize="12" Foreground="#666"
+                           VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <DatePicker Grid.Column="3" 
+                            SelectedDate="{Binding FechaDesde}"
+                            Width="135" Margin="0,0,15,0"/>
+
+                <!-- Hasta -->
+                <TextBlock Grid.Column="4" Text="Hasta:" FontSize="12" Foreground="#666"
+                           VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <DatePicker Grid.Column="5" 
+                            SelectedDate="{Binding FechaHasta}"
+                            Width="135" HorizontalAlignment="Left"/>
+
+                <!-- Indicador generando -->
+                <TextBlock Grid.Column="6" Text="⏳ Generando..."
+                           FontSize="12" Foreground="#E65100" VerticalAlignment="Center"
+                           Visibility="{Binding GenerandoReporte, Converter={StaticResource BoolToVis}}"/>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- FILA 2: CONTENIDO PRINCIPAL                         -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            <!-- Panel de configuración -->
-            <Border Style="{StaticResource CardStyle}" 
-                    Grid.Column="0" 
-                    Margin="0,0,15,0">
-                <StackPanel>
-                    <TextBlock Text="Configuración del Reporte" 
-                               FontSize="16" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,20"/>
-                    
-                    <!-- Selección de período -->
-                    <TextBlock Text="Período" 
-                               FontSize="13" 
-                               Foreground="#666" 
-                               Margin="0,0,0,8"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                        <ComboBox ItemsSource="{Binding Meses}"
-                                  SelectedValuePath="Key"
-                                  DisplayMemberPath="Value"
-                                  SelectedValue="{Binding MesSeleccionado}"
-                                  Width="150"
-                                  Padding="10,8"/>
-                        <ComboBox ItemsSource="{Binding Años}"
-                                  SelectedItem="{Binding AñoSeleccionado}"
-                                  Width="100"
-                                  Margin="10,0,0,0"
-                                  Padding="10,8"/>
+
+            <!-- ────────────── CARD: Reporte de Entregas ────────────── -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,6,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Encabezado card -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📋" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Reporte de Entregas" 
+                                       FontSize="18" FontWeight="SemiBold" Foreground="#1A237E"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
-                    
-                    <!-- Contenido a incluir -->
-                    <TextBlock Text="Incluir en el reporte" 
-                               FontSize="13" 
-                               Foreground="#666" 
-                               Margin="0,0,0,10"/>
-                    
-                    <CheckBox Content="Fichas de Costo" 
-                              IsChecked="{Binding IncluirFichasCosto}"
-                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Movimientos Financieros" 
-                              IsChecked="{Binding IncluirMovimientos}"
-                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Resumen Financiero" 
-                              IsChecked="{Binding IncluirResumenFinanciero}"
-                              Margin="0,0,0,20"/>
-                    
-                    <!-- Botones de acción -->
-                    <Button Content="📄 Generar PDF" 
-                            Command="{Binding GenerarReportePDFCommand}"
-                            Background="#E64A19" 
-                            Foreground="White"
-                            Padding="15,12"
-                            Margin="0,0,0,10"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"/>
-                    
-                    <Button Content="📊 Generar Excel" 
-                            Command="{Binding GenerarReporteExcelCommand}"
-                            Background="#388E3C" 
-                            Foreground="White"
-                            Padding="15,12"
-                            Margin="0,0,0,20"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"/>
-                    
-                    <!-- Estado -->
-                    <TextBlock Text="{Binding UltimoReporteGenerado}" 
-                               FontSize="12" 
-                               Foreground="#666"
-                               TextWrapping="Wrap"
-                               Visibility="{Binding UltimoReporteGenerado, Converter={x:Null}}"/>
-                </StackPanel>
+
+                    <!-- Vista previa de datos -->
+                    <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8" Padding="14">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Fichas -->
+                            <Border Grid.Row="0" Grid.Column="0" Background="#E3F2FD" CornerRadius="8" 
+                                    Padding="10,8" Margin="0,0,4,4">
+                                <StackPanel>
+                                    <TextBlock Text="Fichas en período" FontSize="10" Foreground="#1565C0"/>
+                                    <TextBlock Text="{Binding TotalFichas}" FontSize="22" FontWeight="Bold" Foreground="#1565C0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Ventas -->
+                            <Border Grid.Row="0" Grid.Column="1" Background="#E8F5E9" CornerRadius="8" 
+                                    Padding="10,8" Margin="4,0,0,4">
+                                <StackPanel>
+                                    <TextBlock Text="Total Ventas USD" FontSize="10" Foreground="#2E7D32"/>
+                                    <TextBlock Text="{Binding TotalVentas, StringFormat='${0:N2}'}" 
+                                               FontSize="22" FontWeight="Bold" Foreground="#2E7D32"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Gasto Productos -->
+                            <Border Grid.Row="1" Grid.Column="0" Background="#FFF3E0" CornerRadius="8" 
+                                    Padding="10,8" Margin="0,4,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Gasto Productos" FontSize="10" Foreground="#E65100"/>
+                                    <TextBlock Text="{Binding TotalGastoProductos, StringFormat='${0:N2}'}" 
+                                               FontSize="22" FontWeight="Bold" Foreground="#E65100"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Transporte -->
+                            <Border Grid.Row="1" Grid.Column="1" Background="#FCE4EC" CornerRadius="8" 
+                                    Padding="10,8" Margin="4,4,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Gasto Transporte" FontSize="10" Foreground="#C62828"/>
+                                    <TextBlock Text="{Binding TotalTransporte, StringFormat='${0:N2}'}" 
+                                               FontSize="22" FontWeight="Bold" Foreground="#C62828"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Botón generar -->
+                    <Button Grid.Row="2" Command="{Binding GenerarEntregasPDFCommand}" 
+                            Cursor="Hand" Margin="0,12,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bd" Background="White" CornerRadius="8" 
+                                        Padding="16,12" BorderBrush="#1565C0" BorderThickness="1.5">
+                                    <TextBlock x:Name="txt" Text="📄 Generar PDF de Entregas" 
+                                               FontSize="14" FontWeight="SemiBold" Foreground="#1565C0"
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#1565C0"/>
+                                        <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
             </Border>
-            
-            <!-- Vista previa / Información -->
-            <Border Style="{StaticResource CardStyle}" 
-                    Grid.Column="1">
-                <StackPanel VerticalAlignment="Center" 
-                            HorizontalAlignment="Center">
-                    <TextBlock Text="📈" 
-                               FontSize="64" 
-                               HorizontalAlignment="Center" 
-                               Margin="0,0,0,20"/>
-                    <TextBlock Text="Vista Previa del Reporte" 
-                               FontSize="20" 
-                               FontWeight="SemiBold" 
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,10"/>
-                    <TextBlock Text="Configura las opciones del reporte en el panel izquierdo y genera tu reporte en el formato deseado." 
-                               FontSize="13" 
-                               Foreground="#666"
-                               TextWrapping="Wrap"
-                               TextAlignment="Center"
-                               MaxWidth="300"/>
-                    
-                    <Button Content="👁️ Vista Previa" 
-                            Command="{Binding VistaPreviewCommand}"
-                            Background="#1976D2" 
-                            Foreground="White"
-                            Padding="20,12"
-                            Margin="0,30,0,0"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            FontSize="14"/>
-                </StackPanel>
+
+            <!-- ────────────── CARD: Fichas de Costo ────────────── -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="4,0,4,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Encabezado card -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🧾" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Fichas de Costo" 
+                                       FontSize="18" FontWeight="SemiBold" Foreground="#1A237E"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Contenido -->
+                    <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8" Padding="14">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="🧾" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+
+                            <Border Background="#E3F2FD" CornerRadius="8" Padding="14,8"
+                                    HorizontalAlignment="Center">
+                                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#1565C0">
+                                    <Run Text="{Binding TotalFichas, Mode=OneWay}"/> fichas en el período
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Botón generar -->
+                    <Button Grid.Row="2" Command="{Binding GenerarFichasCostoPDFCommand}" 
+                            Cursor="Hand" Margin="0,12,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bd" Background="White" CornerRadius="8" 
+                                        Padding="16,12" BorderBrush="#E65100" BorderThickness="1.5">
+                                    <TextBlock x:Name="txt" Text="🧾 Generar PDF de Fichas de Costo" 
+                                               FontSize="14" FontWeight="SemiBold" Foreground="#E65100"
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#E65100"/>
+                                        <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- ────────────── CARD: Resumen Mensual ────────────── -->
+            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Margin="4,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Encabezado card -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📊" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Resumen Mensual" 
+                                       FontSize="18" FontWeight="SemiBold" Foreground="#1A237E"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Contenido -->
+                    <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8" Padding="14">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="📊" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+
+                            <TextBlock Text="Inventario, efectivo y&#10;movimientos del período"
+                                       FontSize="12" Foreground="#666" TextAlignment="Center"
+                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
+
+                            <Border Background="#EDE7F6" CornerRadius="8" Padding="14,8"
+                                    HorizontalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#7B1FA2">
+                                    <Run Text="{Binding TotalFichas, Mode=OneWay}"/> fichas · <Run Text="{Binding TotalVentas, Mode=OneWay, StringFormat='${0:N0}'}"/> USD
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Botón generar -->
+                    <Button Grid.Row="2" Command="{Binding GenerarResumenMensualPDFCommand}" 
+                            Cursor="Hand" Margin="0,12,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bd" Background="White" CornerRadius="8" 
+                                        Padding="16,12" BorderBrush="#7B1FA2" BorderThickness="1.5">
+                                    <TextBlock x:Name="txt" Text="📊 Generar Resumen Mensual" 
+                                               FontSize="14" FontWeight="SemiBold" Foreground="#7B1FA2"
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#7B1FA2"/>
+                                        <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
             </Border>
         </Grid>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- BARRA DE ESTADO (overlay en la parte inferior)     -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <Border Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                Background="#263238" CornerRadius="8" Padding="12,8" Margin="0,0,0,0"
+                Visibility="{Binding MensajeEstado, Converter={StaticResource BoolToVis}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding MensajeEstado}" 
+                           Foreground="White" FontSize="12" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="📂 Abrir archivo"
+                        Command="{Binding AbrirUltimoArchivoCommand}"
+                        Background="#42A5F5" Foreground="White"
+                        Padding="10,5" BorderThickness="0" Cursor="Hand"
+                        FontSize="11" Margin="10,0,0,0"/>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

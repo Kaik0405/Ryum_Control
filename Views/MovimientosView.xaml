@@ -183,6 +183,20 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
+                        <Button Command="{Binding NuevoGastoAdicionalCommand}" Cursor="Hand" Margin="8,0,0,0">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bd" Background="#7B1FA2" CornerRadius="8" Padding="18,10">
+                                        <TextBlock Text="💸 Gasto Adicional" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="#8E24AA"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </StackPanel>
                 </Grid>
 
@@ -278,7 +292,7 @@
                 <!-- ═══════════════════════════════════════ -->
                 <!-- KPI CARDS — Segunda fila (6 mini)       -->
                 <!-- ═══════════════════════════════════════ -->
-                <UniformGrid Columns="7" Margin="0,0,0,16">
+                <UniformGrid Columns="8" Margin="0,0,0,16">
                     <!-- Ingresos período -->
                     <Border Margin="0,0,4,0" Padding="10,10" Cursor="Hand">
                         <Border.Style>
@@ -433,6 +447,32 @@
                             <TextBlock Text="💵 Remesas" FontSize="9" Foreground="#888" FontWeight="Bold"/>
                             <TextBlock Text="{Binding GastoRemesas, StringFormat='{}{0:N0} CUP'}" 
                                        FontSize="15" FontWeight="Bold" Foreground="#00695C" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <!-- Gasto adicional -->
+                    <Border Margin="2,0,4,0" Padding="10,10" Cursor="Hand">
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="#7B1FA2"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding CategoriaFiltroActiva}" Value="GastoAdicional">
+                                        <Setter Property="BorderBrush" Value="#7B1FA2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" 
+                                          Command="{Binding FiltrarPorCategoriaCommand}" CommandParameter="GastoAdicional"/>
+                        </Border.InputBindings>
+                        <StackPanel>
+                            <TextBlock Text="💸 Gasto Adicional" FontSize="9" Foreground="#888" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding GastoAdicional, StringFormat='{}{0:N0} CUP'}" 
+                                       FontSize="15" FontWeight="Bold" Foreground="#7B1FA2" Margin="0,4,0,0"/>
                         </StackPanel>
                     </Border>
                     <!-- Otros (extracciones) -->

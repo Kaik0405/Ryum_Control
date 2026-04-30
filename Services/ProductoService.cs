@@ -100,6 +100,16 @@ namespace GestionApp.Services
             }
         }
 
+        public async Task<List<CompraProducto>> ObtenerComprasPorRangoAsync(DateTime desde, DateTime hasta)
+        {
+            var hastaFin = hasta.Date.AddDays(1);
+            return await _context.ComprasProductos
+                .Include(c => c.Producto)
+                .Where(c => c.Fecha >= desde.Date && c.Fecha < hastaFin)
+                .OrderBy(c => c.Fecha)
+                .ToListAsync();
+        }
+
         public async Task EliminarAsync(int id)
         {
             var producto = await _context.Productos.FindAsync(id);

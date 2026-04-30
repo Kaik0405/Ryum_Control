@@ -529,6 +529,53 @@
             </Border>
 
             <!-- ═══════════════════════════════════════════════ -->
+            <!-- SECCIÓN: RUTA DE REPORTES PDF                  -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
+                    BorderBrush="#E0E0E0" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <Border Background="#E8F5E9" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                <TextBlock Text="📄" FontSize="16"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Ruta de Reportes PDF" FontSize="16" FontWeight="Bold" Foreground="#333"/>
+                                <TextBlock Text="Carpeta donde se guardan los reportes generados" 
+                                           FontSize="11" Foreground="#999"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Border Background="#FAFAFA" CornerRadius="6" Padding="12,8">
+                            <TextBlock Text="{Binding RutaReportes}" FontSize="12" Foreground="#555" 
+                                       FontFamily="Consolas" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" Command="{Binding CambiarRutaReportesCommand}" Cursor="Hand"
+                            VerticalAlignment="Bottom" Margin="16,0,0,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bd" Background="#E8F5E9" CornerRadius="6" Padding="20,10">
+                                    <TextBlock Text="📁 Cambiar" Foreground="#2E7D32" FontWeight="SemiBold" FontSize="12"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- ═══════════════════════════════════════════════ -->
             <!-- SECCIÓN: GESTIÓN DE DATOS                      -->
             <!-- ═══════════════════════════════════════════════ -->
             <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"

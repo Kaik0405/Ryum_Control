@@ -25,6 +25,7 @@ namespace GestionApp.ViewModels
         private string _distPrefijoConformidad = "CONF-";
         private decimal _distTasaCambio = 300m;
         private bool _modoEdicion;
+        private string _rutaReportes = string.Empty;
 
         // ── Agencias ──
         private ObservableCollection<Agencia> _agencias = new();
@@ -74,6 +75,12 @@ namespace GestionApp.ViewModels
         {
             get => _modoEdicion;
             set => SetProperty(ref _modoEdicion, value);
+        }
+
+        public string RutaReportes
+        {
+            get => _rutaReportes;
+            set => SetProperty(ref _rutaReportes, value);
         }
 
         #endregion
@@ -165,6 +172,7 @@ namespace GestionApp.ViewModels
         public ICommand CancelarAgenciaCommand { get; }
         public ICommand SeleccionarLogoCommand { get; }
         public ICommand ToggleActivoAgenciaCommand { get; }
+        public ICommand CambiarRutaReportesCommand { get; }
 
         #endregion
 
@@ -184,6 +192,7 @@ namespace GestionApp.ViewModels
             CancelarAgenciaCommand = new RelayCommand(_ => CerrarFormAgencia());
             SeleccionarLogoCommand = new RelayCommand(_ => SeleccionarLogo());
             ToggleActivoAgenciaCommand = new RelayCommand(async param => await ToggleActivoAsync(param as Agencia));
+            CambiarRutaReportesCommand = new RelayCommand(_ => CambiarRutaReportes());
         }
 
         public override void OnNavigatedTo(object? parameter = null)
@@ -206,6 +215,8 @@ namespace GestionApp.ViewModels
                 DistPrefijoFicha = config.PrefijoFicha;
                 DistPrefijoConformidad = config.PrefijoConformidad;
                 DistTasaCambio = config.TasaCambioCUP;
+                RutaReportes = config.RutaReportes
+                    ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "GestionApp", "Reportes");
                 ModoEdicion = false;
 
                 // Cargar agencias
@@ -263,6 +274,37 @@ namespace GestionApp.ViewModels
                 config.TasaCambioCUP = DistTasaCambio > 0 ? DistTasaCambio : 300m;
                 await _configuracionService.ActualizarConfiguracionAsync(config);
                 MensajeEstado = "✅ Tasa de cambio actualizada";
+            }
+            catch (Exception ex)
+            {
+                MensajeEstado = $"❌ Error: {ex.Message}";
+            }
+        }
+
+        // ═══════════════════════════════════════════════════
+        // RUTA DE REPORTES PDF
+        // ═══════════════════════════════════════════════════
+
+        private async void CambiarRutaReportes()
+        {
+            var dlg = new OpenFolderDialog
+            {
+                Title = "Seleccionar carpeta para guardar reportes PDF",
+                Multiselect = false
+            };
+
+            if (!string.IsNullOrWhiteSpace(RutaReportes) && Directory.Exists(RutaReportes))
+                dlg.InitialDirectory = RutaReportes;
+
+            if (dlg.ShowDialog() != true) return;
+
+            try
+            {
+                RutaReportes = dlg.FolderName;
+                var config = await _configuracionService.ObtenerConfiguracionAsync();
+                config.RutaReportes = RutaReportes;
+                await _configuracionService.ActualizarConfiguracionAsync(config);
+                MensajeEstado = "✅ Ruta de reportes actualizada";
             }
             catch (Exception ex)
             {

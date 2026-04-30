@@ -43,6 +43,7 @@ namespace GestionApp.ViewModels
         private decimal _gastoTransporte;
         private decimal _gastoRemesas;
         private decimal _gastoRebaja;
+        private decimal _gastoAdicional;
         private decimal _gastoOtros;
         private bool _hayPerdida;
         private decimal _tasaCambio = 300m;
@@ -124,6 +125,12 @@ namespace GestionApp.ViewModels
         {
             get => _gastoRebaja;
             set => SetProperty(ref _gastoRebaja, value);
+        }
+
+        public decimal GastoAdicional
+        {
+            get => _gastoAdicional;
+            set => SetProperty(ref _gastoAdicional, value);
         }
 
         public decimal GastoOtros
@@ -234,7 +241,9 @@ namespace GestionApp.ViewModels
             set => SetProperty(ref _editando, value);
         }
 
-        public string TituloFormulario => Editando ? "Editar Movimiento" : (FormTipo == TipoMovimiento.Ingreso ? "Nuevo Ingreso" : "Nuevo Egreso");
+        public string TituloFormulario => Editando ? "Editar Movimiento"
+            : FormCategoria == CategoriaMovimiento.GastoAdicional ? "Gasto Adicional"
+            : (FormTipo == TipoMovimiento.Ingreso ? "Nuevo Ingreso" : "Nuevo Egreso");
 
         public string FormConcepto
         {
@@ -284,6 +293,7 @@ namespace GestionApp.ViewModels
 
         public ICommand NuevoIngresoCommand { get; }
         public ICommand NuevoEgresoCommand { get; }
+        public ICommand NuevoGastoAdicionalCommand { get; }
         public ICommand GuardarCommand { get; }
         public ICommand CancelarCommand { get; }
         public ICommand EditarCommand { get; }
@@ -307,6 +317,7 @@ namespace GestionApp.ViewModels
 
             NuevoIngresoCommand = new RelayCommand(_ => PrepararNuevo(TipoMovimiento.Ingreso));
             NuevoEgresoCommand = new RelayCommand(_ => PrepararNuevo(TipoMovimiento.Egreso));
+            NuevoGastoAdicionalCommand = new RelayCommand(_ => PrepararGastoAdicional());
             GuardarCommand = new RelayCommand(async _ => await GuardarAsync(),
                 _ => !string.IsNullOrWhiteSpace(FormDescripcion) && FormMonto > 0);
             CancelarCommand = new RelayCommand(_ => CerrarFormulario());
@@ -351,7 +362,7 @@ namespace GestionApp.ViewModels
 
             if (_filtroOtros)
             {
-                var categoriasConocidas = new[] { CategoriaMovimiento.CompraProducto, CategoriaMovimiento.Transporte, CategoriaMovimiento.Remesa, CategoriaMovimiento.DescontarEntrega };
+                var categoriasConocidas = new[] { CategoriaMovimiento.CompraProducto, CategoriaMovimiento.Transporte, CategoriaMovimiento.Remesa, CategoriaMovimiento.DescontarEntrega, CategoriaMovimiento.GastoAdicional };
                 filtrados = filtrados.Where(m => m.Tipo == TipoMovimiento.Egreso && !categoriasConocidas.Contains(m.Categoria));
             }
 
@@ -389,9 +400,10 @@ namespace GestionApp.ViewModels
                 GastoTransporte = movRango.Where(m => m.Categoria == CategoriaMovimiento.Transporte && m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
                 GastoRemesas = movRango.Where(m => m.Categoria == CategoriaMovimiento.Remesa && m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
                 GastoRebaja = movRango.Where(m => m.Categoria == CategoriaMovimiento.DescontarEntrega && m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
-                // Otros = todo egreso que NO sea Productos, Transporte, Rebaja ni Remesas.
-                // Así la suma de las 5 tarjetas = TotalEgresos exactamente.
-                var categoriasConocidas = new[] { CategoriaMovimiento.CompraProducto, CategoriaMovimiento.Transporte, CategoriaMovimiento.Remesa, CategoriaMovimiento.DescontarEntrega };
+                GastoAdicional = movRango.Where(m => m.Categoria == CategoriaMovimiento.GastoAdicional && m.Tipo == TipoMovimiento.Egreso).Sum(m => m.Monto);
+                // Otros = todo egreso que NO sea Productos, Transporte, Rebaja, Remesas ni GastoAdicional.
+                // Así la suma de las 6 tarjetas = TotalEgresos exactamente.
+                var categoriasConocidas = new[] { CategoriaMovimiento.CompraProducto, CategoriaMovimiento.Transporte, CategoriaMovimiento.Remesa, CategoriaMovimiento.DescontarEntrega, CategoriaMovimiento.GastoAdicional };
                 GastoOtros = movRango.Where(m => m.Tipo == TipoMovimiento.Egreso && !categoriasConocidas.Contains(m.Categoria)).Sum(m => m.Monto);
 
                 // Ganancia acumulada en USD:
@@ -473,6 +485,21 @@ namespace GestionApp.ViewModels
             FormMonto = 0;
             FormFecha = DateTime.Now;
             FormTipo = tipo;
+            FormCategoria = CategoriaMovimiento.Otro;
+            MostrarFormulario = true;
+            OnPropertyChanged(nameof(TituloFormulario));
+        }
+
+        private void PrepararGastoAdicional()
+        {
+            Editando = false;
+            _editandoId = 0;
+            FormConcepto = string.Empty;
+            FormDescripcion = string.Empty;
+            FormMonto = 0;
+            FormFecha = DateTime.Now;
+            FormTipo = TipoMovimiento.Egreso;
+            FormCategoria = CategoriaMovimiento.GastoAdicional;
             MostrarFormulario = true;
             OnPropertyChanged(nameof(TituloFormulario));
         }
@@ -515,7 +542,7 @@ namespace GestionApp.ViewModels
                         Monto = FormMonto,
                         Fecha = FormFecha,
                         Tipo = FormTipo,
-                        Categoria = CategoriaMovimiento.Otro
+                        Categoria = FormCategoria
                     };
                     await _movimientoService.CrearAsync(mov);
                     var icono = FormTipo == TipoMovimiento.Ingreso ? "📥" : "📤";
@@ -611,6 +638,7 @@ namespace GestionApp.ViewModels
                 "Transporte" => CategoriaMovimiento.Transporte,
                 "Rebaja" => CategoriaMovimiento.DescontarEntrega,
                 "Remesas" => CategoriaMovimiento.Remesa,
+                "GastoAdicional" => CategoriaMovimiento.GastoAdicional,
                 "Otros" => null,      // caso especial: filtro residual
                 _ => null
             };

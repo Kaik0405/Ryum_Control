@@ -149,6 +149,7 @@ public partial class App : Application
         services.AddScoped<IClienteService, ClienteService>();
         services.AddScoped<IAgenciaService, AgenciaService>();
         services.AddScoped<IEntregaService, EntregaService>();
+        services.AddSingleton<ReportesPdfService>();
 
         // Registrar ViewModels
         services.AddSingleton<MainViewModel>();

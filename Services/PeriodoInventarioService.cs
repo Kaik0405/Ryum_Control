@@ -39,6 +39,7 @@ namespace GestionApp.Services
             return await _context.PeriodosInventario
                 .Include(p => p.Movimientos)
                 .Include(p => p.FichasCosto)
+                .Include(p => p.InventarioInicial)
                 .FirstOrDefaultAsync(p => p.Año == año && p.Mes == mes);
         }
 
