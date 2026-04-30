@@ -1,32 +1,32 @@
-# GestionApp — Sistema de Gestión de Distribución
+# GestionApp — Distribution Management System
 
-Aplicación de escritorio en **C# + WPF (.NET 8)** enfocada en la operación diaria de un negocio de distribución: inventario, combos, entregas, costos y movimientos. Prioriza **arquitectura limpia**, **reglas de negocio explícitas** y una **UX consistente**.
+Desktop application built in **C# + WPF (.NET 8)** focused on the day‑to‑day operation of a distribution business: inventory, combos, deliveries, costs, and movements. It prioritizes **clean architecture**, **explicit business rules**, and a **consistent UX**.
 
-## 🚧 Estado del proyecto
+## 🚧 Project status
 
-**En desarrollo activo.** El sistema está en evolución constante y se incorporan mejoras de forma progresiva. Este repositorio refleja trabajo en curso.
+**Actively in development.** The system is continuously evolving and improvements are added progressively. This repository reflects ongoing work.
 
-## ✨ Características clave
+## ✨ Key features
 
-- 📦 **Inventario** con control de stock y trazabilidad de movimientos.
-- 🧩 **Combos/agrupaciones** y relación con productos.
-- 🚚 **Entregas** con prioridades y alertas por fechas.
-- 💾 **Persistencia local** con SQLite + EF Core.
-- 🧭 **Navegación modular** y UI reactiva mediante MVVM.
+- 📦 **Inventory** with stock control and movement traceability.
+- 🧩 **Combos/groupings** and product relationships.
+- 🚚 **Deliveries** with priorities and date‑based alerts.
+- 💾 **Local persistence** with SQLite + EF Core.
+- 🧭 **Modular navigation** and reactive UI through MVVM.
 
-## 🧱 Arquitectura y diseño
+## 🧱 Architecture & design
 
-- 🧩 **MVVM** con separación estricta Vista ↔ ViewModel ↔ Modelo.
-- 🧰 **Inyección de dependencias** para servicios, navegación y ViewModels.
-- 🧠 **Servicios de dominio** para encapsular reglas de negocio.
-- 🗂️ **Soft-delete** para preservar trazabilidad.
+- 🧩 **MVVM** with strict separation of View ↔ ViewModel ↔ Model.
+- 🧰 **Dependency Injection** for services, navigation, and ViewModels.
+- 🧠 **Domain services** encapsulating business rules.
+- 🗂️ **Soft delete** to preserve traceability.
 
-## 🛠️ Requisitos del entorno
+## 🛠️ Environment requirements
 
-- 🪟 **Windows 10/11** (WPF es exclusivo de Windows).
-- 🧬 **.NET SDK 8.0** o superior.
+- 🪟 **Windows 10/11** (WPF is Windows‑only).
+- 🧬 **.NET SDK 8.0** or later.
 
-## ▶️ Instalación y ejecución
+## ▶️ Installation & run
 
 ```bash
 dotnet restore
@@ -34,60 +34,60 @@ dotnet build
 dotnet run
 ```
 
-Si el proceso está bloqueando la compilación:
+If the process is blocking compilation:
 
 ```bash
 taskkill /F /IM GestionApp.exe
 dotnet build
 ```
 
-## 🗄️ Base de datos
+## 🗄️ Database
 
-SQLite local creada automáticamente al iniciar la aplicación con `EnsureCreated()`:
+Local SQLite database created automatically at startup using `EnsureCreated()`:
 
 ```
 %APPDATA%\GestionApp\gestion.db
 ```
 
-> **Nota técnica:** si cambias modelos o relaciones, elimina `gestion.db` y vuelve a ejecutar. No se utilizan migraciones en este flujo.
+> **Technical note:** if you change models or relationships, delete `gestion.db` and run again. Migrations are not used in this workflow.
 
-## 🗂️ Estructura del repositorio
+## 🗂️ Repository structure
 
 ```
 GestionApp/
-├── Data/              # DbContext y configuración EF Core
-├── Helpers/           # Commands, converters y utilidades MVVM
-├── Models/            # Entidades de dominio
-├── Services/          # Servicios de negocio y navegación
-├── ViewModels/        # Lógica de presentación
-├── Views/             # Vistas WPF (XAML)
-├── App.xaml           # Recursos y DataTemplates
-├── MainWindow.xaml    # Contenedor principal
+├── Data/              # DbContext and EF Core configuration
+├── Helpers/           # Commands, converters, and MVVM utilities
+├── Models/            # Domain entities
+├── Services/          # Business and navigation services
+├── ViewModels/        # Presentation logic
+├── Views/             # WPF views (XAML)
+├── App.xaml           # Resources and DataTemplates
+├── MainWindow.xaml    # Main shell
 └── GestionApp.csproj
 ```
 
-## 📦 Paquetes principales
+## 📦 Core packages
 
-| Paquete | Propósito |
+| Package | Purpose |
 |---|---|
-| Microsoft.EntityFrameworkCore.Sqlite | Persistencia SQLite |
-| Microsoft.EntityFrameworkCore.Tools | Herramientas EF Core |
-| Microsoft.Extensions.DependencyInjection | Contenedor DI |
+| Microsoft.EntityFrameworkCore.Sqlite | SQLite persistence |
+| Microsoft.EntityFrameworkCore.Tools | EF Core tooling |
+| Microsoft.Extensions.DependencyInjection | DI container |
 
-## 🧪 Guía rápida de desarrollo
+## 🧪 Developer quick guide
 
-- Mantener la lógica en **servicios** y ViewModels; las vistas deben ser “tontas”.
-- Los formularios usan `string` en campos numéricos para evitar fallos por formato decimal.
-- Las operaciones críticas registran movimientos para auditoría.
+- Keep logic in **services** and ViewModels; views should be “thin”.
+- Forms use `string` for numeric fields to avoid decimal format issues.
+- Critical operations register movements for auditability.
 
-## 📚 Documentación
+## 📚 Documentation
 
-- Detalles técnicos ampliados en `docs/DOCUMENTACION.md`.
+- Extended technical documentation in `docs/DOCUMENTACION.md`.
 
-## 🤝 Contribución
+## 🤝 Contributing
 
-Si deseas colaborar, abre un issue describiendo el cambio propuesto. Las PRs deben incluir una descripción técnica clara y pruebas manuales mínimas.
+If you want to collaborate, open an issue describing the proposed change. PRs should include a clear technical description and minimal manual verification steps.
 
 ---
 
-*Desarrollado con C# y WPF (.NET 8).*
+*Built with C# and WPF (.NET 8).* 
