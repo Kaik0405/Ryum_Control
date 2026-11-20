@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:ReportesViewModel}"
              d:DesignHeight="700" d:DesignWidth="1100"
-             Background="#F5F5F5">
+             Background="Transparent">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -33,17 +33,17 @@
 
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                     <TextBlock Text="Reportes" 
-                               FontSize="24" FontWeight="Bold" Foreground="#1A237E"/>
+                               FontSize="24" FontWeight="Bold" Foreground="#142F49"/>
                     <TextBlock Text="Genera reportes PDF con los datos del período seleccionado" 
-                               FontSize="12" Foreground="#666" Margin="0,2,0,0"/>
+                               FontSize="12" Foreground="#536A80" Margin="0,2,0,0"/>
                 </StackPanel>
 
                 <!-- Botón abrir carpeta -->
                 <Button Grid.Column="2" 
                         Content="📂 Abrir carpeta"
                         Command="{Binding AbrirCarpetaReportesCommand}"
-                        Background="#F5F5F5" Foreground="#333"
-                        BorderBrush="#E0E0E0" BorderThickness="1"
+                        Background="#F2F6FA" Foreground="#203B54"
+                        BorderBrush="#D1DDE8" BorderThickness="1"
                         Padding="12,7" Cursor="Hand" FontSize="12"
                         VerticalAlignment="Center"/>
             </Grid>
@@ -66,7 +66,7 @@
 
                 <!-- Atajos rápidos -->
                 <TextBlock Grid.Column="0" Text="Período:" FontSize="13" FontWeight="SemiBold"
-                           Foreground="#1A237E" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                           Foreground="#142F49" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 
                 <ComboBox Grid.Column="1"
                           ItemsSource="{Binding AtajosPeriodo}"
@@ -76,22 +76,22 @@
                           Width="170" Padding="8,6" Margin="0,0,20,0"/>
 
                 <!-- Desde -->
-                <TextBlock Grid.Column="2" Text="Desde:" FontSize="12" Foreground="#666"
+                <TextBlock Grid.Column="2" Text="Desde:" FontSize="12" Foreground="#536A80"
                            VerticalAlignment="Center" Margin="0,0,6,0"/>
                 <DatePicker Grid.Column="3" 
                             SelectedDate="{Binding FechaDesde}"
-                            Width="135" Margin="0,0,15,0"/>
+                            Width="150" Margin="0,0,15,0"/>
 
                 <!-- Hasta -->
-                <TextBlock Grid.Column="4" Text="Hasta:" FontSize="12" Foreground="#666"
+                <TextBlock Grid.Column="4" Text="Hasta:" FontSize="12" Foreground="#536A80"
                            VerticalAlignment="Center" Margin="0,0,6,0"/>
                 <DatePicker Grid.Column="5" 
                             SelectedDate="{Binding FechaHasta}"
-                            Width="135" HorizontalAlignment="Left"/>
+                            Width="150" HorizontalAlignment="Left"/>
 
                 <!-- Indicador generando -->
                 <TextBlock Grid.Column="6" Text="⏳ Generando..."
-                           FontSize="12" Foreground="#E65100" VerticalAlignment="Center"
+                           FontSize="12" Foreground="#9B7100" VerticalAlignment="Center"
                            Visibility="{Binding GenerandoReporte, Converter={StaticResource BoolToVis}}"/>
             </Grid>
         </Border>
@@ -120,13 +120,13 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📋" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock Text="Reporte de Entregas" 
-                                       FontSize="18" FontWeight="SemiBold" Foreground="#1A237E"
+                                       FontSize="18" FontWeight="SemiBold" Foreground="#142F49"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Vista previa de datos -->
-                    <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8" Padding="14">
+                    <Border Grid.Row="1" Background="#F7FAFC" CornerRadius="8" Padding="14">
                         <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -138,41 +138,41 @@
                             </Grid.RowDefinitions>
 
                             <!-- Fichas -->
-                            <Border Grid.Row="0" Grid.Column="0" Background="#E3F2FD" CornerRadius="8" 
+                            <Border Grid.Row="0" Grid.Column="0" Background="#EAF1F7" CornerRadius="8" 
                                     Padding="10,8" Margin="0,0,4,4">
                                 <StackPanel>
-                                    <TextBlock Text="Fichas en período" FontSize="10" Foreground="#1565C0"/>
-                                    <TextBlock Text="{Binding TotalFichas}" FontSize="22" FontWeight="Bold" Foreground="#1565C0"/>
+                                    <TextBlock Text="Fichas en período" FontSize="10" Foreground="#173F63"/>
+                                    <TextBlock Text="{Binding TotalFichas}" FontSize="22" FontWeight="Bold" Foreground="#173F63"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- Ventas -->
-                            <Border Grid.Row="0" Grid.Column="1" Background="#E8F5E9" CornerRadius="8" 
+                            <Border Grid.Row="0" Grid.Column="1" Background="#E8F4EC" CornerRadius="8" 
                                     Padding="10,8" Margin="4,0,0,4">
                                 <StackPanel>
-                                    <TextBlock Text="Total Ventas USD" FontSize="10" Foreground="#2E7D32"/>
+                                    <TextBlock Text="Total Ventas USD" FontSize="10" Foreground="#287A56"/>
                                     <TextBlock Text="{Binding TotalVentas, StringFormat='${0:N2}'}" 
-                                               FontSize="22" FontWeight="Bold" Foreground="#2E7D32"/>
+                                               FontSize="22" FontWeight="Bold" Foreground="#287A56"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- Gasto Productos -->
-                            <Border Grid.Row="1" Grid.Column="0" Background="#FFF3E0" CornerRadius="8" 
+                            <Border Grid.Row="1" Grid.Column="0" Background="#FFF4D6" CornerRadius="8" 
                                     Padding="10,8" Margin="0,4,4,0">
                                 <StackPanel>
-                                    <TextBlock Text="Gasto Productos" FontSize="10" Foreground="#E65100"/>
+                                    <TextBlock Text="Gasto Productos" FontSize="10" Foreground="#9B7100"/>
                                     <TextBlock Text="{Binding TotalGastoProductos, StringFormat='${0:N2}'}" 
-                                               FontSize="22" FontWeight="Bold" Foreground="#E65100"/>
+                                               FontSize="22" FontWeight="Bold" Foreground="#9B7100"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- Transporte -->
-                            <Border Grid.Row="1" Grid.Column="1" Background="#FCE4EC" CornerRadius="8" 
+                            <Border Grid.Row="1" Grid.Column="1" Background="#FFF4D6" CornerRadius="8" 
                                     Padding="10,8" Margin="4,4,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="Gasto Transporte" FontSize="10" Foreground="#C62828"/>
+                                    <TextBlock Text="Gasto Transporte" FontSize="10" Foreground="#B74756"/>
                                     <TextBlock Text="{Binding TotalTransporte, StringFormat='${0:N2}'}" 
-                                               FontSize="22" FontWeight="Bold" Foreground="#C62828"/>
+                                               FontSize="22" FontWeight="Bold" Foreground="#B74756"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -183,15 +183,15 @@
                             Cursor="Hand" Margin="0,12,0,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="White" CornerRadius="8" 
-                                        Padding="16,12" BorderBrush="#1565C0" BorderThickness="1.5">
+                                <Border x:Name="bd" Background="#FFFFFF" CornerRadius="8" 
+                                        Padding="16,12" BorderBrush="#173F63" BorderThickness="1.5">
                                     <TextBlock x:Name="txt" Text="📄 Generar PDF de Entregas" 
-                                               FontSize="14" FontWeight="SemiBold" Foreground="#1565C0"
+                                               FontSize="14" FontWeight="SemiBold" Foreground="#173F63"
                                                HorizontalAlignment="Center"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bd" Property="Background" Value="#1565C0"/>
+                                        <Setter TargetName="bd" Property="Background" Value="#173F63"/>
                                         <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
@@ -215,19 +215,19 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🧾" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock Text="Fichas de Costo" 
-                                       FontSize="18" FontWeight="SemiBold" Foreground="#1A237E"
+                                       FontSize="18" FontWeight="SemiBold" Foreground="#142F49"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Contenido -->
-                    <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8" Padding="14">
+                    <Border Grid.Row="1" Background="#F7FAFC" CornerRadius="8" Padding="14">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="🧾" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
 
-                            <Border Background="#E3F2FD" CornerRadius="8" Padding="14,8"
+                            <Border Background="#EAF1F7" CornerRadius="8" Padding="14,8"
                                     HorizontalAlignment="Center">
-                                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#1565C0">
+                                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#173F63">
                                     <Run Text="{Binding TotalFichas, Mode=OneWay}"/> fichas en el período
                                 </TextBlock>
                             </Border>
@@ -239,15 +239,15 @@
                             Cursor="Hand" Margin="0,12,0,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="White" CornerRadius="8" 
-                                        Padding="16,12" BorderBrush="#E65100" BorderThickness="1.5">
+                                <Border x:Name="bd" Background="#FFFFFF" CornerRadius="8" 
+                                        Padding="16,12" BorderBrush="#9B7100" BorderThickness="1.5">
                                     <TextBlock x:Name="txt" Text="🧾 Generar PDF de Fichas de Costo" 
-                                               FontSize="14" FontWeight="SemiBold" Foreground="#E65100"
+                                               FontSize="14" FontWeight="SemiBold" Foreground="#9B7100"
                                                HorizontalAlignment="Center"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bd" Property="Background" Value="#E65100"/>
+                                        <Setter TargetName="bd" Property="Background" Value="#9B7100"/>
                                         <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
@@ -271,23 +271,23 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📊" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock Text="Resumen Mensual" 
-                                       FontSize="18" FontWeight="SemiBold" Foreground="#1A237E"
+                                       FontSize="18" FontWeight="SemiBold" Foreground="#142F49"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Contenido -->
-                    <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8" Padding="14">
+                    <Border Grid.Row="1" Background="#F7FAFC" CornerRadius="8" Padding="14">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="📊" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
 
                             <TextBlock Text="Inventario, efectivo y&#10;movimientos del período"
-                                       FontSize="12" Foreground="#666" TextAlignment="Center"
+                                       FontSize="12" Foreground="#536A80" TextAlignment="Center"
                                        HorizontalAlignment="Center" Margin="0,0,0,8"/>
 
-                            <Border Background="#EDE7F6" CornerRadius="8" Padding="14,8"
+                            <Border Background="#EAF1F7" CornerRadius="8" Padding="14,8"
                                     HorizontalAlignment="Center">
-                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#7B1FA2">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#173F63">
                                     <Run Text="{Binding TotalFichas, Mode=OneWay}"/> fichas · <Run Text="{Binding TotalVentas, Mode=OneWay, StringFormat='${0:N0}'}"/> USD
                                 </TextBlock>
                             </Border>
@@ -299,15 +299,15 @@
                             Cursor="Hand" Margin="0,12,0,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="White" CornerRadius="8" 
-                                        Padding="16,12" BorderBrush="#7B1FA2" BorderThickness="1.5">
+                                <Border x:Name="bd" Background="#FFFFFF" CornerRadius="8" 
+                                        Padding="16,12" BorderBrush="#173F63" BorderThickness="1.5">
                                     <TextBlock x:Name="txt" Text="📊 Generar Resumen Mensual" 
-                                               FontSize="14" FontWeight="SemiBold" Foreground="#7B1FA2"
+                                               FontSize="14" FontWeight="SemiBold" Foreground="#173F63"
                                                HorizontalAlignment="Center"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bd" Property="Background" Value="#7B1FA2"/>
+                                        <Setter TargetName="bd" Property="Background" Value="#173F63"/>
                                         <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
@@ -322,7 +322,7 @@
         <!-- BARRA DE ESTADO (overlay en la parte inferior)     -->
         <!-- ═══════════════════════════════════════════════════ -->
         <Border Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-                Background="#263238" CornerRadius="8" Padding="12,8" Margin="0,0,0,0"
+                Background="#DCE7F6" CornerRadius="8" Padding="12,8" Margin="0,0,0,0"
                 Visibility="{Binding MensajeEstado, Converter={StaticResource BoolToVis}}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -333,7 +333,7 @@
                            Foreground="White" FontSize="12" VerticalAlignment="Center"/>
                 <Button Grid.Column="1" Content="📂 Abrir archivo"
                         Command="{Binding AbrirUltimoArchivoCommand}"
-                        Background="#42A5F5" Foreground="White"
+                        Background="#D9B33F" Foreground="White"
                         Padding="10,5" BorderThickness="0" Cursor="Hand"
                         FontSize="11" Margin="10,0,0,0"/>
             </Grid>

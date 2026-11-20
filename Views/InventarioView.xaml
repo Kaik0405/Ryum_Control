@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:InventarioViewModel}"
              d:DesignHeight="700" d:DesignWidth="950"
-             Background="#F5F5F5">
+             Background="Transparent">
 
     <!-- 
     CÓMO FUNCIONA ESTA VISTA:
@@ -48,10 +48,10 @@
                     <TextBlock Text="📦 Inventario" 
                                FontSize="24" 
                                FontWeight="Bold" 
-                               Foreground="#1A237E"/>
+                               Foreground="#142F49"/>
                     <TextBlock Text="Gestión de productos y stock" 
                                FontSize="11" 
-                               Foreground="#999"
+                               Foreground="#657C91"
                                Margin="0,2,0,0"/>
                 </StackPanel>
             
@@ -62,17 +62,17 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="bd" 
-                                    Background="#1976D2" 
+                                    Background="#173F63" 
                                     CornerRadius="8" 
                                     Padding="18,9">
                                 <TextBlock Text="➕ Nuevo Producto" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#1565C0"/>
+                                    <Setter TargetName="bd" Property="Background" Value="#173F63"/>
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                    <Setter TargetName="bd" Property="Background" Value="#2A638F"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -98,23 +98,23 @@
                 </Grid.ColumnDefinitions>
                 
                 <!-- Buscador (cápsula con icono 🔍) -->
-                <Border Grid.Column="0" Background="#F8F9FA" CornerRadius="10" Padding="4,0"
-                        BorderBrush="#E0E0E0" BorderThickness="1">
+                <Border Grid.Column="0" Background="#F9FBFD" CornerRadius="10" Padding="4,0"
+                        BorderBrush="#D1DDE8" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Background="#EEEEEE" CornerRadius="8" 
+                        <Border Grid.Column="0" Background="#E9F0F6" CornerRadius="8" 
                                 Width="30" Height="30" Margin="2,3,0,3" VerticalAlignment="Center">
                             <TextBlock Text="🔍" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBox Grid.Column="1"
                                  Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged}" 
                                  Padding="8,7" FontSize="12" BorderThickness="0" Background="Transparent"
-                                 Foreground="#333" VerticalAlignment="Center">
+                                 Foreground="#203B54" VerticalAlignment="Center">
                             <TextBox.Style>
-                                <Style TargetType="TextBox">
+                                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
                                         <Trigger Property="Text" Value="">
                                             <Setter Property="Background">
@@ -122,7 +122,7 @@
                                                     <VisualBrush Stretch="None" AlignmentX="Left">
                                                         <VisualBrush.Visual>
                                                             <TextBlock Text="Buscar producto por nombre, descripción o categoría..." 
-                                                                       Foreground="#999" Margin="10,0,0,0" FontSize="12"/>
+                                                                       Foreground="#657C91" Margin="10,0,0,0" FontSize="12"/>
                                                         </VisualBrush.Visual>
                                                     </VisualBrush>
                                                 </Setter.Value>
@@ -136,12 +136,12 @@
                 </Border>
                 
                 <!-- CheckBox en cápsula -->
-                <Border Grid.Column="2" Background="#F5F5F5" CornerRadius="10" Padding="12,6"
-                        BorderBrush="#E0E0E0" BorderThickness="1">
+                <Border Grid.Column="2" Background="#F2F6FA" CornerRadius="10" Padding="12,6"
+                        BorderBrush="#D1DDE8" BorderThickness="1">
                     <CheckBox Content=" Solo en stock" 
                               IsChecked="{Binding MostrarSoloEnStock}"
                               VerticalAlignment="Center"
-                              FontSize="12" Foreground="#555"/>
+                              FontSize="12" Foreground="#465E75"/>
                 </Border>
                 
                 <!-- Botón actualizar (cápsula) -->
@@ -150,15 +150,15 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="bd" Background="Transparent" CornerRadius="10" Padding="12,6"
-                                    BorderBrush="#E0E0E0" BorderThickness="1">
+                                    BorderBrush="#D1DDE8" BorderThickness="1">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="🔄" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Actualizar" FontSize="12" FontWeight="SemiBold" Foreground="#555" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Actualizar" FontSize="12" FontWeight="SemiBold" Foreground="#465E75" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                    <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -194,11 +194,11 @@
                     <!-- Estilo de cabeceras -->
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F8F9FA"/>
-                            <Setter Property="Foreground" Value="#333"/>
+                            <Setter Property="Background" Value="#F9FBFD"/>
+                            <Setter Property="Foreground" Value="#203B54"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
                             <Setter Property="Padding" Value="14,10"/>
-                            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                            <Setter Property="BorderBrush" Value="#D1DDE8"/>
                             <Setter Property="BorderThickness" Value="0,0,0,2"/>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
@@ -211,17 +211,17 @@
                             <Style.Triggers>
                                 <!-- Verde suave si está en stock -->
                                 <DataTrigger Binding="{Binding EnStock}" Value="True">
-                                    <Setter Property="Background" Value="#F1F8E9"/>
+                                    <Setter Property="Background" Value="#EDF6F0"/>
                                 </DataTrigger>
                                 <!-- Rojo suave si no está en stock -->
                                 <DataTrigger Binding="{Binding EnStock}" Value="False">
-                                    <Setter Property="Background" Value="#FFF3F0"/>
+                                    <Setter Property="Background" Value="#FCECEF"/>
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                    <Setter Property="Background" Value="#EAF1F7"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#F5F5F5"/>
+                                    <Setter Property="Background" Value="#F2F6FA"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -244,7 +244,7 @@
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="Foreground" Value="#17324B"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -264,13 +264,13 @@
                                                     <TextBlock Text="{Binding Nombre}" FontWeight="Bold" FontSize="14"/>
                                                     <TextBlock Text="{Binding Descripcion, TargetNullValue='Sin descripción'}" 
                                                                TextWrapping="Wrap" FontSize="12"
-                                                               Foreground="#666" Margin="0,6,0,0"/>
-                                                    <Border BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="0,8,0,4" Padding="0,4,0,0">
+                                                               Foreground="#536A80" Margin="0,6,0,0"/>
+                                                    <Border BorderBrush="#D1DDE8" BorderThickness="0,1,0,0" Margin="0,8,0,4" Padding="0,4,0,0">
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="Stock: " FontSize="11" Foreground="#999"/>
-                                                            <TextBlock Text="{Binding StockConUnidad}" FontSize="11" Foreground="#333" FontWeight="SemiBold"/>
-                                                            <TextBlock Text="  ·  Costo: " FontSize="11" Foreground="#999" Margin="8,0,0,0"/>
-                                                            <TextBlock Text="{Binding CostoCompra, StringFormat=$ {0:N2}}" FontSize="11" Foreground="#333" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="Stock: " FontSize="11" Foreground="#657C91"/>
+                                                            <TextBlock Text="{Binding StockConUnidad}" FontSize="11" Foreground="#203B54" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="  ·  Costo: " FontSize="11" Foreground="#657C91" Margin="8,0,0,0"/>
+                                                            <TextBlock Text="{Binding CostoCompra, StringFormat=$ {0:N2}}" FontSize="11" Foreground="#203B54" FontWeight="SemiBold"/>
                                                         </StackPanel>
                                                     </Border>
                                                 </StackPanel>
@@ -296,10 +296,10 @@
                                     <TextBlock Text="{Binding StockConUnidad}" VerticalAlignment="Center" FontWeight="SemiBold">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#2E7D32"/>
+                                                <Setter Property="Foreground" Value="#287A56"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding EnStock}" Value="False">
-                                                        <Setter Property="Foreground" Value="#C62828"/>
+                                                        <Setter Property="Foreground" Value="#B74756"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -329,14 +329,14 @@
                                                 CommandParameter="{Binding}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#E8F5E9" CornerRadius="6" 
+                                                    <Border x:Name="bd" Background="#E8F4EC" CornerRadius="6" 
                                                             Padding="10,4" Margin="0,0,4,0">
                                                         <TextBlock Text="Agregar" FontSize="11" FontWeight="SemiBold" 
-                                                                   Foreground="#2E7D32" HorizontalAlignment="Center"/>
+                                                                   Foreground="#287A56" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                                            <Setter TargetName="bd" Property="Background" Value="#CBE6D4"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -349,21 +349,21 @@
                                                 CommandParameter="{Binding}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#FFF3E0" CornerRadius="6" 
+                                                    <Border x:Name="bd" Background="#FFF4D6" CornerRadius="6" 
                                                             Padding="10,4" Margin="0,0,4,0">
                                                         <TextBlock Text="Quitar" FontSize="11" FontWeight="SemiBold" 
-                                                                   Foreground="#E65100" HorizontalAlignment="Center"/>
+                                                                   Foreground="#9B7100" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bd" Property="Background" Value="#FFE0B2"/>
+                                                            <Setter TargetName="bd" Property="Background" Value="#FFF1CF"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
                                         <!-- Separador -->
-                                        <Border Width="1" Background="#E0E0E0" Margin="3,4" VerticalAlignment="Stretch"/>
+                                        <Border Width="1" Background="#D1DDE8" Margin="3,4" VerticalAlignment="Stretch"/>
                                         <!-- Botón Historial -->
                                         <Button ToolTip="Ver historial" Cursor="Hand"
                                                 Command="{Binding DataContext.VerHistorialCommand, 
@@ -371,35 +371,35 @@
                                                 CommandParameter="{Binding}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#E3F2FD" CornerRadius="6" 
+                                                    <Border x:Name="bd" Background="#EAF1F7" CornerRadius="6" 
                                                             Padding="10,4" Margin="0,0,4,0">
                                                         <TextBlock Text="Historial" FontSize="11" FontWeight="SemiBold" 
-                                                                   Foreground="#1565C0" HorizontalAlignment="Center"/>
+                                                                   Foreground="#173F63" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bd" Property="Background" Value="#BBDEFB"/>
+                                                            <Setter TargetName="bd" Property="Background" Value="#DDE8F2"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
                                         <!-- Separador -->
-                                        <Border Width="1" Background="#E0E0E0" Margin="3,4" VerticalAlignment="Stretch"/>
+                                        <Border Width="1" Background="#D1DDE8" Margin="3,4" VerticalAlignment="Stretch"/>
                                         <!-- Botón Editar -->
                                         <Button ToolTip="Editar producto" Cursor="Hand"
                                                 Command="{Binding DataContext.EditarProductoCommand, 
                                                          RelativeSource={RelativeSource AncestorType=DataGrid}}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#E8EAF6" CornerRadius="6" 
+                                                    <Border x:Name="bd" Background="#173F63" CornerRadius="6" 
                                                             Padding="10,4" Margin="0,0,4,0">
                                                         <TextBlock Text="Editar" FontSize="11" FontWeight="SemiBold" 
-                                                                   Foreground="#283593" HorizontalAlignment="Center"/>
+                                                                   Foreground="#244B6A" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bd" Property="Background" Value="#C5CAE9"/>
+                                                            <Setter TargetName="bd" Property="Background" Value="#425B87"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -411,14 +411,14 @@
                                                          RelativeSource={RelativeSource AncestorType=DataGrid}}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bd" Background="#FFEBEE" CornerRadius="6" 
+                                                    <Border x:Name="bd" Background="#FCECEF" CornerRadius="6" 
                                                             Padding="10,4" Margin="0,0,0,0">
                                                         <TextBlock Text="Eliminar" FontSize="11" FontWeight="SemiBold" 
-                                                                   Foreground="#C62828" HorizontalAlignment="Center"/>
+                                                                   Foreground="#B74756" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                            <Setter TargetName="bd" Property="Background" Value="#F8D8DD"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -432,18 +432,27 @@
                 </DataGrid>
             </Border>
             
+            <!-- Capa que evita clics accidentales en la tabla mientras se edita. -->
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Background="#660D2945" Panel.ZIndex="4">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding MostrarFormulario}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+                            <DataTrigger Binding="{Binding ModoAjusteStock}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+                            <DataTrigger Binding="{Binding ModoHistorial}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+
             <!-- ═══ FORMULARIO (aparece cuando MostrarFormulario = true) ═══ -->
             <!-- 
             Visibility usa un conversor BooleanToVisibility:
             - MostrarFormulario = true  → Visible
             - MostrarFormulario = false → Collapsed (no ocupa espacio)
             -->
-            <Border Grid.Column="1" 
-                    Style="{StaticResource CardStyle}" 
-                    Margin="15,0,0,0"
-                    Width="320"
-                    Visibility="{Binding MostrarFormulario, Converter={StaticResource BoolToVis}}"
-                    VerticalAlignment="Top">
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource CardStyle}" Margin="12" Width="590" MaxWidth="700" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="5" Visibility="{Binding MostrarFormulario, Converter={StaticResource BoolToVis}}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         
@@ -451,24 +460,24 @@
                         <TextBlock Text="{Binding TituloFormulario}" 
                                    FontSize="18" 
                                    FontWeight="Bold" 
-                                   Foreground="#1A237E"
+                                   Foreground="#142F49"
                                    Margin="0,0,0,20"/>
                         
                         <!-- Campo: Nombre del producto -->
                         <TextBlock Text="Nombre *" 
                                    FontSize="12" 
-                                   Foreground="#666" 
+                                   Foreground="#536A80" 
                                    FontWeight="SemiBold"
                                    Margin="0,0,0,5"/>
                         <TextBox Text="{Binding FormNombre, UpdateSourceTrigger=PropertyChanged}" 
                                  Padding="8,5" 
                                  FontSize="13"
-                                 BorderBrush="#DDD"/>
+                                 BorderBrush="#D1DDE8"/>
                         
                         <!-- Campo: Descripción -->
                         <TextBlock Text="Descripción" 
                                    FontSize="12" 
-                                   Foreground="#666" 
+                                   Foreground="#536A80" 
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormDescripcion, UpdateSourceTrigger=PropertyChanged}" 
@@ -477,12 +486,12 @@
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
                                  Height="50"
-                                 BorderBrush="#DDD"/>
+                                 BorderBrush="#D1DDE8"/>
                         
                         <!-- Campo: Unidad de medida -->
                         <TextBlock Text="Unidad de medida" 
                                    FontSize="12" 
-                                   Foreground="#666" 
+                                   Foreground="#536A80" 
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <ComboBox ItemsSource="{Binding UnidadesMedida}" 
@@ -492,7 +501,7 @@
                                                 <!-- Campo: Tipo de adquisición -->
                         <TextBlock Text="Tipo de adquisición" 
                                    FontSize="12" 
-                                   Foreground="#666" 
+                                   Foreground="#536A80" 
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <Grid>
@@ -510,26 +519,26 @@
                         <!-- Campo: Costo de compra -->
                         <TextBlock Text="Costo de Compra" 
                                    FontSize="12" 
-                                   Foreground="#666" 
+                                   Foreground="#536A80" 
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormCostoCompra, UpdateSourceTrigger=PropertyChanged}" 
                                  PreviewTextInput="NumericOnly_PreviewTextInput"
                                  Padding="8,5" 
                                  FontSize="13"
-                                 BorderBrush="#DDD"/>
+                                 BorderBrush="#D1DDE8"/>
                         
                         <!-- Campo: Cantidad en stock -->
                         <TextBlock Text="Cantidad en stock" 
                                    FontSize="12" 
-                                   Foreground="#666" 
+                                   Foreground="#536A80" 
                                    FontWeight="SemiBold"
                                    Margin="0,12,0,5"/>
                         <TextBox Text="{Binding FormCantidadStock, UpdateSourceTrigger=PropertyChanged}" 
                                  PreviewTextInput="NumericOnly_PreviewTextInput"
                                  Padding="8,5" 
                                  FontSize="13"
-                                 BorderBrush="#DDD"/>
+                                 BorderBrush="#D1DDE8"/>
                         
                         <!-- Botones: Guardar / Cancelar -->
                         <Grid Margin="0,20,0,0">
@@ -545,23 +554,23 @@
                                     Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
-                                                BorderBrush="#4CAF50" BorderThickness="1.5">
+                                        <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="12,10"
+                                                BorderBrush="#287A56" BorderThickness="1.5">
                                             <TextBlock x:Name="txt" Text="Guardar" 
                                                        HorizontalAlignment="Center" 
-                                                       Foreground="#4CAF50" 
+                                                       Foreground="#287A56" 
                                                        FontWeight="SemiBold"
                                                        FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#4CAF50"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#287A56"/>
                                                 <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
-                                                <Setter TargetName="bd" Property="BorderBrush" Value="#CCC"/>
-                                                <Setter TargetName="txt" Property="Foreground" Value="#CCC"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
+                                                <Setter TargetName="bd" Property="BorderBrush" Value="#73879B"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="#73879B"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -574,17 +583,17 @@
                                     Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
-                                                BorderBrush="#E53935" BorderThickness="1.5">
+                                        <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="12,10"
+                                                BorderBrush="#B74756" BorderThickness="1.5">
                                             <TextBlock x:Name="txt" Text="Cancelar" 
                                                        HorizontalAlignment="Center" 
-                                                       Foreground="#E53935" 
+                                                       Foreground="#B74756" 
                                                        FontWeight="SemiBold"
                                                        FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#B74756"/>
                                                 <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
@@ -598,30 +607,25 @@
             </Border>
             
             <!-- ═══ PANEL DE AJUSTE DE STOCK (ingreso/salida) ═══ -->
-            <Border Grid.Column="1" 
-                    Style="{StaticResource CardStyle}" 
-                    Margin="15,0,0,0"
-                    Width="300"
-                    Visibility="{Binding ModoAjusteStock, Converter={StaticResource BoolToVis}}"
-                    VerticalAlignment="Top">
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource CardStyle}" Margin="12" Width="500" MaxWidth="700" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="5" Visibility="{Binding ModoAjusteStock, Converter={StaticResource BoolToVis}}">
                 <StackPanel>
                     
                     <!-- Título dinámico -->
                     <TextBlock Text="{Binding TituloAjuste}" 
                                FontSize="18" 
                                FontWeight="Bold" 
-                               Foreground="#1A237E"
+                               Foreground="#142F49"
                                Margin="0,0,0,15"/>
                     
                     <!-- Info del producto seleccionado -->
-                    <Border Background="#F5F5F5" CornerRadius="6" Padding="12,10" Margin="0,0,0,15">
+                    <Border Background="#F2F6FA" CornerRadius="6" Padding="12,10" Margin="0,0,0,15">
                         <StackPanel>
                             <TextBlock Text="{Binding ProductoSeleccionado.Nombre}" 
-                                       FontSize="15" FontWeight="SemiBold" Foreground="#333"/>
+                                       FontSize="15" FontWeight="SemiBold" Foreground="#203B54"/>
                             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                <TextBlock Text="Stock actual: " FontSize="12" Foreground="#666"/>
+                                <TextBlock Text="Stock actual: " FontSize="12" Foreground="#536A80"/>
                                 <TextBlock Text="{Binding ProductoSeleccionado.StockConUnidad, Mode=OneWay}" 
-                                           FontSize="12" Foreground="#333" FontWeight="SemiBold"/>
+                                           FontSize="12" Foreground="#203B54" FontWeight="SemiBold"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -629,19 +633,19 @@
                     <!-- Campo: Cantidad -->
                     <TextBlock Text="Cantidad *" 
                                FontSize="12" 
-                               Foreground="#666" 
+                               Foreground="#536A80" 
                                FontWeight="SemiBold"
                                Margin="0,0,0,5"/>
                     <TextBox Text="{Binding AjusteCantidad, UpdateSourceTrigger=PropertyChanged}" 
                              PreviewTextInput="NumericOnly_PreviewTextInput"
                              Padding="8,5" 
                              FontSize="13"
-                             BorderBrush="#DDD"/>
+                             BorderBrush="#D1DDE8"/>
                     
                     <!-- Campo: Motivo -->
                     <TextBlock Text="Motivo (opcional)" 
                                FontSize="12" 
-                               Foreground="#666" 
+                               Foreground="#536A80" 
                                FontWeight="SemiBold"
                                Margin="0,12,0,5"/>
                     <TextBox Text="{Binding AjusteMotivo, UpdateSourceTrigger=PropertyChanged}" 
@@ -649,7 +653,7 @@
                              FontSize="13"
                              TextWrapping="Wrap"
                              Height="50"
-                             BorderBrush="#DDD"/>
+                             BorderBrush="#D1DDE8"/>
                     
                     <!-- Botones: Confirmar / Cancelar -->
                     <Grid Margin="0,20,0,0">
@@ -664,23 +668,23 @@
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
-                                            BorderBrush="#4CAF50" BorderThickness="1.5">
+                                    <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="12,10"
+                                            BorderBrush="#287A56" BorderThickness="1.5">
                                         <TextBlock x:Name="txt" Text="✅ Confirmar" 
                                                    HorizontalAlignment="Center" 
-                                                   Foreground="#4CAF50" 
+                                                   Foreground="#287A56" 
                                                    FontWeight="SemiBold"
                                                    FontSize="13"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="#4CAF50"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#287A56"/>
                                             <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                         </Trigger>
                                         <Trigger Property="IsEnabled" Value="False">
-                                            <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
-                                            <Setter TargetName="bd" Property="BorderBrush" Value="#CCC"/>
-                                            <Setter TargetName="txt" Property="Foreground" Value="#CCC"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
+                                            <Setter TargetName="bd" Property="BorderBrush" Value="#73879B"/>
+                                            <Setter TargetName="txt" Property="Foreground" Value="#73879B"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -692,17 +696,17 @@
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" Background="White" CornerRadius="6" Padding="12,10"
-                                            BorderBrush="#E53935" BorderThickness="1.5">
+                                    <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="12,10"
+                                            BorderBrush="#B74756" BorderThickness="1.5">
                                         <TextBlock x:Name="txt" Text="✖ Cancelar" 
                                                    HorizontalAlignment="Center" 
-                                                   Foreground="#E53935" 
+                                                   Foreground="#B74756" 
                                                    FontWeight="SemiBold"
                                                    FontSize="13"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#B74756"/>
                                             <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
@@ -715,12 +719,7 @@
             </Border>
             
             <!-- ═══ PANEL DE HISTORIAL DE PRODUCTO ═══ -->
-            <Border Grid.Column="1" 
-                    Style="{StaticResource CardStyle}" 
-                    Margin="15,0,0,0"
-                    Width="380"
-                    Visibility="{Binding ModoHistorial, Converter={StaticResource BoolToVis}}"
-                    VerticalAlignment="Stretch">
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource CardStyle}" Margin="12" Width="590" MaxWidth="700" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="5" Visibility="{Binding ModoHistorial, Converter={StaticResource BoolToVis}}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -734,21 +733,21 @@
                                Text="📋 Historial de Movimientos" 
                                FontSize="17" 
                                FontWeight="Bold" 
-                               Foreground="#1A237E"
+                               Foreground="#142F49"
                                Margin="0,0,0,10"/>
                     
                     <!-- Info del producto -->
-                    <Border Grid.Row="1" Background="#F5F5F5" CornerRadius="6" Padding="12,8" Margin="0,0,0,10">
+                    <Border Grid.Row="1" Background="#F2F6FA" CornerRadius="6" Padding="12,8" Margin="0,0,0,10">
                         <StackPanel>
                             <TextBlock Text="{Binding ProductoHistorial.Nombre}" 
-                                       FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                       FontSize="14" FontWeight="SemiBold" Foreground="#203B54"/>
                             <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                                <TextBlock Text="Stock: " FontSize="11" Foreground="#666"/>
+                                <TextBlock Text="Stock: " FontSize="11" Foreground="#536A80"/>
                                 <TextBlock Text="{Binding ProductoHistorial.StockConUnidad}" 
-                                           FontSize="11" Foreground="#333" FontWeight="SemiBold"/>
-                                <TextBlock Text="  ·  Costo: " FontSize="11" Foreground="#666" Margin="8,0,0,0"/>
+                                           FontSize="11" Foreground="#203B54" FontWeight="SemiBold"/>
+                                <TextBlock Text="  ·  Costo: " FontSize="11" Foreground="#536A80" Margin="8,0,0,0"/>
                                 <TextBlock Text="{Binding ProductoHistorial.CostoCompra, StringFormat=$ {0:N2} CUP}" 
-                                           FontSize="11" Foreground="#333" FontWeight="SemiBold"/>
+                                           FontSize="11" Foreground="#203B54" FontWeight="SemiBold"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -759,7 +758,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="0,0,0,6" Padding="10,8" CornerRadius="6"
-                                            BorderBrush="#E0E0E0" BorderThickness="1">
+                                            BorderBrush="#D1DDE8" BorderThickness="1">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -777,10 +776,10 @@
                                                     Width="28" Height="28" CornerRadius="14">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#E8F5E9"/>
+                                                        <Setter Property="Background" Value="#E8F4EC"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Categoria}" Value="Otro">
-                                                                <Setter Property="Background" Value="#FFF3E0"/>
+                                                                <Setter Property="Background" Value="#FFF4D6"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -803,26 +802,26 @@
                                             <TextBlock Grid.Column="1" Grid.Row="0" 
                                                        Text="{Binding Concepto}" 
                                                        FontSize="12" FontWeight="SemiBold" 
-                                                       Foreground="#333"
+                                                       Foreground="#203B54"
                                                        TextTrimming="CharacterEllipsis"/>
                                             
                                             <!-- Monto -->
                                             <TextBlock Grid.Column="2" Grid.Row="0" 
                                                        Text="{Binding Monto, StringFormat=$ {0:N2}}" 
                                                        FontSize="12" FontWeight="Bold" 
-                                                       Foreground="#1A237E"
+                                                       Foreground="#142F49"
                                                        HorizontalAlignment="Right"/>
                                             
                                             <!-- Descripción + fecha -->
                                             <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" 
                                                         Orientation="Horizontal" Margin="0,2,0,0">
                                                 <TextBlock Text="{Binding Descripcion}" 
-                                                           FontSize="10" Foreground="#888"
+                                                           FontSize="10" Foreground="#657C91"
                                                            TextTrimming="CharacterEllipsis"
                                                            MaxWidth="200"/>
-                                                <TextBlock Text=" · " FontSize="10" Foreground="#CCC"/>
+                                                <TextBlock Text=" · " FontSize="10" Foreground="#73879B"/>
                                                 <TextBlock Text="{Binding Fecha, StringFormat={}{0:dd/MM/yy HH:mm}}" 
-                                                           FontSize="10" Foreground="#AAA"/>
+                                                           FontSize="10" Foreground="#70869A"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
@@ -838,7 +837,7 @@
                             Margin="0,10,0,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="#9E9E9E" CornerRadius="6" Padding="12,10">
+                                <Border x:Name="bd" Background="#73879B" CornerRadius="6" Padding="12,10">
                                     <TextBlock Text="✖ Cerrar" 
                                                HorizontalAlignment="Center" 
                                                Foreground="White" 
@@ -847,7 +846,7 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bd" Property="Background" Value="#757575"/>
+                                        <Setter TargetName="bd" Property="Background" Value="#8FA3BE"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -862,23 +861,23 @@
         <!-- Muestra mensajes del ViewModel (ej: "Producto guardado") -->
         <!-- ═══════════════════════════════════════════════════ -->
         <Border Grid.Row="3" 
-                Background="#1A237E" 
+                Background="#142F49" 
                 CornerRadius="6"
                 Padding="16,10"
                 Margin="0,10,0,0">
             <Grid>
                 <TextBlock Text="{Binding MensajeEstado}" 
                            FontSize="12" 
-                           Foreground="#B0BEC5"
+                           Foreground="#758AA5"
                            VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="VALOR DEL INVENTARIO" 
                                FontSize="11" 
-                               Foreground="#90CAF9"
+                               Foreground="#CBD8E5"
                                FontWeight="Medium"
                                VerticalAlignment="Center"
                                Margin="0,0,12,0"/>
-                    <Border Background="#283593" CornerRadius="4" Padding="10,4">
+                    <Border Background="#244B6A" CornerRadius="4" Padding="10,4">
                         <TextBlock Text="{Binding CostoTotalInventario, StringFormat=$ {0:N2} CUP}" 
                                    FontSize="15" 
                                    Foreground="White"

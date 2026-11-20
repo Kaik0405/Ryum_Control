@@ -6,27 +6,27 @@
              xmlns:h="clr-namespace:GestionApp.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900"
-             Background="#F5F5F5">
+             Background="Transparent">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <h:InverseBoolToVisConverter x:Key="InvBoolToVis"/>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="30,20">
-        <StackPanel MaxWidth="800">
+        <StackPanel MaxWidth="980">
 
             <!-- ═══ HEADER ═══ -->
             <StackPanel Margin="0,0,0,24">
-                <TextBlock Text="⚙️ Ajustes" FontSize="24" FontWeight="Bold" Foreground="#1A237E"/>
+                <TextBlock Text="⚙️ Ajustes" FontSize="24" FontWeight="Bold" Foreground="#142F49"/>
                 <TextBlock Text="Configuración general y agencias de envío" 
-                           FontSize="13" Foreground="#888" Margin="0,4,0,0"/>
+                           FontSize="13" Foreground="#657C91" Margin="0,4,0,0"/>
             </StackPanel>
 
             <!-- ═════════════════════════════════════════════════ -->
             <!-- SECCIÓN: TASA DE CAMBIO (siempre editable)       -->
             <!-- ═════════════════════════════════════════════════ -->
-            <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
-                    BorderBrush="#E0E0E0" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
+                    BorderBrush="#D1DDE8" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -35,24 +35,24 @@
                     
                     <StackPanel Grid.Column="0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#FFF3E0" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                            <Border Background="#FFF4D6" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
                                 <TextBlock Text="💱" FontSize="16"/>
                             </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Tasa de Cambio" FontSize="16" FontWeight="Bold" Foreground="#333"/>
+                                <TextBlock Text="Tasa de Cambio" FontSize="16" FontWeight="Bold" Foreground="#203B54"/>
                                 <TextBlock Text="Se usa para calcular la ganancia real en fichas de costo" 
-                                           FontSize="11" Foreground="#999"/>
+                                           FontSize="11" Foreground="#657C91"/>
                             </StackPanel>
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="1 USD =" FontSize="16" FontWeight="SemiBold" 
-                                       Foreground="#1565C0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                       Foreground="#173F63" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox Text="{Binding DistTasaCambio, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:N0}'}" 
-                                     Padding="12,8" FontSize="18" FontWeight="Bold" BorderBrush="#DDD" 
+                                     Padding="12,8" FontSize="18" FontWeight="Bold" BorderBrush="#D1DDE8" 
                                      Width="130" HorizontalAlignment="Left"/>
                             <TextBlock Text="CUP" FontSize="16" FontWeight="SemiBold" 
-                                       Foreground="#E65100" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                       Foreground="#9B7100" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
                     </StackPanel>
                     
@@ -61,7 +61,7 @@
                             VerticalAlignment="Bottom">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="#E65100" CornerRadius="6" Padding="20,10">
+                                <Border x:Name="bd" Background="#9B7100" CornerRadius="6" Padding="20,10">
                                     <TextBlock Text="💾 Guardar tasa" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -78,8 +78,8 @@
             <!-- ═════════════════════════════════════════════════ -->
             <!-- SECCIÓN: DATOS DEL DISTRIBUIDOR                  -->
             <!-- ═════════════════════════════════════════════════ -->
-            <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
-                    BorderBrush="#E0E0E0" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
+                    BorderBrush="#D1DDE8" BorderThickness="1">
                 <StackPanel>
                     <!-- Título + botón editar -->
                     <Grid Margin="0,0,0,16">
@@ -89,13 +89,13 @@
                         </Grid.ColumnDefinitions>
                         
                         <StackPanel Orientation="Horizontal">
-                            <Border Background="#E3F2FD" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                            <Border Background="#EAF1F7" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
                                 <TextBlock Text="👤" FontSize="16"/>
                             </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Datos del Distribuidor" FontSize="16" FontWeight="Bold" Foreground="#333"/>
+                                <TextBlock Text="Datos del Distribuidor" FontSize="16" FontWeight="Bold" Foreground="#203B54"/>
                                 <TextBlock Text="Información que aparece en fichas y conformidades" 
-                                           FontSize="11" Foreground="#999"/>
+                                           FontSize="11" Foreground="#657C91"/>
                             </StackPanel>
                         </StackPanel>
                         
@@ -105,12 +105,12 @@
                                 VerticalAlignment="Center">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" Background="#E3F2FD" CornerRadius="6" Padding="14,7">
-                                        <TextBlock Text="✏️ Editar" FontWeight="SemiBold" FontSize="12" Foreground="#1565C0"/>
+                                    <Border x:Name="bd" Background="#EAF1F7" CornerRadius="6" Padding="14,7">
+                                        <TextBlock Text="✏️ Editar" FontWeight="SemiBold" FontSize="12" Foreground="#173F63"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="#BBDEFB"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#DDE8F2"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -131,23 +131,23 @@
                             
                             <!-- Nombre -->
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="NOMBRE" FontSize="10" Foreground="#AAA" FontWeight="Bold" Margin="0,0,0,4"/>
-                                <TextBlock Text="{Binding DistNombre}" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                <TextBlock Text="NOMBRE" FontSize="10" Foreground="#70869A" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding DistNombre}" FontSize="14" FontWeight="SemiBold" Foreground="#203B54"/>
                             </StackPanel>
                             
                             <!-- Prefijo Ficha -->
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="PREFIJO FICHAS" FontSize="10" Foreground="#AAA" FontWeight="Bold" Margin="0,0,0,4"/>
-                                <Border Background="#F5F5F5" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding DistPrefijoFicha}" FontSize="13" Foreground="#555" FontFamily="Consolas"/>
+                                <TextBlock Text="PREFIJO FICHAS" FontSize="10" Foreground="#70869A" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <Border Background="#F2F6FA" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding DistPrefijoFicha}" FontSize="13" Foreground="#465E75" FontFamily="Consolas"/>
                                 </Border>
                             </StackPanel>
                             
                             <!-- Prefijo Conformidad -->
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="PREFIJO CONFORMIDAD" FontSize="10" Foreground="#AAA" FontWeight="Bold" Margin="0,0,0,4"/>
-                                <Border Background="#F5F5F5" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding DistPrefijoConformidad}" FontSize="13" Foreground="#555" FontFamily="Consolas"/>
+                                <TextBlock Text="PREFIJO CONFORMIDAD" FontSize="10" Foreground="#70869A" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <Border Background="#F2F6FA" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding DistPrefijoConformidad}" FontSize="13" Foreground="#465E75" FontFamily="Consolas"/>
                                 </Border>
                             </StackPanel>
                         </Grid>
@@ -166,23 +166,23 @@
 
                             <!-- Nombre -->
                             <StackPanel Grid.Column="0" Margin="0,0,0,12">
-                                <TextBlock Text="NOMBRE DEL DISTRIBUIDOR *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="NOMBRE DEL DISTRIBUIDOR *" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,4"/>
                                 <TextBox Text="{Binding DistNombre, UpdateSourceTrigger=PropertyChanged}" 
-                                         Padding="10,8" FontSize="13" BorderBrush="#DDD"/>
+                                         Padding="10,8" FontSize="13" BorderBrush="#D1DDE8"/>
                             </StackPanel>
 
                             <!-- Prefijo Ficha -->
                             <StackPanel Grid.Column="2" Margin="0,0,0,12">
-                                <TextBlock Text="PREFIJO FICHAS" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="PREFIJO FICHAS" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,4"/>
                                 <TextBox Text="{Binding DistPrefijoFicha, UpdateSourceTrigger=PropertyChanged}" 
-                                         Padding="10,8" FontSize="13" BorderBrush="#DDD" MaxWidth="150" HorizontalAlignment="Left"/>
+                                         Padding="10,8" FontSize="13" BorderBrush="#D1DDE8" MaxWidth="150" HorizontalAlignment="Left"/>
                             </StackPanel>
 
                             <!-- Prefijo Conformidad -->
                             <StackPanel Grid.Column="4" Margin="0,0,0,12">
-                                <TextBlock Text="PREFIJO CONFORMIDAD" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="PREFIJO CONFORMIDAD" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,4"/>
                                 <TextBox Text="{Binding DistPrefijoConformidad, UpdateSourceTrigger=PropertyChanged}" 
-                                         Padding="10,8" FontSize="13" BorderBrush="#DDD" MaxWidth="150" HorizontalAlignment="Left"/>
+                                         Padding="10,8" FontSize="13" BorderBrush="#D1DDE8" MaxWidth="150" HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Grid>
 
@@ -191,13 +191,13 @@
                             <Button Command="{Binding CancelarEdicionCommand}" Cursor="Hand" Margin="0,0,8,0">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="16,8"
-                                                BorderBrush="#DDD" BorderThickness="1">
-                                            <TextBlock Text="Cancelar" FontSize="12" Foreground="#666"/>
+                                        <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="16,8"
+                                                BorderBrush="#D1DDE8" BorderThickness="1">
+                                            <TextBlock Text="Cancelar" FontSize="12" Foreground="#536A80"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -206,12 +206,12 @@
                             <Button Command="{Binding GuardarDistribuidorCommand}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#1565C0" CornerRadius="6" Padding="20,8">
+                                        <Border x:Name="bd" Background="#173F63" CornerRadius="6" Padding="20,8">
                                             <TextBlock Text="💾 Guardar" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#2A638F"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -225,8 +225,8 @@
             <!-- ═══════════════════════════════════════════════ -->
             <!-- SECCIÓN: AGENCIAS DE ENVÍO                     -->
             <!-- ═══════════════════════════════════════════════ -->
-            <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
-                    BorderBrush="#E0E0E0" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
+                    BorderBrush="#D1DDE8" BorderThickness="1">
                 <StackPanel>
                     <!-- Título + Botón nueva -->
                     <Grid Margin="0,0,0,16">
@@ -235,25 +235,25 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <Border Background="#FFF3E0" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                            <Border Background="#FFF4D6" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
                                 <TextBlock Text="🏢" FontSize="16"/>
                             </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Agencias de Envío" FontSize="16" FontWeight="Bold" Foreground="#333"/>
+                                <TextBlock Text="Agencias de Envío" FontSize="16" FontWeight="Bold" Foreground="#203B54"/>
                                 <TextBlock Text="Gestiona las agencias disponibles para entregas" 
-                                           FontSize="11" Foreground="#999"/>
+                                           FontSize="11" Foreground="#657C91"/>
                             </StackPanel>
                         </StackPanel>
                         <Button Grid.Column="1" Command="{Binding NuevaAgenciaCommand}" Cursor="Hand"
                                 VerticalAlignment="Center">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" Background="#E8F5E9" CornerRadius="6" Padding="16,8">
-                                        <TextBlock Text="+ Nueva Agencia" FontWeight="SemiBold" FontSize="12" Foreground="#2E7D32"/>
+                                    <Border x:Name="bd" Background="#E8F4EC" CornerRadius="6" Padding="16,8">
+                                        <TextBlock Text="+ Nueva Agencia" FontWeight="SemiBold" FontSize="12" Foreground="#287A56"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                            <Setter TargetName="bd" Property="Background" Value="#CBE6D4"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -266,10 +266,10 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Margin="0,0,0,8" Padding="14,12" CornerRadius="8"
-                                        BorderBrush="#E8E8E8" BorderThickness="1">
+                                        BorderBrush="#D1DDE8" BorderThickness="1">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="Background" Value="#FAFAFA"/>
+                                            <Setter Property="Background" Value="#F7FAFC"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Activo}" Value="False">
                                                     <Setter Property="Opacity" Value="0.5"/>
@@ -286,7 +286,7 @@
 
                                         <!-- Logo -->
                                         <Border Grid.Column="0" Width="44" Height="44" CornerRadius="8" 
-                                                Background="#F5F5F5" Margin="0,0,14,0">
+                                                Background="#F2F6FA" Margin="0,0,14,0">
                                             <Image Source="{Binding Nombre, Converter={StaticResource AgenciaLogo}}"
                                                    Width="36" Height="36"
                                                    RenderOptions.BitmapScalingMode="HighQuality"
@@ -296,15 +296,15 @@
                                         <!-- Info -->
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Nombre}" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                                <TextBlock Text="{Binding Nombre}" FontSize="14" FontWeight="SemiBold" Foreground="#203B54"/>
                                                 <Border CornerRadius="4" Padding="6,2" Margin="8,0,0,0"
                                                         VerticalAlignment="Center">
                                                     <Border.Style>
                                                         <Style TargetType="Border">
-                                                            <Setter Property="Background" Value="#E8F5E9"/>
+                                                            <Setter Property="Background" Value="#E8F4EC"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding Activo}" Value="False">
-                                                                    <Setter Property="Background" Value="#FFEBEE"/>
+                                                                    <Setter Property="Background" Value="#FCECEF"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -313,11 +313,11 @@
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock">
                                                                 <Setter Property="Text" Value="Activa"/>
-                                                                <Setter Property="Foreground" Value="#2E7D32"/>
+                                                                <Setter Property="Foreground" Value="#287A56"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding Activo}" Value="False">
                                                                         <Setter Property="Text" Value="Inactiva"/>
-                                                                        <Setter Property="Foreground" Value="#C62828"/>
+                                                                        <Setter Property="Foreground" Value="#B74756"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -325,7 +325,7 @@
                                                     </TextBlock>
                                                 </Border>
                                             </StackPanel>
-                                            <TextBlock FontSize="11" Foreground="#999" Margin="0,2,0,0">
+                                            <TextBlock FontSize="11" Foreground="#657C91" Margin="0,2,0,0">
                                                 <Run Text="{Binding Telefono, Mode=OneWay, TargetNullValue=''}"/>
                                                 <Run Text="{Binding Direccion, Mode=OneWay, TargetNullValue=''}"/>
                                             </TextBlock>
@@ -339,14 +339,14 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#F5F5F5" CornerRadius="6" 
+                                                        <Border x:Name="bd" Background="#F2F6FA" CornerRadius="6" 
                                                                 Width="32" Height="32">
                                                             <TextBlock Text="⏻" FontSize="14" 
                                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#E0E0E0"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#D1DDE8"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -358,14 +358,14 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#E3F2FD" CornerRadius="6" 
+                                                        <Border x:Name="bd" Background="#EAF1F7" CornerRadius="6" 
                                                                 Width="32" Height="32">
                                                             <TextBlock Text="✏️" FontSize="13" 
                                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#BBDEFB"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#DDE8F2"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -377,14 +377,14 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#FFEBEE" CornerRadius="6" 
+                                                        <Border x:Name="bd" Background="#FCECEF" CornerRadius="6" 
                                                                 Width="32" Height="32">
                                                             <TextBlock Text="🗑️" FontSize="13" 
                                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#F8D8DD"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -399,10 +399,10 @@
 
                     <!-- Formulario de agencia (overlay inline) -->
                     <Border Visibility="{Binding MostrarFormAgencia, Converter={StaticResource BoolToVis}}"
-                            Background="#F8F9FF" CornerRadius="8" Padding="20,16" Margin="0,8,0,0"
-                            BorderBrush="#C5CAE9" BorderThickness="1">
+                            Background="#F1F5F9" CornerRadius="8" Padding="20,16" Margin="0,8,0,0"
+                            BorderBrush="#425B87" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock FontSize="15" FontWeight="Bold" Foreground="#1A237E" Margin="0,0,0,12">
+                            <TextBlock FontSize="15" FontWeight="Bold" Foreground="#142F49" Margin="0,0,0,12">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Text" Value="Nueva Agencia"/>
@@ -424,8 +424,8 @@
 
                                 <!-- Logo preview + botón -->
                                 <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                    <Border Width="80" Height="80" CornerRadius="10" Background="#EEEEEE"
-                                            BorderBrush="#DDD" BorderThickness="1" Margin="0,0,0,8">
+                                    <Border Width="80" Height="80" CornerRadius="10" Background="#E9F0F6"
+                                            BorderBrush="#D1DDE8" BorderThickness="1" Margin="0,0,0,8">
                                         <Image Source="{Binding FormAgLogoPreview}" 
                                                Width="64" Height="64"
                                                RenderOptions.BitmapScalingMode="HighQuality"
@@ -435,12 +435,12 @@
                                             HorizontalAlignment="Center">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
-                                                <Border x:Name="bd" Background="#E8EAF6" CornerRadius="4" Padding="10,4">
-                                                    <TextBlock Text="📁 Logo" FontSize="11" Foreground="#3F51B5"/>
+                                                <Border x:Name="bd" Background="#173F63" CornerRadius="4" Padding="10,4">
+                                                    <TextBlock Text="📁 Logo" FontSize="11" Foreground="#173F63"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="bd" Property="Background" Value="#C5CAE9"/>
+                                                        <Setter TargetName="bd" Property="Background" Value="#425B87"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -462,27 +462,27 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
-                                        <TextBlock Text="NOMBRE *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                        <TextBlock Text="NOMBRE *" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                         <TextBox Text="{Binding FormAgNombre, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Padding="8,6" FontSize="12" BorderBrush="#DDD"/>
+                                                 Padding="8,6" FontSize="12" BorderBrush="#D1DDE8"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
-                                        <TextBlock Text="TELÉFONO" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                        <TextBlock Text="TELÉFONO" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                         <TextBox Text="{Binding FormAgTelefono, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Padding="8,6" FontSize="12" BorderBrush="#DDD"/>
+                                                 Padding="8,6" FontSize="12" BorderBrush="#D1DDE8"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,10">
-                                        <TextBlock Text="DIRECCIÓN" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                        <TextBlock Text="DIRECCIÓN" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                         <TextBox Text="{Binding FormAgDireccion, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Padding="8,6" FontSize="12" BorderBrush="#DDD"/>
+                                                 Padding="8,6" FontSize="12" BorderBrush="#D1DDE8"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,4">
-                                        <TextBlock Text="NOTAS" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                        <TextBlock Text="NOTAS" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                         <TextBox Text="{Binding FormAgNotas, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Padding="8,6" FontSize="12" BorderBrush="#DDD"
+                                                 Padding="8,6" FontSize="12" BorderBrush="#D1DDE8"
                                                  TextWrapping="Wrap" AcceptsReturn="True" Height="50"/>
                                     </StackPanel>
                                 </Grid>
@@ -493,13 +493,13 @@
                                 <Button Command="{Binding CancelarAgenciaCommand}" Cursor="Hand" Margin="0,0,8,0">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <Border x:Name="bd" Background="White" CornerRadius="6" Padding="16,8"
-                                                    BorderBrush="#DDD" BorderThickness="1">
-                                                <TextBlock Text="Cancelar" FontSize="12" Foreground="#666"/>
+                                            <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="16,8"
+                                                    BorderBrush="#D1DDE8" BorderThickness="1">
+                                                <TextBlock Text="Cancelar" FontSize="12" Foreground="#536A80"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                    <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -508,12 +508,12 @@
                                 <Button Command="{Binding GuardarAgenciaCommand}" Cursor="Hand">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <Border x:Name="bd" Background="#1565C0" CornerRadius="6" Padding="20,8">
+                                            <Border x:Name="bd" Background="#173F63" CornerRadius="6" Padding="20,8">
                                                 <TextBlock Text="Guardar Agencia" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                                    <Setter TargetName="bd" Property="Background" Value="#2A638F"/>
                                                 </Trigger>
                                                 <Trigger Property="IsEnabled" Value="False">
                                                     <Setter TargetName="bd" Property="Opacity" Value="0.5"/>
@@ -531,8 +531,8 @@
             <!-- ═══════════════════════════════════════════════ -->
             <!-- SECCIÓN: RUTA DE REPORTES PDF                  -->
             <!-- ═══════════════════════════════════════════════ -->
-            <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
-                    BorderBrush="#E0E0E0" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
+                    BorderBrush="#D1DDE8" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -541,18 +541,18 @@
 
                     <StackPanel Grid.Column="0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#E8F5E9" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                            <Border Background="#E8F4EC" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
                                 <TextBlock Text="📄" FontSize="16"/>
                             </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Ruta de Reportes PDF" FontSize="16" FontWeight="Bold" Foreground="#333"/>
+                                <TextBlock Text="Ruta de Reportes PDF" FontSize="16" FontWeight="Bold" Foreground="#203B54"/>
                                 <TextBlock Text="Carpeta donde se guardan los reportes generados" 
-                                           FontSize="11" Foreground="#999"/>
+                                           FontSize="11" Foreground="#657C91"/>
                             </StackPanel>
                         </StackPanel>
 
-                        <Border Background="#FAFAFA" CornerRadius="6" Padding="12,8">
-                            <TextBlock Text="{Binding RutaReportes}" FontSize="12" Foreground="#555" 
+                        <Border Background="#F7FAFC" CornerRadius="6" Padding="12,8">
+                            <TextBlock Text="{Binding RutaReportes}" FontSize="12" Foreground="#465E75" 
                                        FontFamily="Consolas" TextWrapping="Wrap" VerticalAlignment="Center"/>
                         </Border>
                     </StackPanel>
@@ -561,12 +561,12 @@
                             VerticalAlignment="Bottom" Margin="16,0,0,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="#E8F5E9" CornerRadius="6" Padding="20,10">
-                                    <TextBlock Text="📁 Cambiar" Foreground="#2E7D32" FontWeight="SemiBold" FontSize="12"/>
+                                <Border x:Name="bd" Background="#E8F4EC" CornerRadius="6" Padding="20,10">
+                                    <TextBlock Text="📁 Cambiar" Foreground="#287A56" FontWeight="SemiBold" FontSize="12"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                        <Setter TargetName="bd" Property="Background" Value="#CBE6D4"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -578,20 +578,20 @@
             <!-- ═══════════════════════════════════════════════ -->
             <!-- SECCIÓN: GESTIÓN DE DATOS                      -->
             <!-- ═══════════════════════════════════════════════ -->
-            <Border Background="White" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
-                    BorderBrush="#E0E0E0" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="10" Padding="24,20" Margin="0,0,0,20"
+                    BorderBrush="#D1DDE8" BorderThickness="1">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <Border Background="#F3E5F5" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                        <Border Background="#EAF1F7" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
                             <TextBlock Text="🗄️" FontSize="16"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Gestión de Datos" FontSize="16" FontWeight="Bold" Foreground="#333"/>
-                            <TextBlock Text="Información sobre el almacenamiento local" FontSize="11" Foreground="#999"/>
+                            <TextBlock Text="Gestión de Datos" FontSize="16" FontWeight="Bold" Foreground="#203B54"/>
+                            <TextBlock Text="Información sobre el almacenamiento local" FontSize="11" Foreground="#657C91"/>
                         </StackPanel>
                     </StackPanel>
                     
-                    <Border Background="#FAFAFA" CornerRadius="8" Padding="16,12" Margin="0,0,0,8">
+                    <Border Background="#F7FAFC" CornerRadius="8" Padding="16,12" Margin="0,0,0,8">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -603,24 +603,24 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Motor:" FontSize="12" Foreground="#888" 
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Motor:" FontSize="12" Foreground="#657C91" 
                                        FontWeight="SemiBold" Margin="0,0,16,6"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="SQLite (local)" FontSize="12" Foreground="#555"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="SQLite (local)" FontSize="12" Foreground="#465E75"/>
                             
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Ubicación:" FontSize="12" Foreground="#888" 
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Ubicación:" FontSize="12" Foreground="#657C91" 
                                        FontWeight="SemiBold" Margin="0,0,16,6"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="%AppData%/GestionApp/gestion.db" FontSize="12" 
-                                       Foreground="#555" FontFamily="Consolas" TextWrapping="Wrap"/>
+                                       Foreground="#465E75" FontFamily="Consolas" TextWrapping="Wrap"/>
                             
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logos:" FontSize="12" Foreground="#888" 
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logos:" FontSize="12" Foreground="#657C91" 
                                        FontWeight="SemiBold" Margin="0,0,16,0"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="%AppData%/GestionApp/Logos/" FontSize="12" 
-                                       Foreground="#555" FontFamily="Consolas" TextWrapping="Wrap"/>
+                                       Foreground="#465E75" FontFamily="Consolas" TextWrapping="Wrap"/>
                         </Grid>
                     </Border>
                     
-                    <Border Background="#FFF8E1" CornerRadius="6" Padding="12,8">
-                        <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#F57F17">
+                    <Border Background="#FFF4D6" CornerRadius="6" Padding="12,8">
+                        <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#9B7100">
                             <Run FontWeight="Bold" Text="💡"/>
                             <Run Text=" Para hacer respaldo, copia la carpeta %AppData%/GestionApp completa a un lugar seguro."/>
                         </TextBlock>
@@ -629,7 +629,7 @@
             </Border>
 
             <!-- Status -->
-            <TextBlock Text="{Binding MensajeEstado}" FontSize="12" Foreground="#666" 
+            <TextBlock Text="{Binding MensajeEstado}" FontSize="12" Foreground="#536A80" 
                        Margin="0,0,0,20" HorizontalAlignment="Center"/>
 
         </StackPanel>

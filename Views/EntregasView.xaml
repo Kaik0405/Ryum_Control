@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:EntregasViewModel}"
              d:DesignHeight="750" d:DesignWidth="1100"
-             Background="#F5F5F5">
+             Background="Transparent">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -37,50 +37,50 @@
 
                 <!-- Titulo -->
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                    <TextBlock Text="Entregas" FontSize="22" FontWeight="Bold" Foreground="#1A237E"/>
-                    <TextBlock Text="Ordenes de entrega de combos" FontSize="11" Foreground="#999" Margin="0,1,0,0"/>
+                    <TextBlock Text="Entregas" FontSize="22" FontWeight="Bold" Foreground="#142F49"/>
+                    <TextBlock Text="Ordenes de entrega de combos" FontSize="11" Foreground="#657C91" Margin="0,1,0,0"/>
                 </StackPanel>
 
                 <!-- Contadores inline -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <!-- Pendientes -->
-                    <Border Background="#E3F2FD" CornerRadius="8" Padding="14,6" Margin="0,0,6,0">
+                    <Border Background="#EAF1F7" CornerRadius="8" Padding="14,6" Margin="0,0,6,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Background="#1565C0" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
+                            <Border Background="#173F63" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
                                 <TextBlock Text="{Binding TotalPendientes}" FontSize="12" FontWeight="Bold" 
                                            Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
-                            <TextBlock Text="Pendientes" FontSize="11" Foreground="#1565C0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Text="Pendientes" FontSize="11" Foreground="#173F63" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <!-- Urgentes -->
-                    <Border Background="#FFF3E0" CornerRadius="8" Padding="14,6" Margin="0,0,6,0">
+                    <Border Background="#FFF4D6" CornerRadius="8" Padding="14,6" Margin="0,0,6,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Background="#E65100" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
+                            <Border Background="#9B7100" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
                                 <TextBlock Text="{Binding TotalUrgentes}" FontSize="12" FontWeight="Bold" 
                                            Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
-                            <TextBlock Text="Urgentes" FontSize="11" Foreground="#E65100" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Text="Urgentes" FontSize="11" Foreground="#9B7100" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <!-- Vencidas -->
-                    <Border Background="#FFEBEE" CornerRadius="8" Padding="14,6" Margin="0,0,6,0">
+                    <Border Background="#FCECEF" CornerRadius="8" Padding="14,6" Margin="0,0,6,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Background="#C62828" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
+                            <Border Background="#B74756" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
                                 <TextBlock Text="{Binding TotalVencidas}" FontSize="12" FontWeight="Bold" 
                                            Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
-                            <TextBlock Text="Vencidas" FontSize="11" Foreground="#C62828" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Text="Vencidas" FontSize="11" Foreground="#B74756" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <!-- Entregadas -->
-                    <Border Background="#E8F5E9" CornerRadius="8" Padding="14,6">
+                    <Border Background="#E8F4EC" CornerRadius="8" Padding="14,6">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Background="#2E7D32" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
+                            <Border Background="#287A56" CornerRadius="10" Width="24" Height="24" Margin="0,0,8,0">
                                 <TextBlock Text="{Binding TotalEntregadas}" FontSize="12" FontWeight="Bold" 
                                            Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
-                            <TextBlock Text="Entregadas" FontSize="11" Foreground="#2E7D32" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Text="Entregadas" FontSize="11" Foreground="#287A56" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -90,7 +90,7 @@
                     <Button Command="{Binding CrearRemesaCommand}" Cursor="Hand" Margin="0,0,8,0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="#2E7D32" CornerRadius="8" Padding="16,8">
+                                <Border x:Name="bd" Background="#287A56" CornerRadius="8" Padding="16,8">
                                     <TextBlock Text="💵 Nueva Remesa" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -104,12 +104,12 @@
                     <Button Command="{Binding CrearEntregaCommand}" Cursor="Hand">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="bd" Background="#1565C0" CornerRadius="8" Padding="16,8">
+                                <Border x:Name="bd" Background="#173F63" CornerRadius="8" Padding="16,8">
                                     <TextBlock Text="+ Nueva Entrega" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                        <Setter TargetName="bd" Property="Background" Value="#2A638F"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -134,23 +134,23 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Búsqueda por texto (cápsula con icono) -->
-                <Border Grid.Column="0" Background="#F8F9FA" CornerRadius="10" Padding="4,0"
-                        BorderBrush="#E0E0E0" BorderThickness="1">
+                <Border Grid.Column="0" Background="#F9FBFD" CornerRadius="10" Padding="4,0"
+                        BorderBrush="#D1DDE8" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Background="#EEEEEE" CornerRadius="8" 
+                        <Border Grid.Column="0" Background="#E9F0F6" CornerRadius="8" 
                                 Width="30" Height="30" Margin="2,3,0,3" VerticalAlignment="Center">
                             <TextBlock Text="🔍" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBox Grid.Column="1"
                                  Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged}"
                                  Padding="8,7" FontSize="12" BorderThickness="0" Background="Transparent"
-                                 Foreground="#333" VerticalAlignment="Center">
+                                 Foreground="#203B54" VerticalAlignment="Center">
                             <TextBox.Style>
-                                <Style TargetType="TextBox">
+                                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
                                         <Trigger Property="Text" Value="">
                                             <Setter Property="Background">
@@ -158,7 +158,7 @@
                                                     <VisualBrush Stretch="None" AlignmentX="Left">
                                                         <VisualBrush.Visual>
                                                             <TextBlock Text="Buscar por orden, receptor, combo..." 
-                                                                       Foreground="#999" Margin="10,0,0,0" FontSize="12"/>
+                                                                       Foreground="#657C91" Margin="10,0,0,0" FontSize="12"/>
                                                         </VisualBrush.Visual>
                                                     </VisualBrush>
                                                 </Setter.Value>
@@ -172,10 +172,10 @@
                 </Border>
 
                 <!-- Filtro por estado (cápsula) -->
-                <Border Grid.Column="2" Background="#F5F5F5" CornerRadius="10" Padding="10,4"
-                        BorderBrush="#E0E0E0" BorderThickness="1">
+                <Border Grid.Column="2" Background="#F2F6FA" CornerRadius="10" Padding="10,4"
+                        BorderBrush="#D1DDE8" BorderThickness="1">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Estado" FontSize="11" Foreground="#888" FontWeight="SemiBold" 
+                        <TextBlock Text="Estado" FontSize="11" Foreground="#657C91" FontWeight="SemiBold" 
                                    VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox ItemsSource="{Binding OpcionesEstado}"
                                   SelectedItem="{Binding FiltroEstado}"
@@ -190,15 +190,15 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="bd" Background="Transparent" CornerRadius="10" Padding="12,6"
-                                    BorderBrush="#E0E0E0" BorderThickness="1">
+                                    BorderBrush="#D1DDE8" BorderThickness="1">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="🔄" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                    <TextBlock Text="Actualizar" FontSize="12" FontWeight="SemiBold" Foreground="#555" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Actualizar" FontSize="12" FontWeight="SemiBold" Foreground="#465E75" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                    <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -237,14 +237,14 @@
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                                            <Setter TargetName="bd" Property="Background" Value="#B74756"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
                                         <TextBlock Text="{Binding NumeroOrden, StringFormat='📋 Detalle: {0}'}" 
-                                                   FontSize="22" FontWeight="Bold" Foreground="#1A237E"
+                                                   FontSize="22" FontWeight="Bold" Foreground="#142F49"
                                                    VerticalAlignment="Center"/>
                                     </DockPanel>
 
@@ -271,9 +271,9 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Combo" FontSize="12" Foreground="#999" Margin="0,8,0,2"/>
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Fecha de Orden" FontSize="12" Foreground="#999" Margin="0,8,0,2"/>
-                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" FontWeight="SemiBold" Foreground="#333">
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Combo" FontSize="12" Foreground="#657C91" Margin="0,8,0,2"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Fecha de Orden" FontSize="12" Foreground="#657C91" Margin="0,8,0,2"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" FontWeight="SemiBold" Foreground="#203B54">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Text" Value="{Binding Combo.Nombre, StringFormat='#{0}'}"/>
@@ -285,17 +285,17 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FechaOrden, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FechaOrden, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="14" FontWeight="SemiBold" Foreground="#203B54"/>
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Receptor" FontSize="12" Foreground="#999" Margin="0,12,0,2"/>
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Fecha Límite" FontSize="12" Foreground="#999" Margin="0,12,0,2"/>
-                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{Binding NombreReceptor}" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
-                                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding FechaLimite, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Receptor" FontSize="12" Foreground="#657C91" Margin="0,12,0,2"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Fecha Límite" FontSize="12" Foreground="#657C91" Margin="0,12,0,2"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{Binding NombreReceptor}" FontSize="14" FontWeight="SemiBold" Foreground="#203B54"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding FechaLimite, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="14" FontWeight="SemiBold" Foreground="#203B54"/>
 
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Dirección" FontSize="12" Foreground="#999" Margin="0,12,0,2"/>
-                                        <TextBlock Grid.Row="4" Grid.Column="1" Text="Remitente" FontSize="12" Foreground="#999" Margin="0,12,0,2"/>
-                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{Binding DireccionCompleta}" FontSize="14" Foreground="#333" TextWrapping="Wrap"/>
-                                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding NombreRemitente}" FontSize="14" Foreground="#333"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Dirección" FontSize="12" Foreground="#657C91" Margin="0,12,0,2"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="1" Text="Remitente" FontSize="12" Foreground="#657C91" Margin="0,12,0,2"/>
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{Binding DireccionCompleta}" FontSize="14" Foreground="#203B54" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding NombreRemitente}" FontSize="14" Foreground="#203B54"/>
                                     </Grid>
 
                                     <!-- Teléfonos y Agencia -->
@@ -306,32 +306,32 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Text="📱 Móvil" FontSize="12" Foreground="#999" Margin="0,0,0,2"/>
-                                            <TextBlock Text="{Binding TelefonoMovil}" FontSize="14" Foreground="#333"/>
+                                            <TextBlock Text="📱 Móvil" FontSize="12" Foreground="#657C91" Margin="0,0,0,2"/>
+                                            <TextBlock Text="{Binding TelefonoMovil}" FontSize="14" Foreground="#203B54"/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1">
-                                            <TextBlock Text="📞 Fijo" FontSize="12" Foreground="#999" Margin="0,0,0,2"/>
-                                            <TextBlock Text="{Binding TelefonoFijo}" FontSize="14" Foreground="#333"/>
+                                            <TextBlock Text="📞 Fijo" FontSize="12" Foreground="#657C91" Margin="0,0,0,2"/>
+                                            <TextBlock Text="{Binding TelefonoFijo}" FontSize="14" Foreground="#203B54"/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2">
-                                            <TextBlock Text="🏢 Agencia" FontSize="12" Foreground="#999" Margin="0,0,0,2"/>
+                                            <TextBlock Text="🏢 Agencia" FontSize="12" Foreground="#657C91" Margin="0,0,0,2"/>
                                             <StackPanel Orientation="Horizontal">
                                                 <Image Source="{Binding Agencia, Converter={StaticResource AgenciaLogo}}"
                                                        Width="18" Height="18" Margin="0,0,5,0"
                                                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                                                <TextBlock Text="{Binding Agencia}" FontSize="14" Foreground="#333" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Agencia}" FontSize="14" Foreground="#203B54" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
 
                                     <!-- Productos del combo con disponibilidad -->
                                     <TextBlock Text="Productos del combo" FontSize="14" FontWeight="SemiBold" 
-                                               Foreground="#1A237E" Margin="0,10,0,4"/>
+                                               Foreground="#142F49" Margin="0,10,0,4"/>
 
                                     <!-- Banner de disponibilidad general -->
                                     <Border Visibility="{Binding DataContext.MostrarDisponibilidad, Converter={StaticResource BoolToVis}, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                             CornerRadius="6" Padding="10,6" Margin="0,0,0,8"
-                                            BorderBrush="#E0E0E0" BorderThickness="1" Background="#FAFAFA">
+                                            BorderBrush="#D1DDE8" BorderThickness="1" Background="#F7FAFC">
                                         <TextBlock Text="{Binding DataContext.DisponibilidadGeneral, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                    FontSize="12" FontWeight="SemiBold"/>
                                     </Border>
@@ -340,7 +340,7 @@
                                     <ItemsControl ItemsSource="{Binding DataContext.ProductosDisponibilidad, RelativeSource={RelativeSource AncestorType=UserControl}}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="8,6">
+                                                <Border BorderBrush="#D1DDE8" BorderThickness="0,0,0,1" Padding="8,6">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
@@ -353,9 +353,9 @@
                                                                    VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                         <!-- Nombre producto -->
                                                         <TextBlock Grid.Column="1" Text="{Binding NombreProducto}" 
-                                                                   FontSize="13" Foreground="#333" VerticalAlignment="Center"/>
+                                                                   FontSize="13" Foreground="#203B54" VerticalAlignment="Center"/>
                                                         <!-- Cantidad requerida -->
-                                                        <TextBlock Grid.Column="2" FontSize="12" Foreground="#666" 
+                                                        <TextBlock Grid.Column="2" FontSize="12" Foreground="#536A80" 
                                                                    FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0">
                                                             <Run Text="{Binding CantidadRequerida, StringFormat='{}{0:G}', Mode=OneWay}"/>
                                                             <Run Text=" "/>
@@ -375,9 +375,9 @@
 
                                     <!-- Observaciones -->
                                     <TextBlock Text="Observaciones" FontSize="14" FontWeight="SemiBold" 
-                                               Foreground="#1A237E" Margin="0,15,0,4"/>
+                                               Foreground="#142F49" Margin="0,15,0,4"/>
                                     <TextBlock Text="{Binding Observaciones, TargetNullValue='Sin observaciones'}" 
-                                               FontSize="13" Foreground="#666" TextWrapping="Wrap"/>
+                                               FontSize="13" Foreground="#536A80" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
@@ -392,23 +392,23 @@
                               SelectionMode="Single"
                               HeadersVisibility="Column"
                               GridLinesVisibility="Horizontal"
-                              HorizontalGridLinesBrush="#F0F0F0"
+                              HorizontalGridLinesBrush="#DFE7EF"
                               BorderThickness="0"
-                              Background="White"
+                              Background="#FFFFFF"
                               RowHeaderWidth="0"
                               CanUserResizeRows="False"
                               FontSize="13">
 
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
-                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Background" Value="#FFFFFF"/>
                                 <Setter Property="MinHeight" Value="42"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F5F5F5"/>
+                                        <Setter Property="Background" Value="#F2F6FA"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                        <Setter Property="Background" Value="#EAF1F7"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -430,7 +430,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Foreground" Value="#333"/>
+                                        <Setter Property="Foreground" Value="#203B54"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -438,13 +438,13 @@
 
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Background" Value="#FAFAFA"/>
-                                <Setter Property="Foreground" Value="#666"/>
+                                <Setter Property="Background" Value="#F7FAFC"/>
+                                <Setter Property="Foreground" Value="#536A80"/>
                                 <Setter Property="Padding" Value="10,10"/>
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="FontSize" Value="12"/>
                                 <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                                <Setter Property="BorderBrush" Value="#D1DDE8"/>
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
 
@@ -472,11 +472,11 @@
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding EsRemesa}" Value="True">
-                                                            <Setter Property="Foreground" Value="#2E7D32"/>
+                                                            <Setter Property="Foreground" Value="#287A56"/>
                                                             <Setter Property="FontWeight" Value="Bold"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding EsRemesa}" Value="False">
-                                                            <Setter Property="Foreground" Value="#333"/>
+                                                            <Setter Property="Foreground" Value="#203B54"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -525,12 +525,12 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#E3F2FD" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
-                                                            <TextBlock Text="Ver" FontSize="11" FontWeight="SemiBold" Foreground="#1565C0"/>
+                                                        <Border x:Name="bd" Background="#EAF1F7" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
+                                                            <TextBlock Text="Ver" FontSize="11" FontWeight="SemiBold" Foreground="#173F63"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#BBDEFB"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#DDE8F2"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -543,7 +543,7 @@
                                                     CommandParameter="{Binding}"
                                                     IsEnabled="{Binding Entregada, Converter={StaticResource InverseBoolConverter}}">
                                                 <Button.Style>
-                                                    <Style TargetType="Button">
+                                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                         <Setter Property="ToolTip" Value="Marcar como entregada"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding EsRemesa}" Value="True">
@@ -561,21 +561,21 @@
                                                         <Border x:Name="bd" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
                                                             <Border.Style>
                                                                 <Style TargetType="Border">
-                                                                    <Setter Property="Background" Value="#E8F5E9"/>
+                                                                    <Setter Property="Background" Value="#E8F4EC"/>
                                                                 </Style>
                                                             </Border.Style>
                                                             <TextBlock x:Name="txt" FontSize="11" FontWeight="SemiBold">
                                                                 <TextBlock.Style>
                                                                     <Style TargetType="TextBlock">
                                                                         <Setter Property="Text" Value="Entregar"/>
-                                                                        <Setter Property="Foreground" Value="#2E7D32"/>
+                                                                        <Setter Property="Foreground" Value="#287A56"/>
                                                                     </Style>
                                                                 </TextBlock.Style>
                                                             </TextBlock>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#C8E6C9"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#CBE6D4"/>
                                                             </Trigger>
                                                             <!-- Remesa pendiente: mismo botón verde -->
                                                             <DataTrigger Binding="{Binding EsRemesa}" Value="True">
@@ -583,9 +583,9 @@
                                                             </DataTrigger>
                                                             <!-- Ya entregada: gris deshabilitado -->
                                                             <DataTrigger Binding="{Binding Entregada}" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
                                                                 <Setter TargetName="txt" Property="Text" Value="✅ Entregada"/>
-                                                                <Setter TargetName="txt" Property="Foreground" Value="#9E9E9E"/>
+                                                                <Setter TargetName="txt" Property="Foreground" Value="#73879B"/>
                                                             </DataTrigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -598,12 +598,12 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#F3E5F5" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
-                                                            <TextBlock Text="Conformidad" FontSize="11" FontWeight="SemiBold" Foreground="#7B1FA2"/>
+                                                        <Border x:Name="bd" Background="#EAF1F7" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
+                                                            <TextBlock Text="Conformidad" FontSize="11" FontWeight="SemiBold" Foreground="#173F63"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#E1BEE7"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#EAF1F7"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -611,7 +611,7 @@
                                             </Button>
 
                                             <!-- Separador -->
-                                            <Border Width="1" Background="#E0E0E0" Margin="2,4" VerticalAlignment="Stretch"/>
+                                            <Border Width="1" Background="#D1DDE8" Margin="2,4" VerticalAlignment="Stretch"/>
 
                                             <!-- Editar -->
                                             <Button ToolTip="Editar" Cursor="Hand"
@@ -619,12 +619,12 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#E8EAF6" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
-                                                            <TextBlock Text="Editar" FontSize="11" FontWeight="SemiBold" Foreground="#283593"/>
+                                                        <Border x:Name="bd" Background="#173F63" CornerRadius="6" Padding="8,4" Margin="0,0,3,0">
+                                                            <TextBlock Text="Editar" FontSize="11" FontWeight="SemiBold" Foreground="#244B6A"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#C5CAE9"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#425B87"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -637,12 +637,12 @@
                                                     CommandParameter="{Binding}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border x:Name="bd" Background="#FFEBEE" CornerRadius="6" Padding="8,4" Margin="0,0,0,0">
-                                                            <TextBlock Text="Eliminar" FontSize="11" FontWeight="SemiBold" Foreground="#C62828"/>
+                                                        <Border x:Name="bd" Background="#FCECEF" CornerRadius="6" Padding="8,4" Margin="0,0,0,0">
+                                                            <TextBlock Text="Eliminar" FontSize="11" FontWeight="SemiBold" Foreground="#B74756"/>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                                <Setter TargetName="bd" Property="Background" Value="#F8D8DD"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -668,34 +668,34 @@
                     </Grid.RowDefinitions>
 
                     <!-- Header -->
-                    <Border Grid.Row="0" Background="White" Padding="20,14" CornerRadius="8,8,0,0"
-                            BorderBrush="#EEEEEE" BorderThickness="0,0,0,1">
+                    <Border Grid.Row="0" Background="#FFFFFF" Padding="20,14" CornerRadius="8,8,0,0"
+                            BorderBrush="#E9F0F6" BorderThickness="0,0,0,1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <Border Width="4" CornerRadius="2" Background="#7B1FA2" Margin="0,2,12,2"/>
+                                <Border Width="4" CornerRadius="2" Background="#173F63" Margin="0,2,12,2"/>
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="Modelo de Conformidad" 
-                                               FontSize="17" FontWeight="Bold" Foreground="#4A148C"/>
+                                               FontSize="17" FontWeight="Bold" Foreground="#153C5D"/>
                                     <TextBlock Text="Vista previa del documento — listo para exportar o imprimir" 
-                                               FontSize="11" Foreground="#9E9E9E" Margin="0,2,0,0"/>
+                                               FontSize="11" Foreground="#73879B" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                             <Button Grid.Column="1" Command="{Binding CerrarConformidadCommand}" Cursor="Hand"
                                     VerticalAlignment="Center">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#FFEBEE" CornerRadius="14" 
+                                        <Border x:Name="bd" Background="#FCECEF" CornerRadius="14" 
                                                 Width="28" Height="28">
                                             <TextBlock Text="X" FontSize="13" Foreground="#D32F2F" FontWeight="Bold"
                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#FFCDD2"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F8D8DD"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -709,11 +709,11 @@
                              HorizontalAlignment="Center" VerticalAlignment="Center"
                              Margin="20,10">
                         <Border x:Name="ConformidadPanel" 
-                                Background="White" CornerRadius="4" Padding="0"
+                                Background="White" CornerRadius="0" Padding="0"
                                 Width="650"
-                                BorderBrush="#DDD" BorderThickness="1">
+                                BorderBrush="#D1DDE8" BorderThickness="1">
                             <!-- Hoja tipo documento -->
-                            <Grid DataContext="{Binding EntregaConformidad}" Margin="40,30">
+                            <Grid DataContext="{Binding EntregaConformidad}" Margin="40,30" Background="White">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -734,9 +734,9 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel HorizontalAlignment="Center" Grid.ColumnSpan="2">
                                         <TextBlock Text="MODELO DE CONFORMIDAD" 
-                                                   FontSize="18" FontWeight="Bold" Foreground="#1A237E"
+                                                   FontSize="18" FontWeight="Bold" Foreground="#142F49"
                                                    HorizontalAlignment="Center"/>
-                                        <Border Background="#1A237E" Height="2" Margin="0,5,0,0" CornerRadius="1"/>
+                                        <Border Background="#173F63" Height="2" Margin="0,5,0,0" CornerRadius="1"/>
                                     </StackPanel>
                                     <!-- Logo de la agencia arriba a la derecha -->
                                     <Image Grid.Column="1" 
@@ -748,7 +748,7 @@
                                 </Grid>
 
                                 <!-- Fechas -->
-                                <Border Grid.Row="1" Background="#F5F5F5" CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
+                                <Border Grid.Row="1" Background="White" CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -756,34 +756,34 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Text="Tipo de Pedido" FontSize="9" Foreground="#888" FontWeight="Bold"/>
-                                            <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#333">
+                                            <TextBlock Text="Tipo de Pedido" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
+                                            <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#203B54">
                                                 <Run Text="Combo #"/><Run Text="{Binding Combo.Numero, Mode=OneWay}"/>
                                                 <Run Text=" - "/><Run Text="{Binding Combo.Nombre, Mode=OneWay}"/>
                                             </TextBlock>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                            <TextBlock Text="Fecha de Envio" FontSize="9" Foreground="#888" FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding FechaOrden, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="12" FontWeight="Bold" Foreground="#333"/>
+                                            <TextBlock Text="Fecha de Envio" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding FechaOrden, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="12" FontWeight="Bold" Foreground="#203B54"/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock Text="Fecha de Entrega" FontSize="9" Foreground="#888" FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding FechaOrden, Converter={StaticResource FechaMasUnDia}}" FontSize="12" FontWeight="Bold" Foreground="#333"/>
+                                            <TextBlock Text="Fecha de Entrega" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding FechaOrden, Converter={StaticResource FechaMasUnDia}}" FontSize="12" FontWeight="Bold" Foreground="#203B54"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
                                 <!-- Seccion: Quien envia -->
-                                <Border Grid.Row="2" Background="#E3F2FD" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
-                                    <TextBlock Text="REMITENTE (Quien envia)" FontSize="10" FontWeight="Bold" Foreground="#1565C0"/>
+                                <Border Grid.Row="2" Background="White" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
+                                    <TextBlock Text="REMITENTE (Quien envia)" FontSize="10" FontWeight="Bold" Foreground="#173F63"/>
                                 </Border>
                                 <Border Grid.Row="3" Padding="8,4" Margin="0,0,0,10">
-                                    <TextBlock Text="{Binding NombreRemitente}" FontSize="12" Foreground="#333"/>
+                                    <TextBlock Text="{Binding NombreRemitente}" FontSize="12" Foreground="#203B54"/>
                                 </Border>
 
                                 <!-- Seccion: Quien recibe -->
-                                <Border Grid.Row="4" Background="#E8F5E9" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
-                                    <TextBlock Text="RECEPTOR (Quien recibe)" FontSize="10" FontWeight="Bold" Foreground="#2E7D32"/>
+                                <Border Grid.Row="4" Background="White" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
+                                    <TextBlock Text="RECEPTOR (Quien recibe)" FontSize="10" FontWeight="Bold" Foreground="#287A56"/>
                                 </Border>
                                 <Grid Grid.Row="5" Margin="8,0,0,10">
                                     <Grid.ColumnDefinitions>
@@ -795,20 +795,20 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,4">
-                                        <TextBlock Text="Nombre" FontSize="9" Foreground="#888" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding NombreReceptor}" FontSize="12" Foreground="#333"/>
+                                        <TextBlock Text="Nombre" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding NombreReceptor}" FontSize="12" Foreground="#203B54"/>
                                     </StackPanel>
                                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,4">
-                                        <TextBlock Text="Telefono" FontSize="9" Foreground="#888" FontWeight="Bold"/>
-                                        <TextBlock FontSize="12" Foreground="#333">
+                                        <TextBlock Text="Telefono" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
+                                        <TextBlock FontSize="12" Foreground="#203B54">
                                             <Run Text="{Binding TelefonoMovil, Mode=OneWay}"/>
                                             <Run Text=" / "/>
                                             <Run Text="{Binding TelefonoFijo, Mode=OneWay}"/>
                                         </TextBlock>
                                     </StackPanel>
                                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,4">
-                                        <TextBlock Text="Direccion" FontSize="9" Foreground="#888" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding DireccionCompleta}" FontSize="12" Foreground="#333" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Direccion" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding DireccionCompleta}" FontSize="12" Foreground="#203B54" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Grid>
 
@@ -816,11 +816,11 @@
                                 <Border Grid.Row="6" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="Background" Value="#FFF3E0"/>
+                                            <Setter Property="Background" Value="#FFF4D6"/>
                                             <Setter Property="Visibility" Value="Visible"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding EsRemesa}" Value="True">
-                                                    <Setter Property="Background" Value="#E8F5E9"/>
+                                                    <Setter Property="Background" Value="#E8F4EC"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -829,11 +829,11 @@
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Text" Value="PRODUCTOS ENTREGADOS"/>
-                                                <Setter Property="Foreground" Value="#E65100"/>
+                                                <Setter Property="Foreground" Value="#9B7100"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding EsRemesa}" Value="True">
                                                         <Setter Property="Text" Value="💵 REMESA"/>
-                                                        <Setter Property="Foreground" Value="#2E7D32"/>
+                                                        <Setter Property="Foreground" Value="#287A56"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -855,15 +855,15 @@
                                     </ItemsControl.Style>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1" Padding="8,4">
+                                            <Border BorderBrush="#DFE7EF" BorderThickness="0,0,0,1" Padding="8,4">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Text="{Binding NombreProducto}" 
-                                                               FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
-                                                    <TextBlock Grid.Column="1" FontSize="11" Foreground="#666" FontWeight="SemiBold">
+                                                               FontSize="12" Foreground="#203B54" VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1" FontSize="11" Foreground="#536A80" FontWeight="SemiBold">
                                                         <Run Text="{Binding Cantidad, StringFormat='{}{0:G}', Mode=OneWay}"/>
                                                         <Run Text=" "/>
                                                         <Run Text="{Binding Unidad, Mode=OneWay}"/>
@@ -876,7 +876,7 @@
 
                                 <!-- Panel monto remesa (visible solo si ES remesa) -->
                                 <Border Grid.Row="7" CornerRadius="8" Padding="16,12" Margin="0,0,0,12"
-                                        Background="#E8F5E9" BorderBrush="#A5D6A7" BorderThickness="1">
+                                        Background="White" BorderBrush="#34775A" BorderThickness="1">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -890,7 +890,7 @@
                                     <StackPanel HorizontalAlignment="Center">
                                         <TextBlock Text="Monto de la remesa" FontSize="10" Foreground="#558B2F" 
                                                    HorizontalAlignment="Center" Margin="0,0,0,4"/>
-                                        <TextBlock FontSize="24" FontWeight="Bold" Foreground="#2E7D32" 
+                                        <TextBlock FontSize="24" FontWeight="Bold" Foreground="#287A56" 
                                                    HorizontalAlignment="Center">
                                             <Run Text="{Binding MontoRemesa, StringFormat='{}{0:N0}', Mode=OneWay}"/>
                                             <Run Text=" CUP"/>
@@ -911,18 +911,18 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,8">
-                                        <TextBlock Text="Agencia" FontSize="9" Foreground="#888" FontWeight="Bold"/>
+                                        <TextBlock Text="Agencia" FontSize="9" Foreground="#657C91" FontWeight="Bold"/>
                                         <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                                             <Image Source="{Binding Agencia, Converter={StaticResource AgenciaLogo}}"
                                                    Width="16" Height="16" Margin="0,0,5,0"
                                                    RenderOptions.BitmapScalingMode="HighQuality"/>
-                                            <TextBlock Text="{Binding Agencia}" FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Agencia}" FontSize="12" Foreground="#203B54" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </StackPanel>
 
                                     <!-- Distribuidor -->
                                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,4,0,0">
-                                        <TextBlock FontSize="11" Foreground="#333">
+                                        <TextBlock FontSize="11" Foreground="#203B54">
                                             <Run Text="Distribuidor: " FontWeight="Bold"/>
                                             <Run Text="{Binding DataContext.NombreDistribuidor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"/>
                                         </TextBlock>
@@ -930,13 +930,13 @@
 
                                     <!-- Espacio para firma -->
                                     <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,15,20,0">
-                                        <Border BorderBrush="#333" BorderThickness="0,0,0,1" Height="40"/>
-                                        <TextBlock Text="Firma del receptor" FontSize="9" Foreground="#888" 
+                                        <Border BorderBrush="#203B54" BorderThickness="0,0,0,1" Height="40"/>
+                                        <TextBlock Text="Firma del receptor" FontSize="9" Foreground="#657C91" 
                                                    HorizontalAlignment="Center" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,15,0,0">
-                                        <Border BorderBrush="#333" BorderThickness="0,0,0,1" Height="40"/>
-                                        <TextBlock Text="Firma del distribuidor" FontSize="9" Foreground="#888" 
+                                        <Border BorderBrush="#203B54" BorderThickness="0,0,0,1" Height="40"/>
+                                        <TextBlock Text="Firma del distribuidor" FontSize="9" Foreground="#657C91" 
                                                    HorizontalAlignment="Center" Margin="0,3,0,0"/>
                                     </StackPanel>
                                 </Grid>
@@ -945,20 +945,20 @@
                     </Viewbox>
 
                     <!-- Footer con botones -->
-                    <Border Grid.Row="2" Background="White" Padding="15" CornerRadius="0,0,8,8"
-                            BorderBrush="#EEEEEE" BorderThickness="0,1,0,0">
+                    <Border Grid.Row="2" Background="#FFFFFF" Padding="15" CornerRadius="0,0,8,8"
+                            BorderBrush="#E9F0F6" BorderThickness="0,1,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <!-- Guardar como imagen -->
                             <Button x:Name="BtnExportarImagen" Cursor="Hand" Margin="0,0,10,0"
                                     Click="ExportarConformidadImagen_Click">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#7B1FA2" CornerRadius="6" Padding="20,10">
+                                        <Border x:Name="bd" Background="#173F63" CornerRadius="6" Padding="20,10">
                                             <TextBlock Text="Guardar como Imagen" Foreground="White" FontWeight="SemiBold" FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#6A1B9A"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#285B80"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -970,12 +970,12 @@
                                     Click="ImprimirConformidad_Click">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="#1565C0" CornerRadius="6" Padding="20,10">
+                                        <Border x:Name="bd" Background="#173F63" CornerRadius="6" Padding="20,10">
                                             <TextBlock Text="Imprimir" Foreground="White" FontWeight="SemiBold" FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#0D47A1"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#2A638F"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -986,13 +986,13 @@
                             <Button Command="{Binding CerrarConformidadCommand}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="6" Padding="20,10"
-                                                BorderBrush="#DDD" BorderThickness="1">
-                                            <TextBlock Text="Cancelar" Foreground="#666" FontSize="13"/>
+                                        <Border x:Name="bd" Background="#FFFFFF" CornerRadius="6" Padding="20,10"
+                                                BorderBrush="#D1DDE8" BorderThickness="1">
+                                            <TextBlock Text="Cancelar" Foreground="#536A80" FontSize="13"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -1013,20 +1013,20 @@
                     </Grid.RowDefinitions>
 
                     <!-- ── ENCABEZADO ── -->
-                    <Border Grid.Row="0" Background="White" Padding="20,14" CornerRadius="8,8,0,0"
-                            BorderBrush="#EEEEEE" BorderThickness="0,0,0,1">
+                    <Border Grid.Row="0" Background="#FFFFFF" Padding="20,14" CornerRadius="8,8,0,0"
+                            BorderBrush="#E9F0F6" BorderThickness="0,0,0,1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <Border Width="4" CornerRadius="2" Background="#1565C0" Margin="0,2,12,2"/>
+                                <Border Width="4" CornerRadius="2" Background="#173F63" Margin="0,2,12,2"/>
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="{Binding TituloFormulario}" 
-                                               FontSize="17" FontWeight="Bold" Foreground="#1A237E"/>
+                                               FontSize="17" FontWeight="Bold" Foreground="#142F49"/>
                                     <TextBlock Text="Complete los campos requeridos (*) para registrar la entrega" 
-                                               FontSize="11" Foreground="#9E9E9E" Margin="0,2,0,0"/>
+                                               FontSize="11" Foreground="#73879B" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -1052,11 +1052,11 @@
                         </Grid.RowDefinitions>
 
                         <!-- ROW 0: Headers de sección -->
-                        <Border Grid.Row="0" Grid.Column="0" Background="#E3F2FD" CornerRadius="6" Padding="8,4" Margin="0,0,0,8">
-                            <TextBlock Text="📦 Datos del envío" FontSize="11" FontWeight="Bold" Foreground="#1565C0"/>
+                        <Border Grid.Row="0" Grid.Column="0" Background="#EAF1F7" CornerRadius="6" Padding="8,4" Margin="0,0,0,8">
+                            <TextBlock Text="📦 Datos del envío" FontSize="11" FontWeight="Bold" Foreground="#173F63"/>
                         </Border>
-                        <Border Grid.Row="0" Grid.Column="2" Background="#E8F5E9" CornerRadius="6" Padding="8,4" Margin="0,0,0,8">
-                            <TextBlock Text="👤 Datos del receptor" FontSize="11" FontWeight="Bold" Foreground="#2E7D32"/>
+                        <Border Grid.Row="0" Grid.Column="2" Background="#E8F4EC" CornerRadius="6" Padding="8,4" Margin="0,0,0,8">
+                            <TextBlock Text="👤 Datos del receptor" FontSize="11" FontWeight="Bold" Foreground="#287A56"/>
                         </Border>
 
                         <!-- ROW 1: Combo/Remesa | Nombre Receptor -->
@@ -1073,10 +1073,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </StackPanel.Style>
-                                <TextBlock Text="COMBO *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBlock Text="COMBO *" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <ComboBox ItemsSource="{Binding CombosDisponibles}"
                                           SelectedItem="{Binding FormComboSeleccionado}"
-                                          Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                          Padding="8,6" FontSize="12" BorderBrush="#D1DDE8">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock FontSize="12">
@@ -1091,7 +1091,7 @@
                                 <!-- Panel de disponibilidad debajo del combo selector -->
                                 <Border Visibility="{Binding MostrarDisponibilidad, Converter={StaticResource BoolToVis}}"
                                         CornerRadius="6" Padding="8,6" Margin="0,6,0,0"
-                                        BorderBrush="#E0E0E0" BorderThickness="1" Background="#FAFAFA">
+                                        BorderBrush="#D1DDE8" BorderThickness="1" Background="#F7FAFC">
                                     <StackPanel>
                                         <TextBlock Text="{Binding DisponibilidadGeneral}" 
                                                    FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"/>
@@ -1134,14 +1134,14 @@
                                         </Style.Triggers>
                                     </Style>
                                 </StackPanel.Style>
-                                <TextBlock Text="MONTO DE LA REMESA (CUP) *" FontSize="10" Foreground="#2E7D32" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBlock Text="MONTO DE LA REMESA (CUP) *" FontSize="10" Foreground="#287A56" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <TextBox Text="{Binding FormMontoRemesa, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:N2}'}"
                                          PreviewTextInput="NumericOnly_PreviewTextInput"
-                                         Padding="10,8" FontSize="16" FontWeight="Bold" BorderBrush="#2E7D32"
-                                         Foreground="#2E7D32" Background="#F1F8E9"/>
-                                <Border Background="#E8F5E9" CornerRadius="6" Padding="10,8" Margin="0,8,0,0">
+                                         Padding="10,8" FontSize="16" FontWeight="Bold" BorderBrush="#287A56"
+                                         Foreground="#287A56" Background="#EDF6F0"/>
+                                <Border Background="#E8F4EC" CornerRadius="6" Padding="10,8" Margin="0,8,0,0">
                                     <StackPanel>
-                                        <TextBlock Text="💵 REMESA" FontSize="12" FontWeight="Bold" Foreground="#2E7D32"/>
+                                        <TextBlock Text="💵 REMESA" FontSize="12" FontWeight="Bold" Foreground="#287A56"/>
                                         <TextBlock Text="Envío de dinero — no se selecciona combo ni productos." 
                                                    FontSize="10" Foreground="#558B2F" TextWrapping="Wrap" Margin="0,2,0,0"/>
                                         <TextBlock Text="El monto se descontará del dinero en existencia al entregar (módulo Finanzas)." 
@@ -1151,9 +1151,9 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
-                            <TextBlock Text="NOMBRE DEL RECEPTOR *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBlock Text="NOMBRE DEL RECEPTOR *" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                             <TextBox Text="{Binding FormReceptor, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                     Padding="8,6" FontSize="12" BorderBrush="#D1DDE8">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                         <Style.Triggers>
@@ -1162,7 +1162,7 @@
                                                     <Setter.Value>
                                                         <VisualBrush Stretch="None" AlignmentX="Left">
                                                             <VisualBrush.Visual>
-                                                                <TextBlock Text="Nombre completo..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                <TextBlock Text="Nombre completo..." Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                             </VisualBrush.Visual>
                                                         </VisualBrush>
                                                     </Setter.Value>
@@ -1182,15 +1182,15 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="FECHA DE ORDEN" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBlock Text="FECHA DE ORDEN" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <DatePicker SelectedDate="{Binding FormFechaOrden}"
                                             Padding="8,5" FontSize="12"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="AGENCIA" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBlock Text="AGENCIA" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <ComboBox ItemsSource="{Binding AgenciasDisponibles}"
                                           SelectedItem="{Binding FormAgenciaSeleccionada}"
-                                          Padding="6,4" FontSize="12" BorderBrush="#DDD">
+                                          Padding="6,4" FontSize="12" BorderBrush="#D1DDE8">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -1213,17 +1213,17 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="PROVINCIA" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                    <TextBlock Text="PROVINCIA" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                     <ComboBox ItemsSource="{Binding ProvinciasDisponibles}"
                                               SelectedItem="{Binding FormProvincia}"
-                                              Padding="6,5" FontSize="12" BorderBrush="#DDD"/>
+                                              Padding="6,5" FontSize="12" BorderBrush="#D1DDE8"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="MUNICIPIO" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                    <TextBlock Text="MUNICIPIO" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                     <ComboBox ItemsSource="{Binding MunicipiosDisponibles}"
                                               SelectedItem="{Binding FormMunicipio}"
                                               IsEnabled="{Binding FormProvincia.Length, FallbackValue=False}"
-                                              Padding="6,5" FontSize="12" BorderBrush="#DDD"/>
+                                              Padding="6,5" FontSize="12" BorderBrush="#D1DDE8"/>
                                 </StackPanel>
                             </Grid>
                             <!-- Localidad + Dirección Particular -->
@@ -1234,9 +1234,9 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="LOCALIDAD" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                    <TextBlock Text="LOCALIDAD" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                     <TextBox Text="{Binding FormLocalidad, UpdateSourceTrigger=PropertyChanged}"
-                                             Padding="8,5" FontSize="12" BorderBrush="#DDD">
+                                             Padding="8,5" FontSize="12" BorderBrush="#D1DDE8">
                                         <TextBox.Style>
                                             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                                 <Style.Triggers>
@@ -1245,7 +1245,7 @@
                                                             <Setter.Value>
                                                                 <VisualBrush Stretch="None" AlignmentX="Left">
                                                                     <VisualBrush.Visual>
-                                                                        <TextBlock Text="Reparto, zona..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                        <TextBlock Text="Reparto, zona..." Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                                     </VisualBrush.Visual>
                                                                 </VisualBrush>
                                                             </Setter.Value>
@@ -1257,9 +1257,9 @@
                                     </TextBox>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="DIRECCIÓN PARTICULAR" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                    <TextBlock Text="DIRECCIÓN PARTICULAR" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                     <TextBox Text="{Binding FormDireccionParticular, UpdateSourceTrigger=PropertyChanged}"
-                                             Padding="8,5" FontSize="12" BorderBrush="#DDD">
+                                             Padding="8,5" FontSize="12" BorderBrush="#D1DDE8">
                                         <TextBox.Style>
                                             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                                 <Style.Triggers>
@@ -1268,7 +1268,7 @@
                                                             <Setter.Value>
                                                                 <VisualBrush Stretch="None" AlignmentX="Left">
                                                                     <VisualBrush.Visual>
-                                                                        <TextBlock Text="Calle, #, e/..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                        <TextBlock Text="Calle, #, e/..." Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                                     </VisualBrush.Visual>
                                                                 </VisualBrush>
                                                             </Setter.Value>
@@ -1283,18 +1283,18 @@
                         </StackPanel>
 
                         <!-- ROW 3: Segundo bloque headers -->
-                        <Border Grid.Row="3" Grid.Column="0" Background="#FFF3E0" CornerRadius="6" Padding="8,4" Margin="0,2,0,8">
-                            <TextBlock Text="✉️ Remitente" FontSize="11" FontWeight="Bold" Foreground="#E65100"/>
+                        <Border Grid.Row="3" Grid.Column="0" Background="#FFF4D6" CornerRadius="6" Padding="8,4" Margin="0,2,0,8">
+                            <TextBlock Text="✉️ Remitente" FontSize="11" FontWeight="Bold" Foreground="#9B7100"/>
                         </Border>
-                        <Border Grid.Row="3" Grid.Column="2" Background="#F3E5F5" CornerRadius="6" Padding="8,4" Margin="0,2,0,8">
-                            <TextBlock Text="📞 Contacto" FontSize="11" FontWeight="Bold" Foreground="#7B1FA2"/>
+                        <Border Grid.Row="3" Grid.Column="2" Background="#EAF1F7" CornerRadius="6" Padding="8,4" Margin="0,2,0,8">
+                            <TextBlock Text="📞 Contacto" FontSize="11" FontWeight="Bold" Foreground="#173F63"/>
                         </Border>
 
                         <!-- ROW 4: Remitente | Teléfonos -->
                         <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,8">
-                            <TextBlock Text="NOMBRE DE QUIEN ENVÍA *" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBlock Text="NOMBRE DE QUIEN ENVÍA *" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                             <TextBox Text="{Binding FormRemitente, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                     Padding="8,6" FontSize="12" BorderBrush="#D1DDE8">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                         <Style.Triggers>
@@ -1303,7 +1303,7 @@
                                                     <Setter.Value>
                                                         <VisualBrush Stretch="None" AlignmentX="Left">
                                                             <VisualBrush.Visual>
-                                                                <TextBlock Text="Nombre completo..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                <TextBlock Text="Nombre completo..." Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                             </VisualBrush.Visual>
                                                         </VisualBrush>
                                                     </Setter.Value>
@@ -1321,9 +1321,9 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="📱 MÓVIL" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBlock Text="📱 MÓVIL" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <TextBox Text="{Binding FormTelefonoMovil, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                         Padding="8,6" FontSize="12" BorderBrush="#D1DDE8">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                             <Style.Triggers>
@@ -1332,7 +1332,7 @@
                                                         <Setter.Value>
                                                             <VisualBrush Stretch="None" AlignmentX="Left">
                                                                 <VisualBrush.Visual>
-                                                                    <TextBlock Text="+53 5..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                    <TextBlock Text="+53 5..." Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                                 </VisualBrush.Visual>
                                                             </VisualBrush>
                                                         </Setter.Value>
@@ -1344,9 +1344,9 @@
                                 </TextBox>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="📞 FIJO" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                                <TextBlock Text="📞 FIJO" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                                 <TextBox Text="{Binding FormTelefonoFijo, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="8,6" FontSize="12" BorderBrush="#DDD">
+                                         Padding="8,6" FontSize="12" BorderBrush="#D1DDE8">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                             <Style.Triggers>
@@ -1355,7 +1355,7 @@
                                                         <Setter.Value>
                                                             <VisualBrush Stretch="None" AlignmentX="Left">
                                                                 <VisualBrush.Visual>
-                                                                    <TextBlock Text="Ej: 7..." Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                    <TextBlock Text="Ej: 7..." Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                                 </VisualBrush.Visual>
                                                             </VisualBrush>
                                                         </Setter.Value>
@@ -1370,13 +1370,13 @@
 
                         <!-- ROW 5: Separador -->
                         <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" 
-                                BorderBrush="#EEEEEE" BorderThickness="0,1,0,0" Margin="0,2,0,8"/>
+                                BorderBrush="#E9F0F6" BorderThickness="0,1,0,0" Margin="0,2,0,8"/>
 
                         <!-- ROW 6: Observaciones (col izq) + Botones (col der) -->
                         <StackPanel Grid.Row="6" Grid.Column="0" Margin="0,0,0,0">
-                            <TextBlock Text="📝 OBSERVACIONES" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,3"/>
+                            <TextBlock Text="📝 OBSERVACIONES" FontSize="10" Foreground="#657C91" FontWeight="Bold" Margin="0,0,0,3"/>
                             <TextBox Text="{Binding FormObservaciones, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8,6" FontSize="12" BorderBrush="#DDD"
+                                     Padding="8,6" FontSize="12" BorderBrush="#D1DDE8"
                                      TextWrapping="Wrap" AcceptsReturn="True" Height="40">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -1387,7 +1387,7 @@
                                                         <VisualBrush Stretch="None" AlignmentX="Left">
                                                             <VisualBrush.Visual>
                                                                 <TextBlock Text="Notas adicionales..." 
-                                                                           Foreground="#CCC" Margin="10,0,0,0" FontSize="11"/>
+                                                                           Foreground="#73879B" Margin="10,0,0,0" FontSize="11"/>
                                                             </VisualBrush.Visual>
                                                         </VisualBrush>
                                                     </Setter.Value>
@@ -1410,14 +1410,14 @@
                             <Button Grid.Column="0" Command="{Binding CancelarCommand}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="8" Padding="16,10"
-                                                BorderBrush="#E53935" BorderThickness="1.5">
-                                            <TextBlock x:Name="txt" Text="Cancelar" Foreground="#E53935" 
+                                        <Border x:Name="bd" Background="#FFFFFF" CornerRadius="8" Padding="16,10"
+                                                BorderBrush="#B74756" BorderThickness="1.5">
+                                            <TextBlock x:Name="txt" Text="Cancelar" Foreground="#B74756" 
                                                        FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#E53935"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#B74756"/>
                                                 <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
@@ -1427,20 +1427,20 @@
                             <Button Grid.Column="2" Command="{Binding GuardarCommand}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="bd" Background="White" CornerRadius="8" Padding="20,10"
-                                                BorderBrush="#4CAF50" BorderThickness="1.5">
-                                            <TextBlock x:Name="txt" Text="Guardar" Foreground="#4CAF50" 
+                                        <Border x:Name="bd" Background="#FFFFFF" CornerRadius="8" Padding="20,10"
+                                                BorderBrush="#287A56" BorderThickness="1.5">
+                                            <TextBlock x:Name="txt" Text="Guardar" Foreground="#287A56" 
                                                        FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="bd" Property="Background" Value="#4CAF50"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#287A56"/>
                                                 <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="bd" Property="Background" Value="#F5F5F5"/>
-                                                <Setter TargetName="bd" Property="BorderBrush" Value="#CCC"/>
-                                                <Setter TargetName="txt" Property="Foreground" Value="#CCC"/>
+                                                <Setter TargetName="bd" Property="Background" Value="#F2F6FA"/>
+                                                <Setter TargetName="bd" Property="BorderBrush" Value="#73879B"/>
+                                                <Setter TargetName="txt" Property="Foreground" Value="#73879B"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -1454,14 +1454,14 @@
         </Grid>
 
         <!-- ═══ FILA 3: BARRA DE ESTADO ═══ -->
-        <Border Grid.Row="3" Margin="0,6,0,0" Padding="12,8" Background="#1A237E" CornerRadius="8">
+        <Border Grid.Row="3" Margin="0,6,0,0" Padding="12,8" Background="#142F49" CornerRadius="8">
             <Grid>
-                <TextBlock Text="{Binding MensajeEstado}" FontSize="11" Foreground="#90CAF9"
+                <TextBlock Text="{Binding MensajeEstado}" FontSize="11" Foreground="#CBD8E5"
                            VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBlock Text="ENTREGAS" FontSize="10" Foreground="#90CAF9" FontWeight="Medium"
+                    <TextBlock Text="ENTREGAS" FontSize="10" Foreground="#CBD8E5" FontWeight="Medium"
                                VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    <Border Background="#283593" CornerRadius="6" Padding="10,3">
+                    <Border Background="#244B6A" CornerRadius="6" Padding="10,3">
                         <TextBlock Text="{Binding EntregasFiltradas.Count}" FontSize="13" 
                                    Foreground="White" FontWeight="Bold" VerticalAlignment="Center"/>
                     </Border>

@@ -8,10 +8,10 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel}"
              d:DesignHeight="900" d:DesignWidth="1100"
-             Background="#F5F5F5">
+             Background="Transparent">
     
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="24,20,24,24">
+        <Grid Margin="22,18,22,22">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>  <!-- Header + Saludo -->
                 <RowDefinition Height="Auto"/>  <!-- KPI Cards -->
@@ -30,9 +30,9 @@
                 
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{Binding Saludo}" 
-                               FontSize="28" FontWeight="Bold" Foreground="#1A237E"/>
+                               FontSize="28" FontWeight="Bold" Foreground="#142F49"/>
                     <TextBlock Text="{Binding MesActual}" 
-                               FontSize="13" Foreground="#888" Margin="0,2,0,0"
+                               FontSize="13" Foreground="#657C91" Margin="0,2,0,0"
                                FontStyle="Italic"/>
                 </StackPanel>
                 
@@ -44,7 +44,7 @@
                         ToolTip="Actualizar datos">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🔄" FontSize="16" Margin="0,0,6,0"/>
-                        <TextBlock Text="Actualizar" FontSize="13" Foreground="#1565C0" FontWeight="SemiBold"/>
+                        <TextBlock Text="Actualizar" FontSize="13" Foreground="#173F63" FontWeight="SemiBold"/>
                     </StackPanel>
                 </Button>
             </Grid>
@@ -56,7 +56,7 @@
                 
                 <!-- Balance Actual -->
                 <Border Margin="0,0,8,0" CornerRadius="12" Padding="16,14"
-                        Background="White">
+                        Background="#FFFFFF">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
                     </Border.Effect>
@@ -68,19 +68,19 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                             <TextBlock Text="💰" FontSize="16" Margin="0,0,6,0"/>
-                            <TextBlock Text="Balance" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                            <TextBlock Text="Balance" FontSize="12" Foreground="#657C91" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Grid.Row="1" 
                                    Text="{Binding BalanceActual, StringFormat='{}{0:N0} CUP'}" 
-                                   FontSize="22" FontWeight="Bold" Foreground="#1565C0"/>
+                                   FontSize="22" FontWeight="Bold" Foreground="#173F63"/>
                         <TextBlock Grid.Row="2" Text="balance global" 
-                                   FontSize="10" Foreground="#AAA" Margin="0,2,0,0"/>
+                                   FontSize="10" Foreground="#70869A" Margin="0,2,0,0"/>
                     </Grid>
                 </Border>
                 
                 <!-- Ingresos del Mes -->
                 <Border Margin="4,0,4,0" CornerRadius="12" Padding="16,14"
-                        Background="White">
+                        Background="#FFFFFF">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
                     </Border.Effect>
@@ -92,19 +92,19 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                             <TextBlock Text="📈" FontSize="16" Margin="0,0,6,0"/>
-                            <TextBlock Text="Ingresos" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                            <TextBlock Text="Ingresos" FontSize="12" Foreground="#657C91" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Grid.Row="1" 
                                    Text="{Binding IngresosDelMes, StringFormat='{}{0:N0} CUP'}" 
-                                   FontSize="22" FontWeight="Bold" Foreground="#2E7D32"/>
+                                   FontSize="22" FontWeight="Bold" Foreground="#287A56"/>
                         <TextBlock Grid.Row="2" Text="este mes" 
-                                   FontSize="10" Foreground="#AAA" Margin="0,2,0,0"/>
+                                   FontSize="10" Foreground="#70869A" Margin="0,2,0,0"/>
                     </Grid>
                 </Border>
                 
                 <!-- Egresos del Mes -->
                 <Border Margin="4,0,4,0" CornerRadius="12" Padding="16,14"
-                        Background="White">
+                        Background="#FFFFFF">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
                     </Border.Effect>
@@ -116,19 +116,19 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                             <TextBlock Text="📉" FontSize="16" Margin="0,0,6,0"/>
-                            <TextBlock Text="Egresos" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                            <TextBlock Text="Egresos" FontSize="12" Foreground="#657C91" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Grid.Row="1" 
                                    Text="{Binding EgresosDelMes, StringFormat='{}{0:N0} CUP'}" 
-                                   FontSize="22" FontWeight="Bold" Foreground="#C62828"/>
+                                   FontSize="22" FontWeight="Bold" Foreground="#B74756"/>
                         <TextBlock Grid.Row="2" Text="este mes" 
-                                   FontSize="10" Foreground="#AAA" Margin="0,2,0,0"/>
+                                   FontSize="10" Foreground="#70869A" Margin="0,2,0,0"/>
                     </Grid>
                 </Border>
                 
                 <!-- Entregas Pendientes -->
                 <Border Margin="4,0,4,0" CornerRadius="12" Padding="16,14"
-                        Background="White">
+                        Background="#FFFFFF">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
                     </Border.Effect>
@@ -140,13 +140,13 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                             <TextBlock Text="📦" FontSize="16" Margin="0,0,6,0"/>
-                            <TextBlock Text="Entregas" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                            <TextBlock Text="Entregas" FontSize="12" Foreground="#657C91" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Grid.Row="1" FontSize="22" FontWeight="Bold" Foreground="#E65100">
+                        <TextBlock Grid.Row="1" FontSize="22" FontWeight="Bold" Foreground="#9B7100">
                             <Run Text="{Binding EntregasPendientesCount, Mode=OneWay}"/>
                             <Run Text=" pend." FontSize="13" FontWeight="Normal"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="2" FontSize="10" Foreground="#AAA" Margin="0,2,0,0">
+                        <TextBlock Grid.Row="2" FontSize="10" Foreground="#70869A" Margin="0,2,0,0">
                             <Run Text="{Binding VentasDelMes, Mode=OneWay}"/>
                             <Run Text=" fichas este mes"/>
                         </TextBlock>
@@ -155,7 +155,7 @@
                 
                 <!-- Remesas -->
                 <Border Margin="8,0,0,0" CornerRadius="12" Padding="16,14"
-                        Background="White">
+                        Background="#FFFFFF">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08"/>
                     </Border.Effect>
@@ -167,13 +167,13 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                             <TextBlock Text="💵" FontSize="16" Margin="0,0,6,0"/>
-                            <TextBlock Text="Remesas" FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                            <TextBlock Text="Remesas" FontSize="12" Foreground="#657C91" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Grid.Row="1" FontSize="22" FontWeight="Bold" Foreground="#6A1B9A">
+                        <TextBlock Grid.Row="1" FontSize="22" FontWeight="Bold" Foreground="#285B80">
                             <Run Text="{Binding RemesasPendientesCount, Mode=OneWay}"/>
                             <Run Text=" pend." FontSize="13" FontWeight="Normal"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="2" FontSize="10" Foreground="#AAA" Margin="0,2,0,0">
+                        <TextBlock Grid.Row="2" FontSize="10" Foreground="#70869A" Margin="0,2,0,0">
                             <Run Text="{Binding RemesasPendientesTotal, StringFormat='{}{0:N0}', Mode=OneWay}"/>
                             <Run Text=" CUP total"/>
                         </TextBlock>
@@ -203,11 +203,11 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                             <TextBlock Text="⚠️" FontSize="18" Margin="0,0,8,0"/>
                             <TextBlock Text="Alertas de Inventario" FontSize="15" FontWeight="SemiBold" 
-                                       Foreground="#333" VerticalAlignment="Center"/>
-                            <Border Background="#FFEBEE" CornerRadius="10" Padding="8,2" Margin="10,0,0,0"
+                                       Foreground="#203B54" VerticalAlignment="Center"/>
+                            <Border Background="#FCECEF" CornerRadius="10" Padding="8,2" Margin="10,0,0,0"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="{Binding ProductosSinStock}" 
-                                           FontSize="11" FontWeight="Bold" Foreground="#C62828"/>
+                                           FontSize="11" FontWeight="Bold" Foreground="#B74756"/>
                             </Border>
                         </StackPanel>
                         
@@ -227,7 +227,7 @@
                                                        FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                             <TextBlock Grid.Column="1" Text="{Binding Nombre}" 
                                                        FontSize="13" FontWeight="SemiBold" 
-                                                       Foreground="#333" VerticalAlignment="Center"
+                                                       Foreground="#203B54" VerticalAlignment="Center"
                                                        TextTrimming="CharacterEllipsis"/>
                                             <TextBlock Grid.Column="2" Text="{Binding Detalle}" 
                                                        FontSize="11" VerticalAlignment="Center"
@@ -240,7 +240,7 @@
                         
                         <!-- Empty state -->
                         <TextBlock Grid.Row="1" Text="✅ Todo el inventario está en orden"
-                                   FontSize="13" Foreground="#888" 
+                                   FontSize="13" Foreground="#657C91" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Margin="0,20,0,0">
                             <TextBlock.Style>
@@ -269,11 +269,11 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                             <TextBlock Text="🚨" FontSize="18" Margin="0,0,8,0"/>
                             <TextBlock Text="Entregas Próximas" FontSize="15" FontWeight="SemiBold" 
-                                       Foreground="#333" VerticalAlignment="Center"/>
-                            <Border Background="#FFF3E0" CornerRadius="10" Padding="8,2" Margin="10,0,0,0"
+                                       Foreground="#203B54" VerticalAlignment="Center"/>
+                            <Border Background="#FFF4D6" CornerRadius="10" Padding="8,2" Margin="10,0,0,0"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="{Binding EntregasPendientesCount}" 
-                                           FontSize="11" FontWeight="Bold" Foreground="#E65100"/>
+                                           FontSize="11" FontWeight="Bold" Foreground="#9B7100"/>
                             </Border>
                         </StackPanel>
                         
@@ -294,14 +294,14 @@
                                                        FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                             
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="#333"
+                                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="#203B54"
                                                            TextTrimming="CharacterEllipsis">
                                                     <Run Text="{Binding NumeroOrden, Mode=OneWay}"/>
-                                                    <Run Text=" — " Foreground="#AAA"/>
+                                                    <Run Text=" — " Foreground="#70869A"/>
                                                     <Run Text="{Binding NombreReceptor, Mode=OneWay}"/>
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Direccion}" FontSize="10.5" 
-                                                           Foreground="#888" TextTrimming="CharacterEllipsis"/>
+                                                           Foreground="#657C91" TextTrimming="CharacterEllipsis"/>
                                             </StackPanel>
                                             
                                             <Border Grid.Column="2" CornerRadius="6" Padding="8,3" Margin="8,0,0,0"
@@ -319,7 +319,7 @@
                         
                         <!-- Empty state -->
                         <TextBlock Grid.Row="1" Text="✅ No hay entregas pendientes"
-                                   FontSize="13" Foreground="#888" 
+                                   FontSize="13" Foreground="#657C91" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Margin="0,20,0,0">
                             <TextBlock.Style>
@@ -361,7 +361,7 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                             <TextBlock Text="📋" FontSize="18" Margin="0,0,8,0"/>
                             <TextBlock Text="Movimientos Recientes" FontSize="15" FontWeight="SemiBold" 
-                                       Foreground="#333" VerticalAlignment="Center"/>
+                                       Foreground="#203B54" VerticalAlignment="Center"/>
                         </StackPanel>
                         
                         <!-- Lista -->
@@ -369,7 +369,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:Movimiento}">
                                     <Border CornerRadius="6" Padding="10,7" Margin="0,0,0,4"
-                                            Background="#FAFAFA">
+                                            Background="#F7FAFC">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -382,10 +382,10 @@
                                                     Margin="0,0,10,0" VerticalAlignment="Center">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                                        <Setter Property="Background" Value="#EAF1F7"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Tipo}" Value="Egreso">
-                                                                <Setter Property="Background" Value="#FFEBEE"/>
+                                                                <Setter Property="Background" Value="#FCECEF"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -408,9 +408,9 @@
                                             <!-- Info -->
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Concepto}" FontSize="12" FontWeight="SemiBold"
-                                                           Foreground="#333" TextTrimming="CharacterEllipsis"/>
+                                                           Foreground="#203B54" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Text="{Binding Fecha, StringFormat='{}{0:dd MMM}'}" 
-                                                           FontSize="10" Foreground="#AAA"/>
+                                                           FontSize="10" Foreground="#70869A"/>
                                             </StackPanel>
                                             
                                             <!-- Monto -->
@@ -419,10 +419,10 @@
                                                        Text="{Binding Monto, StringFormat='{}{0:N0} CUP'}">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Foreground" Value="#2E7D32"/>
+                                                        <Setter Property="Foreground" Value="#287A56"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Tipo}" Value="Egreso">
-                                                                <Setter Property="Foreground" Value="#C62828"/>
+                                                                <Setter Property="Foreground" Value="#B74756"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -436,7 +436,7 @@
                         
                         <!-- Empty state -->
                         <TextBlock Grid.Row="1" Text="Sin movimientos este mes"
-                                   FontSize="13" Foreground="#888" 
+                                   FontSize="13" Foreground="#657C91" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Margin="0,20,0,0">
                             <TextBlock.Style>
@@ -465,7 +465,7 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                             <TextBlock Text="📍" FontSize="18" Margin="0,0,8,0"/>
                             <TextBlock Text="Destinos" FontSize="15" FontWeight="SemiBold" 
-                                       Foreground="#333" VerticalAlignment="Center"/>
+                                       Foreground="#203B54" VerticalAlignment="Center"/>
                         </StackPanel>
                         
                         <!-- Lista -->
@@ -475,10 +475,10 @@
                                     <Border CornerRadius="8" Padding="10,8" Margin="0,0,0,5">
                                         <Border.Style>
                                             <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#F5F5F5"/>
+                                                <Setter Property="Background" Value="#F2F6FA"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding TieneUrgente}" Value="True">
-                                                        <Setter Property="Background" Value="#FFF3E0"/>
+                                                        <Setter Property="Background" Value="#FFF4D6"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -495,18 +495,18 @@
                                             
                                             <TextBlock Grid.Row="0" Grid.Column="0"
                                                        Text="{Binding Provincia}" 
-                                                       FontSize="12.5" FontWeight="SemiBold" Foreground="#333"/>
+                                                       FontSize="12.5" FontWeight="SemiBold" Foreground="#203B54"/>
                                             
                                             <Border Grid.Row="0" Grid.Column="1" CornerRadius="8" 
-                                                    Padding="7,2" Background="#E3F2FD" VerticalAlignment="Center">
-                                                <TextBlock FontSize="11" FontWeight="Bold" Foreground="#1565C0">
+                                                    Padding="7,2" Background="#EAF1F7" VerticalAlignment="Center">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Foreground="#173F63">
                                                     <Run Text="{Binding Cantidad, Mode=OneWay}"/>
                                                 </TextBlock>
                                             </Border>
                                             
                                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                                        Text="{Binding Municipios}" 
-                                                       FontSize="10.5" Foreground="#888" Margin="0,2,0,0"
+                                                       FontSize="10.5" Foreground="#657C91" Margin="0,2,0,0"
                                                        TextTrimming="CharacterEllipsis"/>
                                         </Grid>
                                     </Border>
@@ -516,7 +516,7 @@
                         
                         <!-- Empty state -->
                         <TextBlock Grid.Row="1" Text="Sin destinos registrados"
-                                   FontSize="13" Foreground="#888" 
+                                   FontSize="13" Foreground="#657C91" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Margin="0,20,0,0">
                             <TextBlock.Style>
@@ -545,7 +545,7 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                             <TextBlock Text="💵" FontSize="18" Margin="0,0,8,0"/>
                             <TextBlock Text="Remesas" FontSize="15" FontWeight="SemiBold" 
-                                       Foreground="#333" VerticalAlignment="Center"/>
+                                       Foreground="#203B54" VerticalAlignment="Center"/>
                         </StackPanel>
                         
                         <!-- Lista -->
@@ -553,7 +553,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="8" Padding="10,8" Margin="0,0,0,5"
-                                            Background="#F3E5F5">
+                                            Background="#EAF1F7">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
@@ -567,15 +567,15 @@
                                             <TextBlock Grid.Row="0" Grid.Column="0"
                                                        Text="{Binding NombreReceptor}" 
                                                        FontSize="12.5" FontWeight="SemiBold" 
-                                                       Foreground="#333" TextTrimming="CharacterEllipsis"/>
+                                                       Foreground="#203B54" TextTrimming="CharacterEllipsis"/>
                                             
                                             <TextBlock Grid.Row="0" Grid.Column="1" 
                                                        Text="{Binding EstadoTexto}" 
-                                                       FontSize="11" FontWeight="Bold" Foreground="#6A1B9A"
+                                                       FontSize="11" FontWeight="Bold" Foreground="#285B80"
                                                        VerticalAlignment="Center"/>
                                             
                                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                                       FontSize="10.5" Foreground="#888" Margin="0,2,0,0"
+                                                       FontSize="10.5" Foreground="#657C91" Margin="0,2,0,0"
                                                        TextTrimming="CharacterEllipsis">
                                                 <Run Text="{Binding Direccion, Mode=OneWay}"/>
                                                 <Run Text=" · "/>
@@ -590,7 +590,7 @@
                         
                         <!-- Empty state -->
                         <TextBlock Grid.Row="1" Text="Sin remesas pendientes"
-                                   FontSize="13" Foreground="#888" 
+                                   FontSize="13" Foreground="#657C91" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Margin="0,20,0,0">
                             <TextBlock.Style>

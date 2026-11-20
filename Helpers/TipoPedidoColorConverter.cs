@@ -7,7 +7,7 @@ namespace GestionApp.Helpers
 {
     /// <summary>
     /// Convierte TipoCombo en colores para las fichas de costo.
-    /// Combo → Azul, Agrego → Verde, Festejo → Naranja.
+    /// Combo → azul marino, Agrego → dorado, Festejo → azul acero.
     /// Parámetro "bg" → color claro, "text" → color fuerte, otro → borde.
     /// </summary>
     public class TipoPedidoColorConverter : IValueConverter
@@ -23,21 +23,21 @@ namespace GestionApp.Helpers
             {
                 TipoCombo.Combo => param switch
                 {
-                    "bg" => Brush("#E3F2FD"),
-                    "text" => Brush("#1565C0"),
-                    _ => Brush("#1976D2")
+                    "bg" => Brush("#EAF1F7"),
+                    "text" => Brush("#173F63"),
+                    _ => Brush("#173F63")
                 },
                 TipoCombo.Agrego => param switch
                 {
-                    "bg" => Brush("#E8F5E9"),
-                    "text" => Brush("#2E7D32"),
-                    _ => Brush("#388E3C")
+                    "bg" => Brush("#FFF4D6"),
+                    "text" => Brush("#8A6500"),
+                    _ => Brush("#A47A08")
                 },
                 TipoCombo.Festejo => param switch
                 {
-                    "bg" => Brush("#FFF3E0"),
-                    "text" => Brush("#E65100"),
-                    _ => Brush("#F57C00")
+                    "bg" => Brush("#EDF4F8"),
+                    "text" => Brush("#2B658A"),
+                    _ => Brush("#2B658A")
                 },
                 _ => Brushes.Gray
             };
