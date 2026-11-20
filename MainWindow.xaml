@@ -10,7 +10,8 @@
         Height="800" Width="1360"
         MinHeight="680" MinWidth="1080"
         WindowStartupLocation="CenterScreen"
-        Background="#F2F6FA">
+        Background="#F2F6FA"
+        Icon="pack://application:,,,/Assets/RyumControl.ico">
 
     <Window.Resources>
         <!-- Conversor para el indicador de selección -->

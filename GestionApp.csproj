@@ -8,6 +8,11 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>GestionApp</RootNamespace>
     <AssemblyName>GestionApp</AssemblyName>
+    <ApplicationIcon>Assets\RyumControl.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>Ryum Control</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +24,8 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="QuestPDF" Version="2024.12.2" />
+    <None Remove="Assets\RyumControl.ico" />
+    <Resource Include="Assets\RyumControl.ico" />
   </ItemGroup>
 
   <ItemGroup>
